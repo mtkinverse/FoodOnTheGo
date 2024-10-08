@@ -29,7 +29,9 @@
     <packagedElement xmi:type="uml:UseCase" xmi:id="_dAUWYH15Ee-OxpKwykV8aw" name="Update Restaurant Info"/>
     <packagedElement xmi:type="uml:UseCase" xmi:id="_fRhkAH15Ee-OxpKwykV8aw" name="Update/Manage Menu"/>
     <packagedElement xmi:type="uml:UseCase" xmi:id="_i3T-8H15Ee-OxpKwykV8aw" name="Manage Orders">
+      <extend xmi:type="uml:Extend" xmi:id="_CRTEgIUYEe-2xaxTx14W8w" extendedCase="_7eGckH17Ee-OxpKwykV8aw" extensionLocation="_CUCPcIUYEe-2xaxTx14W8w"/>
       <extensionPoint xmi:type="uml:ExtensionPoint" xmi:id="_MCnXwH18Ee-OxpKwykV8aw" name="ExtensionPoint1"/>
+      <extensionPoint xmi:type="uml:ExtensionPoint" xmi:id="_JRlQYYUYEe-2xaxTx14W8w" name="ExtensionPoint3"/>
     </packagedElement>
     <packagedElement xmi:type="uml:UseCase" xmi:id="_kwd48H15Ee-OxpKwykV8aw" name="Manage restaurant availability"/>
     <packagedElement xmi:type="uml:UseCase" xmi:id="_ADHx0H16Ee-OxpKwykV8aw" name="Browse Restaurants"/>
@@ -63,14 +65,37 @@
     </packagedElement>
     <packagedElement xmi:type="uml:UseCase" xmi:id="_29RVsH17Ee-OxpKwykV8aw" name="Order Confirmation">
       <extend xmi:type="uml:Extend" xmi:id="_4xeeQH17Ee-OxpKwykV8aw" extendedCase="_kjuykH17Ee-OxpKwykV8aw" extensionLocation="_4xfsYH17Ee-OxpKwykV8aw"/>
-      <include xmi:type="uml:Include" xmi:id="_A1q-MH18Ee-OxpKwykV8aw" addition="_5svMoH17Ee-OxpKwykV8aw"/>
-      <include xmi:type="uml:Include" xmi:id="_B-0-oH18Ee-OxpKwykV8aw" addition="_7eGckH17Ee-OxpKwykV8aw"/>
+      <include xmi:type="uml:Include" xmi:id="_bjE1UIUZEe-2xaxTx14W8w" addition="_I7J38IUZEe-2xaxTx14W8w"/>
     </packagedElement>
-    <packagedElement xmi:type="uml:UseCase" xmi:id="_5svMoH17Ee-OxpKwykV8aw" name="notify user"/>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_5svMoH17Ee-OxpKwykV8aw" name="notify user">
+      <generalization xmi:type="uml:Generalization" xmi:id="_WoP6EIUZEe-2xaxTx14W8w" general="_I7J38IUZEe-2xaxTx14W8w"/>
+    </packagedElement>
     <packagedElement xmi:type="uml:UseCase" xmi:id="_7eGckH17Ee-OxpKwykV8aw" name="Notify restaurant">
-      <extend xmi:type="uml:Extend" xmi:id="_MCmwsH18Ee-OxpKwykV8aw" extendedCase="_i3T-8H15Ee-OxpKwykV8aw" extensionLocation="_MCnXwH18Ee-OxpKwykV8aw"/>
+      <generalization xmi:type="uml:Generalization" xmi:id="_X88cIIUZEe-2xaxTx14W8w" general="_I7J38IUZEe-2xaxTx14W8w"/>
+      <extensionPoint xmi:type="uml:ExtensionPoint" xmi:id="_CUCPcIUYEe-2xaxTx14W8w" name="ExtensionPoint1"/>
     </packagedElement>
     <packagedElement xmi:type="uml:UseCase" xmi:id="_FusioH18Ee-OxpKwykV8aw" name="View Notifications"/>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_E6LyUIUYEe-2xaxTx14W8w" name="Dispatch Order">
+      <extend xmi:type="uml:Extend" xmi:id="_JRlQYIUYEe-2xaxTx14W8w" extendedCase="_i3T-8H15Ee-OxpKwykV8aw" extensionLocation="_JRlQYYUYEe-2xaxTx14W8w"/>
+      <include xmi:type="uml:Include" xmi:id="_YqpsIIUYEe-2xaxTx14W8w" addition="_OQW3gIUYEe-2xaxTx14W8w"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_OQW3gIUYEe-2xaxTx14W8w" name="Receive Order">
+      <include xmi:type="uml:Include" xmi:id="__Xty0IUYEe-2xaxTx14W8w" addition="_v70skIUYEe-2xaxTx14W8w"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_qLVUoIUYEe-2xaxTx14W8w" name="Deliver on destination">
+      <include xmi:type="uml:Include" xmi:id="_qwD84IUZEe-2xaxTx14W8w" addition="_eW8rIIUZEe-2xaxTx14W8w"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_v70skIUYEe-2xaxTx14W8w" name="Update Order state">
+      <include xmi:type="uml:Include" xmi:id="_zQOckIUYEe-2xaxTx14W8w" addition="_ez9o0H16Ee-OxpKwykV8aw"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_I7J38IUZEe-2xaxTx14W8w" name="Notify"/>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_eW8rIIUZEe-2xaxTx14W8w" name="Notify"/>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_gAKrsIUZEe-2xaxTx14W8w" name="Notify user">
+      <generalization xmi:type="uml:Generalization" xmi:id="_nwDvkIUZEe-2xaxTx14W8w" general="_eW8rIIUZEe-2xaxTx14W8w"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_goSboIUZEe-2xaxTx14W8w" name="Notify Restaurant">
+      <generalization xmi:type="uml:Generalization" xmi:id="_oQ5y0IUZEe-2xaxTx14W8w" general="_eW8rIIUZEe-2xaxTx14W8w"/>
+    </packagedElement>
   </packagedElement>
   <packagedElement xmi:type="uml:Actor" xmi:id="_t9EoUHz-Ee-OxpKwykV8aw" name="User"/>
   <packagedElement xmi:type="uml:Actor" xmi:id="_xCfhIHz-Ee-OxpKwykV8aw" name="New User">
@@ -236,5 +261,8 @@
     <ownedEnd xmi:type="uml:Property" xmi:id="_JCCisn18Ee-OxpKwykV8aw" name="view notifications" type="_FusioH18Ee-OxpKwykV8aw" association="_JCB7oH18Ee-OxpKwykV8aw"/>
     <ownedEnd xmi:type="uml:Property" xmi:id="_JCDJwH18Ee-OxpKwykV8aw" type="_js9YEH16Ee-OxpKwykV8aw" association="_JCB7oH18Ee-OxpKwykV8aw"/>
   </packagedElement>
-  <packagedElement xmi:type="uml:UseCase" xmi:id="_WqD3kH18Ee-OxpKwykV8aw" name="UseCase31"/>
+  <packagedElement xmi:type="uml:Actor" xmi:id="_pfBdsIUXEe-2xaxTx14W8w" name="Delivery System"/>
+  <packagedElement xmi:type="uml:Association" xmi:id="_aWJkoIUYEe-2xaxTx14W8w"/>
+  <packagedElement xmi:type="uml:Association" xmi:id="_2lGGoIUYEe-2xaxTx14W8w"/>
+  <packagedElement xmi:type="uml:Association" xmi:id="_EiAtcIUZEe-2xaxTx14W8w"/>
 </uml:Model>
