@@ -4,7 +4,7 @@
     <importedPackage xmi:type="uml:Model" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#_0"/>
   </packageImport>
   <packagedElement xmi:type="uml:Package" xmi:id="_nwGvwHz-Ee-OxpKwykV8aw" name="Food On The Go">
-    <packagedElement xmi:type="uml:UseCase" xmi:id="_PBqqoHz_Ee-OxpKwykV8aw" name="User Login">
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_PBqqoHz_Ee-OxpKwykV8aw" name="User Login portal">
       <extensionPoint xmi:type="uml:ExtensionPoint" xmi:id="_-KyXoHz_Ee-OxpKwykV8aw" name="ExtensionPoint1"/>
       <extensionPoint xmi:type="uml:ExtensionPoint" xmi:id="_UFt94H0AEe-OxpKwykV8aw" name="ExtensionPoint2"/>
     </packagedElement>

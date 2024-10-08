@@ -14,7 +14,7 @@
           <layoutConstraint xmi:type="notation:Bounds" xmi:id="_PB7wZnz_Ee-OxpKwykV8aw"/>
         </children>
         <element xmi:type="uml:UseCase" href="website-usecase.uml#_PBqqoHz_Ee-OxpKwykV8aw"/>
-        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_PB7JUXz_Ee-OxpKwykV8aw" x="14" y="8" width="181" height="61"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_PB7JUXz_Ee-OxpKwykV8aw" x="34" y="8" width="181" height="61"/>
       </children>
       <children xmi:type="notation:Shape" xmi:id="_QvfeYHz_Ee-OxpKwykV8aw" type="UseCase_Shape_CN">
         <children xmi:type="notation:DecorationNode" xmi:id="_QvgFcHz_Ee-OxpKwykV8aw" type="UseCase_NameLabel_CN"/>
