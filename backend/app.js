@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors'); // Add this line
 const bcrypt = require('bcrypt');
 const cookieParser = require('cookie-parser');
 
@@ -7,13 +8,21 @@ const webRoutes = require('./routes/webRoutes');
 
 const app = express();
 
-app.use(express.json());
+// Enable CORS for all routes
+app.use(cors({
+  origin: 'http://127.0.0.1:5173', // Ensure no trailing slash here
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 
+app.use(express.json());
 app.use(cookieParser());
 
-app.use('/',userRoutes);
-app.use('/',webRoutes);
+// Use routes
+app.use('/', userRoutes);
+app.use('/', webRoutes);
 
+// Start server
 app.listen(8800, () => {
-    console.log('Listening on port 8800');
+  console.log('Listening on port 8800');
 });

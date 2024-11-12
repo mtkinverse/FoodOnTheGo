@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { FaArrowRight, FaArrowLeft, FaMotorcycle, FaHamburger, FaUtensils, FaStar } from "react-icons/fa";
+import { FaArrowRight, FaArrowLeft, FaStar } from "react-icons/fa";
+import { Card, Button } from "react-bootstrap";
 
 const TopRestaurants = () => {
   const [restaurantData, setRestaurantData] = useState([]);
@@ -11,8 +12,10 @@ const TopRestaurants = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get('/home');
+        console.log(response);
         if (Array.isArray(response.data)) {
           setRestaurantData(response.data);
+          console.log(response.data);
         } else {
           console.error("Expected an array but got:", response.data);
           setRestaurantData([]);
@@ -27,13 +30,13 @@ const TopRestaurants = () => {
   }, []);
 
   const handleNext = () => {
-    setCurrentIndex((prevIndex) => 
-      Math.min(prevIndex + 3, restaurantData.length - itemsToShow)
+    setCurrentIndex((prevIndex) =>
+      Math.min(prevIndex + itemsToShow, restaurantData.length - itemsToShow)
     );
   };
 
   const handlePrev = () => {
-    setCurrentIndex((prevIndex) => Math.max(prevIndex - 3, 0));
+    setCurrentIndex((prevIndex) => Math.max(prevIndex - itemsToShow, 0));
   };
 
   const visibleRestaurants = restaurantData.slice(currentIndex, currentIndex + itemsToShow);
@@ -52,49 +55,32 @@ const TopRestaurants = () => {
         </button>
 
         <div className="flex justify-center space-x-4 overflow-hidden">
-          {visibleRestaurants.map((restaurant, index) => (
-            <div
-              key={restaurant.restaurant_id}
-              className="w-80 bg-white rounded-lg shadow-lg overflow-hidden transform transition-all duration-300 ease-in-out"
-            >
-              <img
-                src={restaurant.image_url}
-                alt={restaurant.restaurant_name}
-                className="w-full h-48 object-cover transition-transform duration-300 hover:scale-110"
+          {visibleRestaurants.map((restaurant) => (
+            <Card key={restaurant.Restaurant_id} style={{ width: '18rem' }} className="mb-4">
+              <Card.Img
+                variant="top"
+                src={restaurant.Restaurant_Image || '/path/to/default-image.jpg'} // Fallback image
+                alt={restaurant.Restaurant_Name}
               />
-              <div className="p-4">
-                <h3 className="text-xl font-semibold text-red-600">{restaurant.restaurant_name}</h3>
-                <p className="flex items-center text-gray-600 mt-1">
-                  {restaurant.food_type === "fastfood" ? (
-                    <FaHamburger className="mr-2 text-yellow-500" />
-                  ) : (
-                    <FaUtensils className="mr-2 text-green-500" />
-                  )}
-                  {restaurant.food_type.charAt(0).toUpperCase() + restaurant.food_type.slice(1)}
-                </p>
-                
-                <div className="flex items-center mt-2">
+              <Card.Body>
+                <Card.Title>{restaurant.Restaurant_Name}</Card.Title>
+                <div className="flex items-center">
+                  {/* Render star rating based on Rating value, with fallback to 0 if Rating is invalid */}
                   {Array.from({ length: 5 }, (_, i) => (
-                    <FaStar 
-                      key={i} 
-                      className={i < restaurant.rating ? "text-yellow-500" : "text-gray-300"} 
+                    <FaStar
+                      key={i}
+                      className={i < (parseFloat(restaurant.Rating) || 0) ? "text-yellow-500" : "text-gray-300"}
                     />
                   ))}
-                  <span className="ml-2 text-gray-600">{restaurant.rating}</span>
+                  <span className="ml-2 text-gray-600">{restaurant.Rating}</span>
                 </div>
-
-                <p className="flex items-center text-gray-600 mt-2">
-                  <FaMotorcycle className="mr-2 text-red-500" />
-                  Delivery Charges: {restaurant.delivery_charges}
-                </p>
-              </div>
-
-              {restaurant.best_seller && (
-                <span className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold rounded-full px-2 py-1">
-                  Best Seller
-                </span>
-              )}
-            </div>
+                <Card.Text>
+                  <strong>Opens At:</strong> {restaurant.OpensAt} <br />
+                  <strong>Closes At:</strong> {restaurant.ClosesAt}
+                </Card.Text>
+                <Button variant="primary">View Details</Button>
+              </Card.Body>
+            </Card>
           ))}
         </div>
 
