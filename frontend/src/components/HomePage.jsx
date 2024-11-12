@@ -5,10 +5,9 @@ import TopRestaurants from '../Components/TopRestaurants';
 const HomePage = () => {
   return (
     <>
-      {/* Hero Section */}
-      <header className="bg-gradient-to-r from-red-600 to-red-800 text-white py-24">
-        <div className="container mx-auto px-4 flex flex-col md:flex-row items-center justify-between max-lg:justify-center max-lg:w-full max-lg:text-center">
-          <div className="lg:w-1/2 mb-8 md:mb-0">
+      <header className="bg-gradient-to-r from-red-600 to-red-800 text-white py-24 overflow-hidden w-full">
+        <div className="container mx-auto px-4 flex flex-col md:flex-row items-center justify-between w-full text-center md:text-left">
+          <div className="w-full md:w-1/2">
             <h1 className="text-6xl font-bold mb-4 animate-fade-in-up">
               Savor the <span className="text-yellow-300">Moment</span>
             </h1>
@@ -19,12 +18,10 @@ const HomePage = () => {
               Explore Flavors
             </button>
           </div>
-
         </div>
       </header>
 
-      {/* Features Section */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-white w-full">
         <div className="container mx-auto px-4">
           <h2 className="text-5xl font-bold text-center text-gray-800 mb-16">Why Choose Us</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
@@ -47,16 +44,12 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Top Restaurants Section */}
-      <section className="py-20 bg-red-50">
+      <section className="py-20 bg-red-50 w-full">
         <div className="container mx-auto px-4">
           <h2 className="text-5xl font-bold text-center text-gray-800 mb-16">Top Restaurants</h2>
           <TopRestaurants />
         </div>
       </section>
-
-      {/* Newsletter Section */}
-      
     </>
   );
 };
@@ -68,6 +61,5 @@ const FeatureCard = ({ icon, title, description }) => (
     <p className="text-gray-600 text-lg">{description}</p>
   </div>
 );
-
 
 export default HomePage;

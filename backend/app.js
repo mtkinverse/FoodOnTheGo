@@ -15,6 +15,5 @@ app.use('/',userRoutes);
 app.use('/',webRoutes);
 
 app.listen(8800, () => {
-    
     console.log('Listening on port 8800');
 });

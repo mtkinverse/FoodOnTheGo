@@ -4,8 +4,8 @@ import Register from "./Pages/Register";
 import Login from "./Pages/Login";
 import Home from "./Pages/Home";
 import Restaurants from './Pages/Restaurants';
-import Navbar from './Components/Navbar';
-import Footer from './Components/Footer';
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 
 // const router = createBrowserRouter([
 //    {

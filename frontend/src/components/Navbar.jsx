@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
-import { FaShoppingCart, FaSearch, FaUtensils, FaBars } from 'react-icons/fa'; // Added FaBars for mobile menu
-import { NavLink} from 'react-router-dom'; // Assuming you use React Router
+import { FaBars } from 'react-icons/fa';
+import { NavLink } from 'react-router-dom';
 import Logo from "./Logo";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const commonClass = 'text-sm hover:text-red-700 hover:border-b border-red-700 hover:duration-500 hover:ease-in-out relative text-red-600';
   const toggleMenu = () => setMenuOpen(!menuOpen);
+
+  const commonClass = 'text-sm font-medium text-red-600 hover:text-red-700 transition duration-300';
 
   return (
     <nav className="bg-white shadow-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
+          
           {/* Logo */}
           <div className="flex items-center">
             <Logo />
@@ -19,27 +21,17 @@ const Navbar = () => {
 
           {/* Desktop Links */}
           <div className="hidden sm:flex sm:space-x-8">
-            <NavLink
-              to="/"
-              className={({isActive}) => isActive ? 'font-bold text-red-700' + commonClass : 'text-red-600 font-medium' + commonClass}
-            >
-              Home
-              <span className="absolute bottom-0 left-0 w-full h-0.5 bg-red-600 transition-all duration-300 ease-in-out transform scale-x-0 origin-left group-hover:scale-x-100"></span>
-            </NavLink>
-            <NavLink
-              to="/restaurants"
-              className={({isActive}) => isActive ? 'font-bold text-red-700' + commonClass : 'text-red-600 font-medium' + commonClass}
-            >
-              Restaurants
-              <span className="absolute bottom-0 left-0 w-full h-0.5 bg-red-600 transition-all duration-300 ease-in-out transform scale-x-0 origin-left group-hover:scale-x-100"></span>
-            </NavLink>
-            <NavLink
-              to="/about"
-              className={({isActive}) => isActive ? 'font-bold text-red-700' + commonClass : 'text-red-600 font-medium' + commonClass}
-            >
-              About Us
-              <span className="absolute bottom-0 left-0 w-full h-0.5 bg-red-600 transition-all duration-300 ease-in-out transform scale-x-0 origin-left group-hover:scale-x-100"></span>
-            </NavLink>
+            {['Home', 'Restaurants', 'About Us'].map((item, idx) => (
+              <NavLink
+                key={idx}
+                to={`/${item.toLowerCase().replace(' ', '')}`}
+                className={({ isActive }) =>
+                  `${isActive ? 'font-bold text-red-700 ' : ''}${commonClass}`
+                }
+              >
+                {item}
+              </NavLink>
+            ))}
           </div>
 
           {/* Mobile Menu Icon */}
@@ -52,11 +44,11 @@ const Navbar = () => {
             </button>
           </div>
 
-          {/* Desktop Login */}
-          <div className="hidden sm:flex sm:items-center">
+          {/* Desktop Login Button */}
+          <div className="hidden sm:flex">
             <NavLink
               to="/login"
-              className="inline-flex items-center px-4 py-2 border border-red-600 text-sm font-medium rounded-md text-red-600 bg-white hover:bg-red-50 hover:text-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition duration-150 ease-in-out"
+              className="inline-flex items-center px-4 py-2 border border-red-600 rounded-md text-sm font-medium text-red-600 hover:bg-red-50 hover:text-red-700 transition duration-150"
             >
               Login
             </NavLink>
@@ -66,30 +58,16 @@ const Navbar = () => {
         {/* Mobile Links */}
         {menuOpen && (
           <div className="sm:hidden mt-2 space-y-1">
-            <NavLink
-              to="/"
-              className="block text-red-600 text-sm font-medium hover:text-red-700"
-            >
-              Home
-            </NavLink>
-            <NavLink
-              to="/restaurants"
-              className="block text-red-600 text-sm font-medium hover:text-red-700"
-            >
-              Restaurants
-            </NavLink>
-            <NavLink
-              to="/about"
-              className="block text-red-600 text-sm font-medium hover:text-red-700"
-            >
-              About Us
-            </NavLink>
-            <NavLink
-              to="/login"
-              className="block text-red-600 text-sm font-medium hover:text-red-700"
-            >
-              Login
-            </NavLink>
+            {['Home', 'Restaurants', 'About Us', 'Login'].map((item, idx) => (
+              <NavLink
+                key={idx}
+                to={`/${item.toLowerCase().replace(' ', '')}`}
+                className="block text-red-600 text-sm font-medium hover:text-red-700 px-4 py-2"
+                onClick={() => setMenuOpen(false)}
+              >
+                {item}
+              </NavLink>
+            ))}
           </div>
         )}
       </div>
