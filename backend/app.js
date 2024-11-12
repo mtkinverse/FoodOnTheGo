@@ -8,12 +8,10 @@ const webRoutes = require('./routes/webRoutes');
 
 const app = express();
 
-// Enable CORS for all routes
 app.use(cors({
-  origin: 'http://127.0.0.1:5173', // Ensure no trailing slash here
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  origin: 'http://localhost:5173', // Frontend URL
 }));
+
 
 app.use(express.json());
 app.use(cookieParser());

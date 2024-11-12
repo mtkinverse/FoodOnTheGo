@@ -136,5 +136,6 @@ select Owner_id from Restaurant_Owner where Owner_Name = 'Elon Musk';
 
 INSERT INTO Restaurant (Restaurant_name,opensAt,closesAt,restaurant_image,rating,owner_id ) VALUES ('KFC', '12:00:00', '02:00:00', '/images/kfc.jpg', 4.8, 1500);
 INSERT INTO Restaurant (Restaurant_name,opensAt,closesAt,restaurant_image,rating,owner_id ) VALUES ('McDonalds', '1:00:00', '02:00:00', '/images/mcd.jpg', 4.5, 1500);
+INSERT INTO Restaurant (Restaurant_name,opensAt,closesAt,restaurant_image,rating,owner_id ) VALUES ('Burger O Clock', '1:00:00', '02:00:00', '/images/burgerclock.jpg', 4.5, 1500);
 
 select * from Restaurant;
