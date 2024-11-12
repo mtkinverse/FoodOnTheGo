@@ -4,7 +4,7 @@ const db = mysql.createConnection({
     host:'localhost',
     user: 'root',
     password: 'edhi',
-    database:'db_project'
+    database:'online_food_system'
 });
 
 db.connect((err) => {

@@ -6,7 +6,6 @@ const jwt = require('jsonwebtoken');
 const phoneNumberPattern = /^\+92 \d{3} \d{7}$/;
 const isValidPhoneNumber = (phone) => phoneNumberPattern.test(phone);
 
-
 module.exports.registerUser = (req, res) => {
     const q = 'SELECT * FROM Customers WHERE email = ?';
     db.query(q, [req.body.email], (err, data) => {
