@@ -11,16 +11,9 @@
     <packagedElement xmi:type="uml:UseCase" xmi:id="_QvNKgHz_Ee-OxpKwykV8aw" name="User Registration">
       <include xmi:type="uml:Include" xmi:id="_nPcn0H0AEe-OxpKwykV8aw" addition="_j8r2kH0AEe-OxpKwykV8aw"/>
     </packagedElement>
-    <packagedElement xmi:type="uml:UseCase" xmi:id="_TwfxQHz_Ee-OxpKwykV8aw" name="Password Recovery">
-      <extend xmi:type="uml:Extend" xmi:id="_-KrC4Hz_Ee-OxpKwykV8aw" extendedCase="_PBqqoHz_Ee-OxpKwykV8aw" extensionLocation="_-KyXoHz_Ee-OxpKwykV8aw"/>
-    </packagedElement>
-    <packagedElement xmi:type="uml:UseCase" xmi:id="_dQPpMHz_Ee-OxpKwykV8aw" name="Profile management">
-      <extend xmi:type="uml:Extend" xmi:id="_BKm-wH0AEe-OxpKwykV8aw" extendedCase="_eucskHz_Ee-OxpKwykV8aw" extensionLocation="_BKoM4H0AEe-OxpKwykV8aw"/>
-    </packagedElement>
     <packagedElement xmi:type="uml:UseCase" xmi:id="_eucskHz_Ee-OxpKwykV8aw" name="View Profile">
       <extensionPoint xmi:type="uml:ExtensionPoint" xmi:id="_BKoM4H0AEe-OxpKwykV8aw" name="ExtensionPoint1"/>
     </packagedElement>
-    <packagedElement xmi:type="uml:UseCase" xmi:id="_ww2iEHz_Ee-OxpKwykV8aw" name="Social media login"/>
     <packagedElement xmi:type="uml:UseCase" xmi:id="_QNgWMH0AEe-OxpKwykV8aw" name="handle invalid credentials">
       <extend xmi:type="uml:Extend" xmi:id="_UFtW0H0AEe-OxpKwykV8aw" extendedCase="_PBqqoHz_Ee-OxpKwykV8aw" extensionLocation="_UFt94H0AEe-OxpKwykV8aw"/>
     </packagedElement>
@@ -29,15 +22,12 @@
     <packagedElement xmi:type="uml:UseCase" xmi:id="_dAUWYH15Ee-OxpKwykV8aw" name="Update Restaurant Info"/>
     <packagedElement xmi:type="uml:UseCase" xmi:id="_fRhkAH15Ee-OxpKwykV8aw" name="Update/Manage Menu"/>
     <packagedElement xmi:type="uml:UseCase" xmi:id="_i3T-8H15Ee-OxpKwykV8aw" name="Manage Orders">
-      <extend xmi:type="uml:Extend" xmi:id="_CRTEgIUYEe-2xaxTx14W8w" extendedCase="_7eGckH17Ee-OxpKwykV8aw" extensionLocation="_CUCPcIUYEe-2xaxTx14W8w"/>
       <extensionPoint xmi:type="uml:ExtensionPoint" xmi:id="_MCnXwH18Ee-OxpKwykV8aw" name="ExtensionPoint1"/>
       <extensionPoint xmi:type="uml:ExtensionPoint" xmi:id="_JRlQYYUYEe-2xaxTx14W8w" name="ExtensionPoint3"/>
     </packagedElement>
     <packagedElement xmi:type="uml:UseCase" xmi:id="_kwd48H15Ee-OxpKwykV8aw" name="Manage restaurant availability"/>
     <packagedElement xmi:type="uml:UseCase" xmi:id="_ADHx0H16Ee-OxpKwykV8aw" name="Browse Restaurants"/>
-    <packagedElement xmi:type="uml:UseCase" xmi:id="_DXCZoH16Ee-OxpKwykV8aw" name="Filter Restaurants"/>
     <packagedElement xmi:type="uml:UseCase" xmi:id="_F0escH16Ee-OxpKwykV8aw" name="View Menu items"/>
-    <packagedElement xmi:type="uml:UseCase" xmi:id="_JLE00H16Ee-OxpKwykV8aw" name="Filter by cuisine"/>
     <packagedElement xmi:type="uml:UseCase" xmi:id="_aKHI0H16Ee-OxpKwykV8aw" name="Add to cart">
       <extensionPoint xmi:type="uml:ExtensionPoint" xmi:id="_oq0ZMH16Ee-OxpKwykV8aw" name="ExtensionPoint1"/>
     </packagedElement>
@@ -66,15 +56,15 @@
     <packagedElement xmi:type="uml:UseCase" xmi:id="_29RVsH17Ee-OxpKwykV8aw" name="Order Confirmation">
       <extend xmi:type="uml:Extend" xmi:id="_4xeeQH17Ee-OxpKwykV8aw" extendedCase="_kjuykH17Ee-OxpKwykV8aw" extensionLocation="_4xfsYH17Ee-OxpKwykV8aw"/>
       <include xmi:type="uml:Include" xmi:id="_bjE1UIUZEe-2xaxTx14W8w" addition="_I7J38IUZEe-2xaxTx14W8w"/>
+      <include xmi:type="uml:Include" xmi:id="_w6tr4KGiEe-5Suh7twYKSw" addition="_7eGckH17Ee-OxpKwykV8aw"/>
     </packagedElement>
-    <packagedElement xmi:type="uml:UseCase" xmi:id="_5svMoH17Ee-OxpKwykV8aw" name="notify user">
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_5svMoH17Ee-OxpKwykV8aw" name="notify user about payment">
       <generalization xmi:type="uml:Generalization" xmi:id="_WoP6EIUZEe-2xaxTx14W8w" general="_I7J38IUZEe-2xaxTx14W8w"/>
     </packagedElement>
-    <packagedElement xmi:type="uml:UseCase" xmi:id="_7eGckH17Ee-OxpKwykV8aw" name="Notify restaurant">
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_7eGckH17Ee-OxpKwykV8aw" name="Notify restaurant about payment">
       <generalization xmi:type="uml:Generalization" xmi:id="_X88cIIUZEe-2xaxTx14W8w" general="_I7J38IUZEe-2xaxTx14W8w"/>
       <extensionPoint xmi:type="uml:ExtensionPoint" xmi:id="_CUCPcIUYEe-2xaxTx14W8w" name="ExtensionPoint1"/>
     </packagedElement>
-    <packagedElement xmi:type="uml:UseCase" xmi:id="_FusioH18Ee-OxpKwykV8aw" name="View Notifications"/>
     <packagedElement xmi:type="uml:UseCase" xmi:id="_E6LyUIUYEe-2xaxTx14W8w" name="Dispatch Order">
       <extend xmi:type="uml:Extend" xmi:id="_JRlQYIUYEe-2xaxTx14W8w" extendedCase="_i3T-8H15Ee-OxpKwykV8aw" extensionLocation="_JRlQYYUYEe-2xaxTx14W8w"/>
       <include xmi:type="uml:Include" xmi:id="_YqpsIIUYEe-2xaxTx14W8w" addition="_OQW3gIUYEe-2xaxTx14W8w"/>
@@ -83,18 +73,18 @@
       <include xmi:type="uml:Include" xmi:id="__Xty0IUYEe-2xaxTx14W8w" addition="_v70skIUYEe-2xaxTx14W8w"/>
     </packagedElement>
     <packagedElement xmi:type="uml:UseCase" xmi:id="_qLVUoIUYEe-2xaxTx14W8w" name="Deliver on destination">
-      <include xmi:type="uml:Include" xmi:id="_qwD84IUZEe-2xaxTx14W8w" addition="_eW8rIIUZEe-2xaxTx14W8w"/>
+      <include xmi:type="uml:Include" xmi:id="_g95p4KGiEe-5Suh7twYKSw" addition="_goSboIUZEe-2xaxTx14W8w"/>
+      <include xmi:type="uml:Include" xmi:id="_k0MmAKGiEe-5Suh7twYKSw" addition="_gAKrsIUZEe-2xaxTx14W8w"/>
     </packagedElement>
     <packagedElement xmi:type="uml:UseCase" xmi:id="_v70skIUYEe-2xaxTx14W8w" name="Update Order state">
       <include xmi:type="uml:Include" xmi:id="_zQOckIUYEe-2xaxTx14W8w" addition="_ez9o0H16Ee-OxpKwykV8aw"/>
     </packagedElement>
     <packagedElement xmi:type="uml:UseCase" xmi:id="_I7J38IUZEe-2xaxTx14W8w" name="Notify"/>
-    <packagedElement xmi:type="uml:UseCase" xmi:id="_eW8rIIUZEe-2xaxTx14W8w" name="Notify"/>
-    <packagedElement xmi:type="uml:UseCase" xmi:id="_gAKrsIUZEe-2xaxTx14W8w" name="Notify user">
-      <generalization xmi:type="uml:Generalization" xmi:id="_nwDvkIUZEe-2xaxTx14W8w" general="_eW8rIIUZEe-2xaxTx14W8w"/>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_gAKrsIUZEe-2xaxTx14W8w" name="Notify user about delivery">
+      <generalization xmi:type="uml:Generalization" xmi:id="_TlLVQKGiEe-5Suh7twYKSw" general="_I7J38IUZEe-2xaxTx14W8w"/>
     </packagedElement>
-    <packagedElement xmi:type="uml:UseCase" xmi:id="_goSboIUZEe-2xaxTx14W8w" name="Notify Restaurant">
-      <generalization xmi:type="uml:Generalization" xmi:id="_oQ5y0IUZEe-2xaxTx14W8w" general="_eW8rIIUZEe-2xaxTx14W8w"/>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_goSboIUZEe-2xaxTx14W8w" name="Notify Restaurant about delivery">
+      <generalization xmi:type="uml:Generalization" xmi:id="_Ue39YKGiEe-5Suh7twYKSw" general="_I7J38IUZEe-2xaxTx14W8w"/>
     </packagedElement>
   </packagedElement>
   <packagedElement xmi:type="uml:Actor" xmi:id="_t9EoUHz-Ee-OxpKwykV8aw" name="User"/>
@@ -111,20 +101,6 @@
     <ownedEnd xmi:type="uml:Property" xmi:id="_ltJkEHz_Ee-OxpKwykV8aw" name="user login" type="_PBqqoHz_Ee-OxpKwykV8aw" association="_ltCPUHz_Ee-OxpKwykV8aw"/>
     <ownedEnd xmi:type="uml:Property" xmi:id="_ltKLIHz_Ee-OxpKwykV8aw" name="registered user" type="_zMlaIHz-Ee-OxpKwykV8aw" association="_ltCPUHz_Ee-OxpKwykV8aw"/>
   </packagedElement>
-  <packagedElement xmi:type="uml:Association" xmi:id="_nduJ0Hz_Ee-OxpKwykV8aw" memberEnd="_ndvX8nz_Ee-OxpKwykV8aw _ndv_AHz_Ee-OxpKwykV8aw">
-    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_ndvX8Hz_Ee-OxpKwykV8aw" source="org.eclipse.papyrus">
-      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_ndvX8Xz_Ee-OxpKwykV8aw" key="nature" value="UML_Nature"/>
-    </eAnnotations>
-    <ownedEnd xmi:type="uml:Property" xmi:id="_ndvX8nz_Ee-OxpKwykV8aw" name="password recovery" type="_TwfxQHz_Ee-OxpKwykV8aw" association="_nduJ0Hz_Ee-OxpKwykV8aw"/>
-    <ownedEnd xmi:type="uml:Property" xmi:id="_ndv_AHz_Ee-OxpKwykV8aw" type="_zMlaIHz-Ee-OxpKwykV8aw" association="_nduJ0Hz_Ee-OxpKwykV8aw"/>
-  </packagedElement>
-  <packagedElement xmi:type="uml:Association" xmi:id="_qfl_YHz_Ee-OxpKwykV8aw" memberEnd="_qfnNgXz_Ee-OxpKwykV8aw _qfn0kHz_Ee-OxpKwykV8aw">
-    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_qfmmcHz_Ee-OxpKwykV8aw" source="org.eclipse.papyrus">
-      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_qfnNgHz_Ee-OxpKwykV8aw" key="nature" value="UML_Nature"/>
-    </eAnnotations>
-    <ownedEnd xmi:type="uml:Property" xmi:id="_qfnNgXz_Ee-OxpKwykV8aw" name="profile management" type="_dQPpMHz_Ee-OxpKwykV8aw" association="_qfl_YHz_Ee-OxpKwykV8aw"/>
-    <ownedEnd xmi:type="uml:Property" xmi:id="_qfn0kHz_Ee-OxpKwykV8aw" type="_zMlaIHz-Ee-OxpKwykV8aw" association="_qfl_YHz_Ee-OxpKwykV8aw"/>
-  </packagedElement>
   <packagedElement xmi:type="uml:Association" xmi:id="_sVX1QHz_Ee-OxpKwykV8aw" memberEnd="_sVZqcHz_Ee-OxpKwykV8aw _sVZqcXz_Ee-OxpKwykV8aw">
     <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_sVZDYHz_Ee-OxpKwykV8aw" source="org.eclipse.papyrus">
       <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_sVZDYXz_Ee-OxpKwykV8aw" key="nature" value="UML_Nature"/>
@@ -138,13 +114,6 @@
     </eAnnotations>
     <ownedEnd xmi:type="uml:Property" xmi:id="_07L0gHz_Ee-OxpKwykV8aw" name="user registration" type="_QvNKgHz_Ee-OxpKwykV8aw" association="_07J_UHz_Ee-OxpKwykV8aw"/>
     <ownedEnd xmi:type="uml:Property" xmi:id="_07L0gXz_Ee-OxpKwykV8aw" name="new user" type="_xCfhIHz-Ee-OxpKwykV8aw" association="_07J_UHz_Ee-OxpKwykV8aw"/>
-  </packagedElement>
-  <packagedElement xmi:type="uml:Association" xmi:id="_1qTkUHz_Ee-OxpKwykV8aw" memberEnd="_1qVZgXz_Ee-OxpKwykV8aw _1qWAkHz_Ee-OxpKwykV8aw">
-    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_1qUycHz_Ee-OxpKwykV8aw" source="org.eclipse.papyrus">
-      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_1qVZgHz_Ee-OxpKwykV8aw" key="nature" value="UML_Nature"/>
-    </eAnnotations>
-    <ownedEnd xmi:type="uml:Property" xmi:id="_1qVZgXz_Ee-OxpKwykV8aw" name="social media login" type="_ww2iEHz_Ee-OxpKwykV8aw" association="_1qTkUHz_Ee-OxpKwykV8aw"/>
-    <ownedEnd xmi:type="uml:Property" xmi:id="_1qWAkHz_Ee-OxpKwykV8aw" type="_07J_UHz_Ee-OxpKwykV8aw" association="_1qTkUHz_Ee-OxpKwykV8aw"/>
   </packagedElement>
   <packagedElement xmi:type="uml:Actor" xmi:id="_dgi5kH0AEe-OxpKwykV8aw" name="Authentication system"/>
   <packagedElement xmi:type="uml:Association" xmi:id="_gk3mMH0AEe-OxpKwykV8aw" memberEnd="_gk40Un0AEe-OxpKwykV8aw _gk5bYH0AEe-OxpKwykV8aw">
@@ -204,27 +173,6 @@
     <ownedEnd xmi:type="uml:Property" xmi:id="_NBqE0H16Ee-OxpKwykV8aw" name="browse restaurants" type="_ADHx0H16Ee-OxpKwykV8aw" association="_NBoPoH16Ee-OxpKwykV8aw"/>
     <ownedEnd xmi:type="uml:Property" xmi:id="_NBqr4H16Ee-OxpKwykV8aw" name="user" type="_t9EoUHz-Ee-OxpKwykV8aw" association="_NBoPoH16Ee-OxpKwykV8aw"/>
   </packagedElement>
-  <packagedElement xmi:type="uml:Association" xmi:id="_P83RsH16Ee-OxpKwykV8aw" memberEnd="_P85t8H16Ee-OxpKwykV8aw _P86VAH16Ee-OxpKwykV8aw">
-    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_P85G4H16Ee-OxpKwykV8aw" source="org.eclipse.papyrus">
-      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_P85G4X16Ee-OxpKwykV8aw" key="nature" value="UML_Nature"/>
-    </eAnnotations>
-    <ownedEnd xmi:type="uml:Property" xmi:id="_P85t8H16Ee-OxpKwykV8aw" name="filter restaurants" type="_DXCZoH16Ee-OxpKwykV8aw" association="_P83RsH16Ee-OxpKwykV8aw"/>
-    <ownedEnd xmi:type="uml:Property" xmi:id="_P86VAH16Ee-OxpKwykV8aw" type="_NBoPoH16Ee-OxpKwykV8aw" association="_P83RsH16Ee-OxpKwykV8aw"/>
-  </packagedElement>
-  <packagedElement xmi:type="uml:Association" xmi:id="_U4BkIH16Ee-OxpKwykV8aw" memberEnd="_U4EAYX16Ee-OxpKwykV8aw _U4EncH16Ee-OxpKwykV8aw">
-    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_U4DZUH16Ee-OxpKwykV8aw" source="org.eclipse.papyrus">
-      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_U4EAYH16Ee-OxpKwykV8aw" key="nature" value="UML_Nature"/>
-    </eAnnotations>
-    <ownedEnd xmi:type="uml:Property" xmi:id="_U4EAYX16Ee-OxpKwykV8aw" name="view menu items" type="_F0escH16Ee-OxpKwykV8aw" association="_U4BkIH16Ee-OxpKwykV8aw"/>
-    <ownedEnd xmi:type="uml:Property" xmi:id="_U4EncH16Ee-OxpKwykV8aw" type="_P83RsH16Ee-OxpKwykV8aw" association="_U4BkIH16Ee-OxpKwykV8aw"/>
-  </packagedElement>
-  <packagedElement xmi:type="uml:Association" xmi:id="_XB2-cH16Ee-OxpKwykV8aw" memberEnd="_XB4zoX16Ee-OxpKwykV8aw _XB5asH16Ee-OxpKwykV8aw">
-    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_XB4MkH16Ee-OxpKwykV8aw" source="org.eclipse.papyrus">
-      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_XB4zoH16Ee-OxpKwykV8aw" key="nature" value="UML_Nature"/>
-    </eAnnotations>
-    <ownedEnd xmi:type="uml:Property" xmi:id="_XB4zoX16Ee-OxpKwykV8aw" name="filter by cuisine" type="_JLE00H16Ee-OxpKwykV8aw" association="_XB2-cH16Ee-OxpKwykV8aw"/>
-    <ownedEnd xmi:type="uml:Property" xmi:id="_XB5asH16Ee-OxpKwykV8aw" type="_P83RsH16Ee-OxpKwykV8aw" association="_XB2-cH16Ee-OxpKwykV8aw"/>
-  </packagedElement>
   <packagedElement xmi:type="uml:Association" xmi:id="_i7p28H16Ee-OxpKwykV8aw" memberEnd="_i7thUH16Ee-OxpKwykV8aw _i7thUX16Ee-OxpKwykV8aw">
     <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_i7s6QH16Ee-OxpKwykV8aw" source="org.eclipse.papyrus">
       <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_i7s6QX16Ee-OxpKwykV8aw" key="nature" value="UML_Nature"/>
@@ -253,13 +201,6 @@
     </eAnnotations>
     <ownedEnd xmi:type="uml:Property" xmi:id="_mo5IQn17Ee-OxpKwykV8aw" name="process payment infor" type="_kjuykH17Ee-OxpKwykV8aw" association="_mo4hMH17Ee-OxpKwykV8aw"/>
     <ownedEnd xmi:type="uml:Property" xmi:id="_mo5IQ317Ee-OxpKwykV8aw" name="payment subsystem" type="_chqZkH17Ee-OxpKwykV8aw" association="_mo4hMH17Ee-OxpKwykV8aw"/>
-  </packagedElement>
-  <packagedElement xmi:type="uml:Association" xmi:id="_JCB7oH18Ee-OxpKwykV8aw" memberEnd="_JCCisn18Ee-OxpKwykV8aw _JCDJwH18Ee-OxpKwykV8aw">
-    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_JCCisH18Ee-OxpKwykV8aw" source="org.eclipse.papyrus">
-      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_JCCisX18Ee-OxpKwykV8aw" key="nature" value="UML_Nature"/>
-    </eAnnotations>
-    <ownedEnd xmi:type="uml:Property" xmi:id="_JCCisn18Ee-OxpKwykV8aw" name="view notifications" type="_FusioH18Ee-OxpKwykV8aw" association="_JCB7oH18Ee-OxpKwykV8aw"/>
-    <ownedEnd xmi:type="uml:Property" xmi:id="_JCDJwH18Ee-OxpKwykV8aw" type="_js9YEH16Ee-OxpKwykV8aw" association="_JCB7oH18Ee-OxpKwykV8aw"/>
   </packagedElement>
   <packagedElement xmi:type="uml:Actor" xmi:id="_pfBdsIUXEe-2xaxTx14W8w" name="Delivery System"/>
   <packagedElement xmi:type="uml:Association" xmi:id="_aWJkoIUYEe-2xaxTx14W8w"/>
