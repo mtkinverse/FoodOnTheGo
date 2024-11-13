@@ -15,7 +15,7 @@ module.exports.registerUser = (req, res) => {
         const salt = bcrypt.genSaltSync(10);
         const hash = bcrypt.hashSync(req.body.password, salt);
         
-        const qInsert = "INSERT INTO Customer (Customer_name,Email_address,Account_Password,Phone_no) VALUES (?, ?, ?, ?)";
+        const qInsert = "INSERT INTO Customer (Customer_name,Email_address,Account_Password,Phone_no) VALUES (?, ?, ?,  `?)";
         const values = [req.body.name,req.body.email, hash,req.body.phoneNo];
         console.log("Inserting user:", values);
         db.query(qInsert, values, (err, data) => {

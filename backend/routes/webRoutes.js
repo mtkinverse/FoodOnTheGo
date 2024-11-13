@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const {getHome} = require('../controllers/webController');
+const {getTopRestaurants} = require('../controllers/topController');
+const {getRestaurants} = require('../controllers/restaurantController');
 
-
-router.get('/home',getHome);
+router.get('/home',getTopRestaurants);
+router.get('/restaurants',getRestaurants)
 
 module.exports = router;
