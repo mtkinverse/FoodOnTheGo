@@ -50,7 +50,7 @@ const router = createBrowserRouter(
 
 function App() {
   return (
-   <div className="min-h-screen max-w-screen-2xl bg-gray-50 flex flex-col">
+   <div className="min-h-screen max-w-screen-2xl mx-auto bg-gray-50 flex flex-col">
          <RouterProvider router = {router}>
          <Navbar/>
          </RouterProvider>    

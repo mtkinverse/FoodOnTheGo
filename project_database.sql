@@ -7,12 +7,13 @@ drop table Restaurant;
 CREATE TABLE Customer(
    Customer_id INT AUTO_INCREMENT PRIMARY KEY,
    Customer_Name VARCHAR(100) NOT NULL,
-   Email_address VARCHAR(100) NOT NULL,
-   Account_Password VARCHAR(100) NOT NULL
+   Email_address VARCHAR(100) NOT NULL UNIQUE,
+   Account_Password VARCHAR(100) NOT NULL,
+   phone_no VARCHAR(20) NOT NULL
 );
 ALTER TABLE Customer AUTO_INCREMENT = 99190;
 
-
+select * from Customer;
 
 CREATE TABLE Restaurant_Owner (
    Owner_id INT AUTO_INCREMENT PRIMARY KEY,
