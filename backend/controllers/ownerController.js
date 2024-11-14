@@ -1,4 +1,5 @@
 const db = require('../db');
+
 module.exports.addMenu = (req, res) => {
     const restaurant_id = req.params.id;
 
@@ -34,9 +35,32 @@ module.exports.addMenu = (req, res) => {
     });
 };
 
+//insertId is used for auto increments ids
 
+module.exports.addMenuItem = (req, res) => {
+    const restaurant_id = req.params.id;
+    
+    const menu_query = 'SELECT menu_id FROM restaurant WHERE restaurant_id = ?';
 
-// module.exports.addMenuItem = (req,res) => {
-//     menu_id = req.body.restaurant_id;
-//     const q = "INSERT INTO menu_items VALUES (?) "
-// }
+    db.query(menu_query, [restaurant_id], (err, results) => {
+        if (err) {
+            return res.status(500).json({ error: 'Database query failed', details: err.message });
+        }
+        console.log(results);
+        if (results.length === 0) {
+            return res.status(404).json({ error: 'Restaurant not found or no menu associated with this restaurant' });
+        }
+
+        const menu_id = results[0].menu_id;
+
+        const insert_query = 'INSERT INTO menu_items (Dish_Name, Item_Price, Item_image, Cuisine, Menu_id) VALUES (?, ?, ?, ?, ?)';
+        const { Dish_Name, Item_Price, Item_image, Cuisine } = req.body;
+
+        db.query(insert_query, [Dish_Name, Item_Price, Item_image, Cuisine, menu_id], (err, menuResult) => {
+            if (err) {
+                return res.status(500).json({ error: 'Failed to add menu item', details: err.message });
+            }
+            return res.status(201).json({ message: 'Menu item added successfully', item_id: menuResult.insertId });
+        });
+    });
+};
