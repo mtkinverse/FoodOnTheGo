@@ -17,7 +17,7 @@ module.exports.getRestaurants = (req, res) => {
 };
 
 module.exports.getSpecificRestaurant = (req, res) => {
-    const restaurantId = req.params.id;  // Get the restaurant ID from the URL parameter
+    const restaurantId = req.params.id;  
     console.log(`Fetching details for restaurant with ID: ${restaurantId}`);
 
     const query = 'SELECT * FROM restaurant WHERE Restaurant_id = ?';

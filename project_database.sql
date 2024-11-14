@@ -30,7 +30,7 @@ CREATE TABLE Restaurant (
     Restaurant_Image Varchar(50) NOT NULL,
     Rating DECIMAL(2,1) DEFAULT NULL, -- ratings like 4.5,4.7
     Owner_id INT,
-    Menu_id INT DEFAULT NULL -- restaurant created,can be added later
+    Menu_id INT DEFAULT NULL -- resta urant created,can be added later
 );
 ALTER TABLE Restaurant AUTO_INCREMENT = 6500; -- ids start from 6500
 
@@ -53,7 +53,6 @@ CREATE TABLE Menu
 );
 
 ALTER TABLE Menu AUTO_INCREMENT = 45301;
-
 
 
 CREATE TABLE Menu_Items (
