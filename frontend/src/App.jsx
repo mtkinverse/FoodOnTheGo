@@ -1,9 +1,9 @@
 
 import {createBrowserRouter,RouterProvider,Route, Outlet,createRoutesFromElements} from 'react-router-dom';
-import Register from "./Pages/Register";
-import Login from "./Pages/Login";
-import Home from "./Pages/Home";
-import Restaurants from './Pages/Restaurants';
+import Register from "./pages/Register";
+import Login from "./pages/Login";
+import Home from "./pages/Home";
+import Restaurants from './pages/Restaurants';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -48,14 +48,15 @@ const router = createBrowserRouter(
    ),
  );
 
-function App() {
+ function App() {
   return (
-   <div className="min-h-screen max-w-screen-2xl mx-auto bg-gray-50 flex flex-col">
-         <RouterProvider router = {router}>
-         <Navbar/>
-         </RouterProvider>    
-   </div>
+    <div className="min-h-screen w-full bg-gray-50 flex flex-col">
+      <RouterProvider router={router}>
+        <Navbar />
+      </RouterProvider>
+    </div>
   );
 }
+
 
 export default App;

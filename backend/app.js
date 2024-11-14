@@ -18,9 +18,9 @@ app.use(express.json());
 app.use(cookieParser());
 
 // Use routes
-app.use('/user', userRoutes);
-app.use('/web', webRoutes);
-app.use('/owner', ownerRoutes);
+app.use('/', userRoutes);
+app.use('/', webRoutes);
+app.use('/', ownerRoutes);
 
 // Start server
 app.listen(8800, () => {

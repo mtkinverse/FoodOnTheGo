@@ -3,18 +3,19 @@ const db = require('../db');
 module.exports.getRestaurants = (req, res) => {
     console.log("get Restaurants endpoint hit");
     
-    const currentTime = new Date().toLocaleTimeString('en-GB', { hour12: false });
+    // const currentTime = new Date().toLocaleTimeString('en-GB', { hour12: false });
 
-    const query = ' SELECT * FROM restaurant WHERE  (OpensAt <= ? AND ClosesAt >= ?) ';
+    const query = 'SELECT * FROM restaurant';
 
-    db.query(query, [currentTime, currentTime, currentTime, currentTime], (err, data) => {
+    db.query(query, (err, data) => {
         if (err) {
-         return res.status(500).json({ error: 'Database query failed', details: err.message });
+            return res.status(500).json({ error: 'Database query failed', details: err.message });
         }
+        console.log(data);
         return res.status(200).json(data);
     });
-
 };
+
 
 module.exports.getSpecificRestaurant = (req, res) => {
     const restaurantId = req.params.id;  

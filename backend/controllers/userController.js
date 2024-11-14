@@ -43,3 +43,7 @@ module.exports.loginUser = (req, res) => {
         }).json(other);
     });
 };
+
+module.exports.AddToCart = (req,res) => {
+    const q = '';
+}
