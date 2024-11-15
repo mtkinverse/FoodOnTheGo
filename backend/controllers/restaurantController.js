@@ -32,3 +32,30 @@ module.exports.getSpecificRestaurant = (req, res) => {
         return res.status(200).json(data[0]);  
     });
 };
+
+module.exports.getRestaurantMenu = (req, res) => {
+    const restaurantId = req.params.id;  
+
+    const query = 'SELECT menu_id FROM restaurant WHERE restaurant_id = ?';
+    db.query(query, [restaurantId], (err, data) => {
+        if (err) {
+            return res.status(500).json({ error: 'Database query failed', details: err.message });
+        }
+        if (data.length === 0) {
+            return res.status(404).json({ message: 'Restaurant not found' });
+        }
+
+        const menu_id = data[0].menu_id;
+        const items_query = 'SELECT * FROM menu_items WHERE menu_id = ?';
+        db.query(items_query, [menu_id], (err, items) => {
+            if (err) {
+                return res.status(500).json({ error: 'Database query failed', details: err.message });
+            }
+            if (items.length === 0) {
+                return res.status(404).json({ message: 'No menu items found' });
+            }
+
+            return res.status(200).json({ menuItems: items });
+        });
+    });
+};
