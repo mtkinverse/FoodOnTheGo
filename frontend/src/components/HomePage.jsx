@@ -8,7 +8,7 @@ const HomePage = () => {
   return (
     <>
       {/* Header Section with Purple-White Gradient */}
-      <header className="bg-gradient-to-r from-purple-600 to-purple-800 text-white py-32 overflow-hidden w-full mx-0">
+      <header className="bg-gradient-to-r from-purple-800 to-purple-900 text-white py-32 overflow-hidden w-full mx-0">
         <div className="container mx-auto px-6 flex flex-col md:flex-row items-center justify-between w-full text-center md:text-left">
           <div className="w-full md:w-1/2 mb-10 md:mb-0">
             <h1 className="text-6xl font-extrabold mb-6 animate-fade-in-up">
@@ -17,7 +17,7 @@ const HomePage = () => {
             <p className="text-xl mb-10 animate-fade-in-up animation-delay-200">
   Discover, order, and enjoy culinary excellence at your doorstep 
   {loggedIn && userData?.User_name && (
-    <span className="font-bold text-yellow-300 bg-purple-700 px-2 py-1 rounded-md">
+    <span className="font-bold text-yellow-300 bg-purple-600 px-2 py-1 rounded-md">
       {`${userData.User_name}`}
     </span>
   )}
