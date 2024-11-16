@@ -2,12 +2,17 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Mail, Lock, ChevronRight } from 'lucide-react';
+import { useUserContext } from '../contexts/userContext';
 
 const Login = () => {
+
   const navigate = useNavigate();
   const [values, setValues] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const {userData,login} = useUserContext();
+  
+  console.log('userCOnetext in login ',useUserContext());
 
   const handleChange = (e) => {
     setValues((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -17,14 +22,16 @@ const Login = () => {
     event.preventDefault();
     setIsLoading(true);
     try {
-      const res = await axios.post('/login', values);
-      console.log(res.data);
-      navigate('/');
-    } catch (err) {
-      console.error(err.response?.data || err.message);
-      // Add error handling here (e.g., show error message to user)
-    } finally {
-      setIsLoading(false);
+
+    login(values);
+    alert( 'welcome ' + userData.Customer_Name);
+    
+  } catch (err) {
+    console.error(err.response?.data || err.message);
+    // Add error handling here (e.g., show error message to user)
+  } finally {
+    setIsLoading(false);
+    navigate('/');
     }
   };
 

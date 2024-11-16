@@ -1,15 +1,26 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaBars, FaChevronDown } from 'react-icons/fa';
 import { NavLink, useLocation } from 'react-router-dom';
 import Logo from './Logo';
+import { useUserContext } from '../contexts/userContext';
 
 const Navbar = () => {
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { pathname } = useLocation();
+  const {loggedIn,signout} = useUserContext();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
+
+  const signItOut = e => {
+    e.preventDefault();
+    try{
+      signout()
+    }catch(err){
+      console.log(err);
+    }
+  }
 
   const navItems = [
     { label: 'Home', path: '/' },
@@ -90,14 +101,27 @@ const Navbar = () => {
           </div>
 
           {/* Desktop Login Button */}
-          <div className="hidden sm:flex">
-            <NavLink
-              to="/login"
-              className="inline-flex items-center px-4 py-2 border border-purple-600 rounded-md text-sm font-medium text-purple-600 hover:bg-purple-50 hover:text-purple-700 transition duration-300"
-            >
-              Login
-            </NavLink>
-          </div>
+          
+          
+            <div className={`hidden sm:flex`}>
+            { !loggedIn ?
+              <NavLink
+                to="/login"
+                className="inline-flex items-center px-4 py-2 border border-purple-600 rounded-md text-sm font-medium text-purple-600 hover:bg-purple-50 hover:text-purple-700 transition duration-300"
+              >
+                Login
+              </NavLink>
+              :
+              <button
+                className="inline-flex items-center px-4 py-2 border border-purple-600 rounded-md text-sm font-medium text-purple-600 hover:bg-purple-50 hover:text-purple-700 transition duration-300"
+                onClick={signItOut}
+              >
+                Signout
+              </button>
+
+            }
+            </div>
+          
         </div>
 
         {/* Mobile Menu Content */}

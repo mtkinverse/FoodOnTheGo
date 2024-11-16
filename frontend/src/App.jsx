@@ -7,7 +7,6 @@ import Restaurants from './pages/Restaurants';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
 // const router = createBrowserRouter([
 //    {
 //        path: "/",
@@ -51,9 +50,10 @@ const router = createBrowserRouter(
  function App() {
   return (
     <div className="min-h-screen w-full bg-gray-50 flex flex-col">
-      <RouterProvider router={router}>
-        <Navbar />
-      </RouterProvider>
+      
+        <RouterProvider router={router}/>
+
+      
     </div>
   );
 }

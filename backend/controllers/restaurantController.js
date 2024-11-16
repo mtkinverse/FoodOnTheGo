@@ -1,8 +1,9 @@
 const db = require('../db');
 
 module.exports.getRestaurants = (req, res) => {
-    console.log("get Restaurants endpoint hit");
-    
+
+    const token = req.cookies.access_token; // Get the token from cookies
+    if (!token) return res.status(401).send({message : "Access Denied"});
     // const currentTime = new Date().toLocaleTimeString('en-GB', { hour12: false });
 
     const query = 'SELECT * FROM restaurant';
@@ -11,7 +12,6 @@ module.exports.getRestaurants = (req, res) => {
         if (err) {
             return res.status(500).json({ error: 'Database query failed', details: err.message });
         }
-        console.log(data);
         return res.status(200).json(data);
     });
 };

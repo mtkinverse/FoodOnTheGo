@@ -7,18 +7,25 @@ const Restaurants = () => {
 
   const getRestaurants = async () => {
     try {
-      console.log('sending request');
-      const response = await axios.get('/api/restaurants'); // Ensure the correct path is used
+      
+      const response = await axios.get('/api/restaurants',{withCredentials : true}); // Ensure the correct path is used
+
       if (Array.isArray(response.data)) {
         setRestaurantData(response.data);
       } else {
         console.error("Expected an array but got:");
         setRestaurantData([]);
       }
+      
     } catch (error) {
+      
       console.error('Error fetching restaurants:', error);
+      if(error.response.data.message === 'Access Denied') alert('Kindly login to view the restaurants');
+      
       setRestaurantData([]);
+
     }
+
   };
 
   useEffect(() => {

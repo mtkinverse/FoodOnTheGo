@@ -1,5 +1,6 @@
 import React from 'react';
 import { FaStar, FaClock, FaUtensils } from 'react-icons/fa';
+import { useUserContext } from '../contexts/userContext';
 
 const RestaurantCard = ({ restaurant }) => {
   const {
@@ -10,6 +11,8 @@ const RestaurantCard = ({ restaurant }) => {
     Rating,
   } = restaurant;
 
+  const {loggedIn} = useUserContext();
+  
   return (
     <div className="restaurant-card bg-white shadow-lg rounded-lg overflow-hidden transform transition hover:scale-105 duration-300">
       {/* Restaurant Image */}
@@ -39,12 +42,12 @@ const RestaurantCard = ({ restaurant }) => {
       </div>
 
       {/* View Menu Button */}
-      <div className="p-4 bg-purple-600 text-white text-center rounded-b-lg hover:bg-purple-700 cursor-pointer transition duration-300">
-        <button className="w-full font-semibold flex items-center justify-center space-x-2">
+        <div className="p-4 bg-purple-600 text-white text-center rounded-b-lg hover:bg-purple-700 cursor-pointer transition duration-300">
+        <button className="w-full font-semibold flex items-center justify-center space-x-2" disabled={!loggedIn}>
           <FaUtensils className="mr-2" />
           <span>View Menu</span>
         </button>
-      </div>
+        </div>
     </div>
   );
 };

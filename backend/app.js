@@ -10,7 +10,8 @@ const ownerRoutes = require('./routes/ownerRoutes');
 const app = express();
 
 app.use(cors({
-  origin: 'http://localhost:5173', // Frontend URL
+  origin: 'http://localhost:5173', 
+  credentials : true// Frontend URL
 }));
 
 
