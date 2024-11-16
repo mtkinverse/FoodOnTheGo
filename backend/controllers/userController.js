@@ -96,10 +96,11 @@ module.exports.registerUser = (req, res) => {
     }
 };
 
-
 module.exports.loginUser = (req, res) => {
     console.log('login endpoint hit');
+    console.log(req.body);
     const role = req.body.role;
+    console.log(req.body.role);
     const q = `SELECT * FROM ${role} WHERE Email_address = ?`;
   
     db.query(q, [req.body.email], (err, data) => {
@@ -115,9 +116,12 @@ module.exports.loginUser = (req, res) => {
           { id: role === 'Customer' ? user.customer_id : role == 'Restaurant_owner' ? user.owner_id : user.rider_id }, 
           "my_key" , { expiresIn: 60  }
         );
-        res.cookie("access_token", token, {
+        res.status(200).cookie("access_token", token, {
             httpOnly: true
-        }).json(other);
+        }).json({
+            ...other,
+            role:role
+        });
     });
 };
 

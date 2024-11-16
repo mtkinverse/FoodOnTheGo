@@ -1,8 +1,10 @@
 import React from 'react';
 import { FaFacebook, FaTwitter, FaInstagram, FaUtensils, FaStar, FaClock } from 'react-icons/fa';
 import TopRestaurants from '../Components/TopRestaurants';
+import { useUserContext } from '../contexts/userContext';
 
 const HomePage = () => {
+  const {loggedIn,userData} = useUserContext();
   return (
     <>
       {/* Header Section with Purple-White Gradient */}
@@ -13,8 +15,14 @@ const HomePage = () => {
               Savor the <span className="text-yellow-300">Moment</span>
             </h1>
             <p className="text-xl mb-10 animate-fade-in-up animation-delay-200">
-              Discover, order, and enjoy culinary excellence at your doorstep
-            </p>
+  Discover, order, and enjoy culinary excellence at your doorstep 
+  {loggedIn && userData?.User_name && (
+    <span className="font-bold text-yellow-300 bg-purple-700 px-2 py-1 rounded-md">
+      {`${userData.User_name}`}
+    </span>
+  )}
+</p>
+
             <button className="bg-white text-purple-600 rounded-full px-10 py-4 font-semibold shadow-lg hover:shadow-xl transition duration-300 transform hover:scale-105 animate-fade-in-up animation-delay-400">
               Explore Flavors
             </button>

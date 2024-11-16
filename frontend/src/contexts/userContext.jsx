@@ -8,43 +8,73 @@ const UserContextProvider = ({children}) => {
    // const host = 'http://localhost:8800';
     const [loggedIn,setLoggedIn] = useState(false);
     const [userData,setUserData] = useState({
-        Customer_id: 0,
-        Customer_Name: "",
+        User_id: 0,
+        User_name: "",
         Email_address: "",
         phone_no: ""
     })
 
-    const login = recvData => {
-        try {
-
-            axios.post('/api/login', JSON.stringify({
-              email : recvData.email,
-              password : recvData.password
-            })
-            ,{
-              headers : {
-                "Content-Type" : "application/json"
-              },
-              withCredentials : true
-            }
-          ).then(res => {
-
-            if(res.status === 200){
-                
-                setUserData(res.data); // y state update nahi ho rhi agr y update ho jae to user ka data frontend pr preserve rhe ga or display kr skte
-                console.log('setting state to ',res.data);    
-                setLoggedIn(true);
-
-            }
-            else throw res.message;
-        })
+    const login = async (recvData) => {
+      try {
+        const res = await axios.post(
+          '/api/login',
+          JSON.stringify({
+            email: recvData.email,
+            password: recvData.password,
+            role: recvData.role,
+          }),
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            withCredentials: true,
+          }
+        );
+    
+        if (res.status === 200) {
+          console.log("Login successful. Response data:", res.data);
+          console.log(res.data.role);
+          let userData;
+          
+          // Check the role and adjust the destructuring accordingly
+          if (res.data.role === 'customer') {
+            userData = {
+              User_id: res.data.Customer_id,
+              User_name: res.data.Customer_Name,
+              Email_address: res.data.Email_address,
+              phone_no: res.data.phone_no,
+            };
+          } else if (res.data.role === 'Delivery_Rider') {
+            userData = {
+              User_id: res.data.Rider_id,
+              User_name: res.data.Rider_name,
+              Email_address: res.data.Email_address,
+              phone_no: res.data.phone_no,
+            };
+          } else if (res.data.role === 'Restaurant_Owner') {
+            userData = {
+              User_id: res.data.Owner_id,
+              User_name: res.data.Owner_Name,
+              Email_address: res.data.Email_address,
+              phone_no: res.data.phone_no,
+            };
+          } else {
+            throw new Error('Unknown role');
+          }
+    
+          // Set the state with the correct user data
+          setUserData(userData);
+          setLoggedIn(true);
+    
+          console.log("User data set for:", userData);
+        } else {
+          throw new Error(res.message || "Unexpected error occurred");
         }
-        catch(err){
-            console.error(err.response?.data || err.message);
-        }
-
-    }   
-
+      } catch (err) {
+        console.error("Login error:", err.response?.data || err.message);
+      }
+    };
+    
     const signout = () => {
         axios
       .post('api/logout',JSON.stringify(userData),{withCredentials : true})

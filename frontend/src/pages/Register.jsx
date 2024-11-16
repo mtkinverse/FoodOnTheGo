@@ -18,8 +18,7 @@ const Register = () => {
   const [role,changeRole] = useState('customer');
 
   const handleChange = (e) => {
-    setValues((prev) => ({
-      ...prev,
+    setValues((prev) => ({...prev,
       [e.target.name]: e.target.value,
     }));
   };
@@ -30,13 +29,13 @@ const Register = () => {
     try {
 
       const sendVal = {
-        name: values.firstname + values.lastname,
+        name: values.firstname + " " + values.lastname,
         email: values.email,
         password: values.password,
         phoneNo: values.phoneNo,
         role:role
       }
-      const res = await axios.post(host + '/register', JSON.stringify(sendVal), {
+      const res = await axios.post('/api/register', JSON.stringify(sendVal), {
         headers: {
           "Content-Type": "application/json"
         }
@@ -100,7 +99,7 @@ const Register = () => {
                     [
                       { name: 'Customer', value: 'Customer' },
                       { name: 'Owner', value: 'Restaurant_Owner' },
-                      { name: 'Delivery', value: 'Delivery_Rider' }
+                      { name: 'Delivery', value: 'Delivery_Staff' }
                     ].map((ele) => (
                       <>
                         <label htmlFor={ele.name}>{ele.name}

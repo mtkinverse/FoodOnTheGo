@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors'); 
+const path = require('path')
 const bcrypt = require('bcrypt');
 const cookieParser = require('cookie-parser');
 
@@ -22,6 +23,10 @@ app.use(cookieParser());
 app.use('/', userRoutes);
 app.use('/', webRoutes);
 app.use('/', ownerRoutes);
+
+const imagesPath = path.join(__dirname, 'images')
+
+app.use('/images', express.static(imagesPath))
 
 // Start server
 app.listen(8800, () => {

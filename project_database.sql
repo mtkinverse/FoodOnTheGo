@@ -2,10 +2,11 @@ CREATE DATABASE online_food_system;
 
 USE online_food_system;
 
+
 --drop table Customer;
 --drop table Menu_items;
 --drop table Menu;
---drop table Restaurant;
+drop table Restaurant;
 --drop table Restaurant_Owner;
 
 CREATE TABLE Customer(
@@ -146,12 +147,11 @@ ALTER TABLE Ordered_Item ADD CONSTRAINT comp_PK PRIMARY KEY(Order_id,Item_id);
 
 
 --sample restaurant data for top restaurants
-INSERT INTO Restaurant_Owner (Owner_Name) VALUES ('Elon Musk');
-select Owner_id from Restaurant_Owner where Owner_Name = 'Elon Musk';
+select  * from restaurant_owner;
 
-INSERT INTO Restaurant (Restaurant_name,opensAt,closesAt,restaurant_image,rating,owner_id ) VALUES ('KFC', '12:00:00', '02:00:00', '/images/kfc.jpg', 4.8, 1500);
-INSERT INTO Restaurant (Restaurant_name,opensAt,closesAt,restaurant_image,rating,owner_id ) VALUES ('McDonalds', '1:00:00', '02:00:00', '/images/mcd.jpg', 4.5, 1500);
-INSERT INTO Restaurant (Restaurant_name,opensAt,closesAt,restaurant_image,rating,owner_id ) VALUES ('Burger O Clock', '1:00:00', '02:00:00', '/images/burgerclock.jpg', 4.5, 1500);
+INSERT INTO Restaurant (Restaurant_name,opensAt,closesAt,restaurant_image,rating,owner_id ) VALUES ('KFC', '12:00:00', '02:00:00', 'http://localhost:8800/images/kfc.jpg', 4.8, 1500);
+INSERT INTO Restaurant (Restaurant_name,opensAt,closesAt,restaurant_image,rating,owner_id ) VALUES ('McDonalds', '1:00:00', '02:00:00', 'http://localhost:8800/images/mcd.jpg', 4.5, 1500);
+INSERT INTO Restaurant (Restaurant_name,opensAt,closesAt,restaurant_image,rating,owner_id ) VALUES ('Burger O Clock', '1:00:00', '02:00:00', 'http://localhost:8800/images/burgerclock.jpg', 4.5, 1500);
 INSERT INTO Restaurant (Restaurant_name,opensAt,closesAt,restaurant_image,rating,owner_id ) VALUES ('Aussie Burger', '1:00:00', '02:00:00', '/images/aussie.jfif', 4.7, 1500);
 
 
@@ -160,3 +160,7 @@ select * from Restaurant;
 select m.item_id,m.dish_name,r.restaurant_name from menu_items m 
 join restaurant r on r.menu_id = m.menu_id
 where r.restaurant_id = 6500;
+
+
+select * from customer;
+
