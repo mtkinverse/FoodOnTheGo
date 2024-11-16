@@ -6,6 +6,8 @@ import Home from "./pages/Home";
 import Restaurants from './pages/Restaurants';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import OwnedRestaurants from './pages/OwnedRestaurants';
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 // const router = createBrowserRouter([
 //    {
@@ -43,6 +45,7 @@ const router = createBrowserRouter(
        <Route path='register' element={<Register />} />
        <Route path='login' element={<Login />} />
        <Route path='restaurants' element={<Restaurants />} />
+       <Route path='ownedRestaurants' element = {<OwnedRestaurants/>}/>
      </Route>
    ),
  );

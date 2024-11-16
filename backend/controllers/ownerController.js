@@ -9,6 +9,7 @@ module.exports.getOwnedRestaurants = (req, res) => {
     }
     try {
         const decoded = jwt.verify(token, 'my_key'); 
+        console.log("decoded cookie : ",decoded);
         const owner_id = decoded.id;
         console.log(owner_id,' found');
         const query = 'SELECT * from Restaurant WHERE Owner_id = ?';
