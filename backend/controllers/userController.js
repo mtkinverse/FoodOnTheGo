@@ -115,7 +115,7 @@ module.exports.loginUser = (req, res) => {
         console.log(other);
         const token = jwt.sign(
           { id: role === 'Customer' ? user.Customer_id : role == 'Restaurant_owner' ? user.Owner_id : user.Rider_id }, 
-          "my_key" , { expiresIn: 60  }
+          "my_key" , { expiresIn: 600  }
         );
         res.status(200).cookie("access_token", token, {
             httpOnly: true

@@ -2,15 +2,11 @@ const db = require('../db');
 const jwt = require('jsonwebtoken');
 
 module.exports.getOwnedRestaurants = (req, res) => {
-    const token = req.cookies.access_token;
+    // const token = req.cookies.access_token;
     console.log('Hit owned restaurants');
-    if (!token) {
-        return res.status(403).json({ message: 'Token is required' });
-    }
-    try {
-        const decoded = jwt.verify(token, 'my_key'); 
-        console.log("decoded cookie : ",decoded);
-        const owner_id = decoded.id;
+        // const decoded = jwt.verify(token, 'my_key'); 
+        // console.log("decoded cookie : ",decoded);
+        const owner_id = req.body.owner_id;
         console.log(owner_id,' found');
         const query = 'SELECT * from Restaurant WHERE Owner_id = ?';
         db.query(query, [owner_id], (err, result) => {
@@ -18,11 +14,9 @@ module.exports.getOwnedRestaurants = (req, res) => {
                 return res.status(500).json({ error: 'Database query failed', details: err.message });
             }
             if (result.length === 0) return res.status(400).json({ message: 'No restaurants owned' });
+            console.log(result);
             return res.status(200).json({ ownedRestaurants: result });
         });
-    } catch (err) {
-        return res.status(401).json({ message: 'Invalid or expired token' });
-    }
 };
 
 module.exports.AddRestaurant = (req,res) => {

@@ -5,6 +5,6 @@ const {addMenu,addMenuItem,getOwnedRestaurants} = require('../controllers/ownerC
 
 router.post('/addMenu/:id',addMenu);
 router.post('/addMenuItem/:id',addMenuItem);
-router.get('/ownedRestaurants',getOwnedRestaurants);
+router.post('/ownedRestaurants',getOwnedRestaurants);
 
 module.exports = router;

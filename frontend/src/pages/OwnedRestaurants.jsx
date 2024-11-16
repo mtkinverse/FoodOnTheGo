@@ -1,29 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Clock, MapPin, Phone, Store, AlertCircle } from 'lucide-react';
+import { useUserContext } from "../contexts/userContext";
+import { useNavigate } from "react-router-dom";
 
 const OwnedRestaurants = () => {
   const [restaurants, setRestaurants] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const {loggedIn,userData} = useUserContext();
+   const navigate = useNavigate();
 
-  useEffect(() => {
+
     const fetchRestaurants = async () => {
       try {
-        const response = axios.get('/api/ownedRestaurants', { withCredentials: true });
-        console.log(data);
-        setRestaurants(response.data.ownedRestaurants);
+        console.log(userData); // Ensure userData is defined and contains User_id
+        const response = await axios.post('/api/ownedRestaurants', { owner_id: userData.User_id });
+        console.log('Response:', response.data); // Log the response to inspect its structure
+        setRestaurants(response.data.ownedRestaurants); // Ensure this matches your backend response
         setError(null);
       } catch (err) {
+        console.error('Error:', err.response?.data); // Log detailed error info
         setError(err.response?.data?.message || 'Failed to fetch restaurants');
       } finally {
         setLoading(false);
       }
     };
-
-    fetchRestaurants();
-  }, []);
   
+  useEffect(() => {
+    if(loggedIn) fetchRestaurants();
+    else {setRestaurants([]); navigate('/')}
+  }, [loggedIn]);
+
   console.log("Restaurants: ",restaurants);
   if (loading) {
     return (
@@ -62,11 +70,11 @@ const OwnedRestaurants = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {restaurants.map((restaurant) => (
           <div 
-            key={restaurant.id} 
+            key={restaurant.Restaurant_id} 
             className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden"
           >
             <div className="bg-purple-50 p-4">
-              <h3 className="text-xl font-semibold text-purple-900">{restaurant.name}</h3>
+              <h3 className="text-xl font-semibold text-purple-900">{restaurant.Restaurant_Name}</h3>
             </div>
             
             <div className="p-6">
@@ -83,10 +91,10 @@ const OwnedRestaurants = () => {
                   </div>
                 )}
                 
-                {restaurant.opening_hours && (
+                {restaurant.OpensAt && (
                   <div className="flex items-center gap-2">
                     <Clock className="h-5 w-5 text-purple-500" />
-                    <span className="text-gray-600">{restaurant.opening_hours}</span>
+                    <span className="text-gray-600">{restaurant.OpensAT}</span>
                   </div>
                 )}
               </div>

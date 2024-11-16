@@ -9,7 +9,6 @@ const Restaurants = () => {
 
   const getRestaurants = async () => {
     try {
-      
       const response = await axios.get('/api/restaurants',{withCredentials : true}); // Ensure the correct path is used
 
       if (Array.isArray(response.data)) {
