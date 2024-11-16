@@ -100,7 +100,7 @@ const Register = () => {
                     [
                       { name: 'Customer', value: 'Customer' },
                       { name: 'Owner', value: 'Restaurant_Owner' },
-                      { name: 'Delivery', value: 'Delivery_Staff' }
+                      { name: 'Delivery', value: 'Delivery_Rider' }
                     ].map((ele) => (
                       <>
                         <label htmlFor={ele.name}>{ele.name}

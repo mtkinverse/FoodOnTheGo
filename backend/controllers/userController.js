@@ -74,10 +74,6 @@ function registerRider(req,res) {
 module.exports.registerUser = (req, res) => {
     const role = req.body.role 
 
-    if (!['Customer', 'Owner', 'Rider'].includes(role)) {
-        return res.status(400).json({ message: 'Invalid role specified' });
-    }
-
     switch (role) {
         case 'Customer':
             registerCustomer(req, res, (err) => {
@@ -85,13 +81,13 @@ module.exports.registerUser = (req, res) => {
                 return res.status(200).json({ message: 'Customer registered successfully' });
             });
             break;
-        case 'Owner':
+        case 'Restaurant_Owner':
             registerOwner(req, res, (err) => {
                 if (err) return res.status(500).json({ message: 'Registration failed for Owner', error: err.message });
                 return res.status(200).json({ message: 'Owner registered successfully' });
             });
             break;
-        case 'Rider':
+        case 'Delivery_Rider':
             registerRider(req, res, (err) => {
                 if (err) return res.status(500).json({ message: 'Registration failed for Rider', error: err.message });
                 return res.status(200).json({ message: 'Rider registered successfully' });
@@ -100,20 +96,12 @@ module.exports.registerUser = (req, res) => {
     }
 };
 
-function loginCustomer(req,res) {
-    
-}
-
 
 module.exports.loginUser = (req, res) => {
     console.log('login endpoint hit');
     const role = req.body.role;
-    var q;
-
-    if (role === 'Customer') q = 'SELECT * FROM Customer WHERE Email_address = ?';
-    else if(role === 'Owner') q = 'SELECT * FROM Restaurant_Owner WHERE Email_address = ?';
-    else if (role === 'Rider' )q = 'SELECT * FROM Delivery_Rider WHERE Email_address = ?'
-    
+    const q = `SELECT * FROM ${role} WHERE Email_address = ?`;
+  
     db.query(q, [req.body.email], (err, data) => {
         if (err) return res.status(500).json(err);
         if (data.length == 0) return res.status(500).json("User not found");
@@ -124,7 +112,7 @@ module.exports.loginUser = (req, res) => {
         
         const { Account_Password, ...other } = user;
         const token = jwt.sign(
-          { id: role === 'Customer' ? user.customer_id : role == 'Owner' ? user.owner_id : user.rider_id }, 
+          { id: role === 'Customer' ? user.customer_id : role == 'Restaurant_owner' ? user.owner_id : user.rider_id }, 
           "my_key" , { expiresIn: 60  }
         );
         res.cookie("access_token", token, {
