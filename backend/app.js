@@ -1,5 +1,5 @@
 const express = require('express');
-const cors = require('cors'); // Add this line
+const cors = require('cors'); 
 const bcrypt = require('bcrypt');
 const cookieParser = require('cookie-parser');
 

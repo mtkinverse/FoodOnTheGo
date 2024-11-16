@@ -5,7 +5,7 @@ import { createContext,useContext } from "react";
 const UserContext = createContext();
 
 const UserContextProvider = ({children}) => {
-    const host = 'http://localhost:8800';
+   // const host = 'http://localhost:8800';
     const [loggedIn,setLoggedIn] = useState(false);
     const [userData,setUserData] = useState({
         Customer_id: 0,
@@ -17,7 +17,7 @@ const UserContextProvider = ({children}) => {
     const login = recvData => {
         try {
 
-            axios.post(host + '/login', JSON.stringify({
+            axios.post('/api/login', JSON.stringify({
               email : recvData.email,
               password : recvData.password
             })
@@ -47,7 +47,7 @@ const UserContextProvider = ({children}) => {
 
     const signout = () => {
         axios
-      .post( host + '/logout',JSON.stringify(userData),{withCredentials : true})
+      .post('api/logout',JSON.stringify(userData),{withCredentials : true})
       .then(res => {
         if(res.status = 200){
           setLoggedIn(false);

@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect} from "react";
 import axios from "axios";
 import RestaurantCard from "../components/RestaurantCard";
+import { useUserContext } from "../contexts/userContext";
 
 const Restaurants = () => {
   const [restaurantData, setRestaurantData] = useState([]);
+  const {loggedIn} = useUserContext()
 
   const getRestaurants = async () => {
     try {
@@ -29,8 +31,9 @@ const Restaurants = () => {
   };
 
   useEffect(() => {
-    getRestaurants();
-  }, []);
+    if(loggedIn) getRestaurants();
+    else setRestaurantData([]);
+  }, [loggedIn]);
 
   return (
     <div className="bg-purple-50 min-h-screen py-10">

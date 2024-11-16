@@ -2,14 +2,18 @@ CREATE DATABASE online_food_system;
 
 USE online_food_system;
 
-drop table Restaurant;
+--drop table Customer;
+--drop table Menu_items;
+--drop table Menu;
+--drop table Restaurant;
+--drop table Restaurant_Owner;
 
 CREATE TABLE Customer(
    Customer_id INT AUTO_INCREMENT PRIMARY KEY,
    Customer_Name VARCHAR(100) NOT NULL,
    Email_address VARCHAR(100) NOT NULL UNIQUE,
    Account_Password VARCHAR(100) NOT NULL,
-   phone_no VARCHAR(20) NOT NULL
+   phone_no VARCHAR(20) NOT NULL UNIQUE
 );
 ALTER TABLE Customer AUTO_INCREMENT = 99190;
 
@@ -17,7 +21,10 @@ select * from Customer;
 
 CREATE TABLE Restaurant_Owner (
    Owner_id INT AUTO_INCREMENT PRIMARY KEY,
-   Owner_Name VARCHAR(100) NOT NULL
+   Owner_Name VARCHAR(100) NOT NULL,
+   Email_address VARCHAR(100) NOT NULL UNIQUE,
+   Account_Password VARCHAR(100) NOT NULL,
+   Phone_no VARCHAR(20) NOT NULL
 );
 ALTER TABLE Restaurant_Owner AUTO_INCREMENT = 1500; -- id starts from 1500
 
@@ -77,13 +84,21 @@ ALTER TABLE DeliveryAddress AUTO_INCREMENT = 23838;
 
 
 
-CREATE TABLE Delivery_Staff(
-    Staff_id INT AUTO_INCREMENT PRIMARY KEY,
-    Staff_name VARCHAR(100) DEFAULT NULL,
-    PhoneNo VARCHAR(20) NOT NULL
+CREATE TABLE Delivery_Rider(
+    Rider_id INT AUTO_INCREMENT PRIMARY KEY,
+    Rider_name VARCHAR(100) NOT NULL,
+    Email_address VARCHAR(100) NOT NULL UNIQUE,
+    Account_Password VARCHAR(100) NOT NULL,
+    Phone_No VARCHAR(20) NOT NULL,
+    BikeNo VARCHAR(20) NOT NULL,
+    Available BOOLEAN DEFAULT TRUE
 );
-ALTER TABLE Delivery_Staff AUTO_INCREMENT = 102922;
+ALTER TABLE Delivery_Rider AUTO_INCREMENT = 102922;
 
+--select * from Restaurant_Owner
+--delete from Restaurant_Owner where owner_id = 1501;
+--
+--select * from Delivery_Rider;
 
 CREATE TABLE Orders (
     Order_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -123,7 +138,7 @@ ALTER TABLE Locations ADD CONSTRAINT Restaurant_FK FOREIGN KEY(Restaurant_id) RE
 ALTER TABLE Orders ADD CONSTRAINT O_R_FK FOREIGN KEY(Restaurant_id) REFERENCES Restaurant(Restaurant_id) ON DELETE SET NULL;
 ALTER TABLE Orders ADD CONSTRAINT Review_FK FOREIGN KEY(Review_id) REFERENCES Order_Review(Review_id) ON DELETE SET NULL;
 ALTER TABLE Orders ADD CONSTRAINT Address_FK FOREIGN KEY(Address_id) REFERENCES DeliveryAddress(Address_id) ON DELETE SET NULL;
-ALTER TABLE Orders ADD CONSTRAINT delivery_id FOREIGN KEY(Delivered_by_id) REFERENCES Delivery_Staff(Staff_id) ON DELETE SET NULL;
+ALTER TABLE Orders ADD CONSTRAINT delivery_id FOREIGN KEY(Delivered_by_id) REFERENCES Delivery_Rider(Rider_id) ON DELETE SET NULL;
 
 ALTER TABLE Ordered_Items ADD CONSTRAINT Order_FK FOREIGN KEY(Order_id) REFERENCE Orders(Order_id) ON DELETE SET NULL;
 ALTER TABLE Ordered_Items ADD CONSTRAINT Item_FK FOREIGN KEY(Item_id) REFERENCES Menu_Items(Item_id) ON DELETE SET NULL;

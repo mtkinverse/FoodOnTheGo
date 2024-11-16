@@ -3,36 +3,116 @@ const db = require('../db');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-const phoneNumberPattern = /^\+92 \d{3} \d{7}$/;
-const isValidPhoneNumber = (phone) => phoneNumberPattern.test(phone);
+// const phoneNumberPattern = /^\+92 \d{3} \d{7}$/;
+// const isValidPhoneNumber = (phone) => phoneNumberPattern.test(phone);
 
-module.exports.registerUser = (req, res) => {
-    const table = req.body.role;
-    // ************** handle for different roles
-    console.log('received table : ',table);
-    
-    const q = 'SELECT * FROM Customer WHERE email_address = ?';
+function registerCustomer(req,res) {
+    console.log("Customer registration endpoint hit");
+    const q = 'SELECT * FROM Customer WHERE email_address = ? or phone_no = ?';
 
-    db.query(q, [req.body.email], (err, data) => {
+    db.query(q, [req.body.email,req.body.phoneNo], (err, data) => {
         if (err) return res.status(500).json(err);
-        if (data.length) return res.status(409).json("Account with this email already exists");
+        if (data.length) return res.status(409).json("Customer account with this email or phone number already exists");
         
         const salt = bcrypt.genSaltSync(10);
         const hash = bcrypt.hashSync(req.body.password, salt);
         
         const qInsert = "INSERT INTO Customer (Customer_name,Email_address,Account_Password,Phone_no) VALUES (?, ?, ?, ?)";
         const values = [req.body.name,req.body.email, hash,req.body.phoneNo];
-        console.log("Inserting user:", values);
+        console.log("Inserting customer:", values);
         db.query(qInsert, values, (err, data) => {
             if (err) return res.status(500).json(err);
-            return res.status(200).json('User created');
+            return res.status(200).json('Customer created');
         });
     });
 }
 
-module.exports.loginUser = (req, res) => {
-    const q = 'SELECT * FROM Customer WHERE Email_address = ?';
+
+function registerOwner(req,res) {
+    console.log("Owner registration endpoint hit");
+    const q = 'SELECT * FROM Restaurant_owner WHERE email_address = ? or phone_no = ?';
+
+    db.query(q, [req.body.email,req.body.phoneNo], (err, data) => {
+        if (err) return res.status(500).json(err);
+        if (data.length) return res.status(409).json("Owner account with this email or phone number already exists");
+        
+        const salt = bcrypt.genSaltSync(10);
+        const hash = bcrypt.hashSync(req.body.password, salt);
+        
+        const qInsert = "INSERT INTO Restaurant_owner (Owner_name,Email_address,Account_Password,Phone_no) VALUES (?, ?, ?, ?)";
+        const values = [req.body.name,req.body.email, hash,req.body.phoneNo];
+        console.log("Inserting owner:", values);
+        db.query(qInsert, values, (err, data) => {
+            if (err) return res.status(500).json(err);
+            return res.status(200).json('Owner created');
+        });
+    });
+}
+
+
+function registerRider(req,res) {
+    console.log("Delivery Rider registration endpoint hit");
+    const q = 'SELECT * FROM Delivery_Rider WHERE email_address = ? or phone_no = ?';
+
+    db.query(q, [req.body.email,req.body.phoneNo], (err, data) => {
+        if (err) return res.status(500).json(err);
+        if (data.length) return res.status(409).json("Rider account with this email or phone number already exists");
+        
+        const salt = bcrypt.genSaltSync(10);
+        const hash = bcrypt.hashSync(req.body.password, salt);
+        
+        const qInsert = "INSERT INTO Delivery_Rider (Rider_name,Email_address,Account_Password,Phone_no,BikeNo) VALUES (?, ?, ?, ? ,?)";
+        const values = [req.body.name,req.body.email, hash,req.body.phoneNo,req.body.bikeNo];
+        console.log("Inserting rider:", values);
+        db.query(qInsert, values, (err, data) => {
+            if (err) return res.status(500).json(err);
+            return res.status(200).json('Rider created');
+        });
+    });
+}
+
+module.exports.registerUser = (req, res) => {
+    const role = req.body.role 
+
+    if (!['Customer', 'Owner', 'Rider'].includes(role)) {
+        return res.status(400).json({ message: 'Invalid role specified' });
+    }
+
+    switch (role) {
+        case 'Customer':
+            registerCustomer(req, res, (err) => {
+                if (err) return res.status(500).json({ message: 'Registration failed for Customer', error: err.message });
+                return res.status(200).json({ message: 'Customer registered successfully' });
+            });
+            break;
+        case 'Owner':
+            registerOwner(req, res, (err) => {
+                if (err) return res.status(500).json({ message: 'Registration failed for Owner', error: err.message });
+                return res.status(200).json({ message: 'Owner registered successfully' });
+            });
+            break;
+        case 'Rider':
+            registerRider(req, res, (err) => {
+                if (err) return res.status(500).json({ message: 'Registration failed for Rider', error: err.message });
+                return res.status(200).json({ message: 'Rider registered successfully' });
+            });
+            break;
+    }
+};
+
+function loginCustomer(req,res) {
     
+}
+
+
+module.exports.loginUser = (req, res) => {
+    console.log('login endpoint hit');
+    const role = req.body.role;
+    var q;
+
+    if (role === 'Customer') q = 'SELECT * FROM Customer WHERE Email_address = ?';
+    else if(role === 'Owner') q = 'SELECT * FROM Restaurant_Owner WHERE Email_address = ?';
+    else if (role === 'Rider' )q = 'SELECT * FROM Delivery_Rider WHERE Email_address = ?'
     
     db.query(q, [req.body.email], (err, data) => {
         if (err) return res.status(500).json(err);
@@ -43,7 +123,10 @@ module.exports.loginUser = (req, res) => {
         if (!isPasswordValid) return res.status(401).json("Invalid password");
         
         const { Account_Password, ...other } = user;
-        const token = jwt.sign({ id: user.customer_id }, "my_key" , { expiresIn: 60  });
+        const token = jwt.sign(
+          { id: role === 'Customer' ? user.customer_id : role == 'Owner' ? user.owner_id : user.rider_id }, 
+          "my_key" , { expiresIn: 60  }
+        );
         res.cookie("access_token", token, {
             httpOnly: true
         }).json(other);
