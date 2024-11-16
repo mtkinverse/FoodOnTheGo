@@ -112,8 +112,9 @@ module.exports.loginUser = (req, res) => {
         if (!isPasswordValid) return res.status(401).json("Invalid password");
         
         const { Account_Password, ...other } = user;
+        console.log(other);
         const token = jwt.sign(
-          { id: role === 'Customer' ? user.customer_id : role == 'Restaurant_owner' ? user.owner_id : user.rider_id }, 
+          { id: role === 'Customer' ? user.Customer_id : role == 'Restaurant_owner' ? user.Owner_id : user.Rider_id }, 
           "my_key" , { expiresIn: 60  }
         );
         res.status(200).cookie("access_token", token, {
