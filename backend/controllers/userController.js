@@ -141,6 +141,4 @@ module.exports.logoutUser = (req,res) =>{
 
 }
 
-module.exports.AddToCart = (req,res) => {
-    const q = '';
-}
+

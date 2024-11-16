@@ -39,7 +39,6 @@ const Restaurants = () => {
     <div className="bg-purple-50 min-h-screen py-10">
       <h1 className="text-5xl font-bold text-center text-purple-700 mb-12">Explore Restaurants</h1>
 
-      {/* Loading or No Data State */}
       {restaurantData.length === 0 ? (
         <p className="text-center text-xl text-gray-600">No restaurants found. Please check back later.</p>
       ) : (

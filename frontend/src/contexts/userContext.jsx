@@ -11,7 +11,8 @@ const UserContextProvider = ({children}) => {
         User_id: 0,
         User_name: "",
         Email_address: "",
-        phone_no: ""
+        phone_no: "",
+        role: ""
     })
 
     const login = async (recvData) => {
@@ -43,6 +44,7 @@ const UserContextProvider = ({children}) => {
               User_name: res.data.Customer_Name,
               Email_address: res.data.Email_address,
               phone_no: res.data.phone_no,
+              role : res.data.role
             };
           } else if (res.data.role === 'Delivery_Rider') {
             userData = {
@@ -50,6 +52,7 @@ const UserContextProvider = ({children}) => {
               User_name: res.data.Rider_name,
               Email_address: res.data.Email_address,
               phone_no: res.data.phone_no,
+              role : res.data.role
             };
           } else if (res.data.role === 'Restaurant_Owner') {
             userData = {
@@ -57,6 +60,7 @@ const UserContextProvider = ({children}) => {
               User_name: res.data.Owner_Name,
               Email_address: res.data.Email_address,
               phone_no: res.data.phone_no,
+              role : res.data.role
             };
           } else {
             throw new Error('Unknown role');

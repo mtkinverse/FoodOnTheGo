@@ -1,4 +1,52 @@
 const db = require('../db');
+const jwt = require('jsonwebtoken');
+
+module.exports.getOwnedRestaurants = (req, res) => {
+    const token = req.cookies.token;
+
+    if (!token) {
+        return res.status(403).json({ message: 'Token is required' });
+    }
+    try {
+        const decoded = jwt.verify(token, 'my_key'); 
+        const owner_id = decoded.owner_id;
+
+        const query = 'SELECT * from Restaurant WHERE Owner_id = ?';
+        db.query(query, [owner_id], (err, result) => {
+            if (err) {
+                return res.status(500).json({ error: 'Database query failed', details: err.message });
+            }
+            if (result.length === 0) return res.status(400).json({ message: 'No restaurants owned' });
+            return res.status(200).json({ ownedRestaurants: result });
+        });
+    } catch (err) {
+        return res.status(401).json({ message: 'Invalid or expired token' });
+    }
+};
+
+module.exports.AddRestaurant = (req,res) => {
+    const token = req.cookies.token;
+    
+    if (!token) {
+        return res.status(403).json({ message: 'Token is required' });
+    }
+    try {
+        const decoded = jwt.verify(token, 'my_key'); 
+        const owner_id = decoded.id;
+        
+        const {Restaurant_Name,OpensAt,ClosesAt,Restaurant_Image} = req.body;
+
+        const query = 'INSERT INTO Restaurant (Restaurant_Name,OpensAt,ClosesAt,Restaurant_image,Owner_id) VALUES (?,?,?,?,?)';
+        db.query(query, [Restaurant_Name,OpensAt,ClosesAt,Restaurant_Image,owner_id], (err, result) => {
+            if (err) {
+                return res.status(500).json({ error: 'Database query failed', details: err.message });
+            }
+            return res.status(200).json({ restaurantId : result.insertId });
+        });
+    } catch (err) {
+        return res.status(401).json({ message: 'Invalid or expired token' });
+    }
+}
 
 module.exports.addMenu = (req, res) => {
     const restaurant_id = req.params.id;
