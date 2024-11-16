@@ -104,7 +104,7 @@ const OwnedRestaurants = () => {
                   className="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded-md transition-colors"
                   onClick={() => {/* Add your manage restaurant logic here */}}
                 >
-                  Manage Restaurant
+                  Manage Restaurant (update menu)
                 </button>
               </div>
             </div>
