@@ -6,7 +6,7 @@ module.exports.getOwnedRestaurants = (req, res) => {
     console.log('Hit owned restaurants');
         // const decoded = jwt.verify(token, 'my_key'); 
         // console.log("decoded cookie : ",decoded);
-        const owner_id = req.body.owner_id;
+        const {owner_id} = req.query;
         console.log(owner_id,' found');
         const query = 'SELECT * from Restaurant WHERE Owner_id = ?';
         db.query(query, [owner_id], (err, result) => {
@@ -19,29 +19,25 @@ module.exports.getOwnedRestaurants = (req, res) => {
         });
 };
 
-module.exports.AddRestaurant = (req,res) => {
-    const token = req.cookies.access_token;
-    
-    if (!token) {
-        return res.status(403).json({ message: 'Token is required' });
-    }
-    try {
-        const decoded = jwt.verify(token, 'my_key'); 
-        const owner_id = decoded.id;
-        
-        const {Restaurant_Name,OpensAt,ClosesAt,Restaurant_Image} = req.body;
-
-        const query = 'INSERT INTO Restaurant (Restaurant_Name,OpensAt,ClosesAt,Restaurant_image,Owner_id) VALUES (?,?,?,?,?)';
-        db.query(query, [Restaurant_Name,OpensAt,ClosesAt,Restaurant_Image,owner_id], (err, result) => {
-            if (err) {
-                return res.status(500).json({ error: 'Database query failed', details: err.message });
-            }
-            return res.status(200).json({ restaurantId : result.insertId });
-        });
-    } catch (err) {
-        return res.status(401).json({ message: 'Invalid or expired token' });
-    }
-}
+module.exports.AddRestaurant = (req, res) => {
+    const { Restaurant_name, OpensAt, ClosesAt,Owner_id } = req.body;
+    console.log('Add Restaurant hit');
+    const Restaurant_Image = `http://localhost:8800/images/${req.file.filename}`;
+    console.log(req.body);
+    const query = `
+      INSERT INTO Restaurant 
+      (Restaurant_Name, OpensAt, ClosesAt, Restaurant_Image, Owner_id) 
+      VALUES (?, ?, ?, ?, ?)`;
+    console.log(Restaurant_Image);
+    db.query(query, [Restaurant_name, OpensAt, ClosesAt, Restaurant_Image, Owner_id], (err, result) => {
+      if (err) {
+        console.log('err');
+        return res.status(500).json({ error: "Database query failed", details: err.message });
+      }
+      console.log(result);
+      return res.status(200).json({ restaurantId: result.insertId });
+    });
+  };
 
 module.exports.addMenu = (req, res) => {
     const restaurant_id = req.params.id;

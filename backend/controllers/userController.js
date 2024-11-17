@@ -102,29 +102,47 @@ module.exports.loginUser = (req, res) => {
     const role = req.body.role;
     console.log(req.body.role);
     const q = `SELECT * FROM ${role} WHERE Email_address = ?`;
-  
+
     db.query(q, [req.body.email], (err, data) => {
         if (err) return res.status(500).json(err);
-        if (data.length == 0) return res.status(500).json("User not found");
-        
+
+        if (data.length == 0) {
+            // Return an error for invalid email
+            console.log("email error set");
+            return res.status(400).json({
+                errors: { email: "Invalid email address" }
+            });
+        }
+         
         const user = data[0];
         const isPasswordValid = bcrypt.compareSync(req.body.password, user.Account_Password);
-        if (!isPasswordValid) return res.status(401).json("Invalid password");
         
+        if (!isPasswordValid) {
+            // Return an error for invalid password
+            console.log("password error set");
+            return res.status(401).json({
+                errors: { password: "Incorrect password" }
+            });
+        }
+
         const { Account_Password, ...other } = user;
         console.log(other);
+
         const token = jwt.sign(
-          { id: role === 'Customer' ? user.Customer_id : role == 'Restaurant_owner' ? user.Owner_id : user.Rider_id }, 
-          "my_key" , { expiresIn: 600  }
+            { id: role === 'Customer' ? user.Customer_id : role == 'Restaurant_owner' ? user.Owner_id : user.Rider_id }, 
+            "my_key", 
+            { expiresIn: 600 }
         );
+
         res.status(200).cookie("access_token", token, {
             httpOnly: true
         }).json({
             ...other,
-            role:role
+            role: role
         });
     });
 };
+
 
 module.exports.logoutUser = (req,res) =>{
     

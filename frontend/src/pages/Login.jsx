@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import axios from "axios";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Mail, Lock, ChevronRight } from "lucide-react";
 import { useUserContext } from "../contexts/userContext";
@@ -9,13 +8,20 @@ const Login = () => {
   const [values, setValues] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { userData, login } = useUserContext();
-  const [role, changeRole] = useState("customer");
+  const { userData, login, loggedIn } = useUserContext();
+  const [role, changeRole] = useState("Customer");
+  const [errors, setErrors] = useState({ email: "", password: "" });
 
-  console.log("userCnetext in login ", useUserContext());
+  useEffect(() => {
+    if (loggedIn && userData?.User_name) {
+      navigate("/");
+    }
+  }, [loggedIn, userData, navigate]);
 
   const handleChange = (e) => {
     setValues((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    // Clear errors when user starts typing
+    setErrors((prev) => ({ ...prev, [e.target.name]: "" }));
   };
 
   const handleSubmit = async (event) => {
@@ -25,17 +31,22 @@ const Login = () => {
       const sendVal = {
         email: values.email,
         password: values.password,
-        role: role,
+        role,
       };
-      console.log("Sending ",sendVal );
-      await login(sendVal);
-      alert(`Welcome, ${userData.User_name}`);
+      console.log("Sending ", sendVal);
+      setErrors({ email: "", password: "" });
+      const response = await login(sendVal);
+      if (!loggedIn) {
+        setValues({ email: "", password: "" });
+      }
     } catch (err) {
       console.error(err.response?.data || err.message);
-      // Add error handling here (e.g., show error message to user)
+      // Set errors from backend response
+      if (err.response?.data?.errors) {
+        setErrors(err.response.data.errors);
+      }
     } finally {
       setIsLoading(false);
-      navigate("/");
     }
   };
 
@@ -49,10 +60,7 @@ const Login = () => {
             </h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium text-purple-700 mb-1"
-                >
+                <label htmlFor="email" className="block text-sm font-medium text-purple-700 mb-1">
                   Email Address
                 </label>
                 <div className="relative">
@@ -63,21 +71,20 @@ const Login = () => {
                     name="email"
                     value={values.email}
                     onChange={handleChange}
-                    className="w-full pl-10 pr-4 py-3 rounded-lg bg-purple-100 border border-purple-300 text-purple-700 placeholder-purple-500 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200"
+                    className={`w-full pl-10 pr-4 py-3 rounded-lg bg-purple-100 border ${
+                      errors.email ? 'border-red-500' : 'border-purple-300'
+                    } text-purple-700 placeholder-purple-500 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200`}
                     placeholder="you@example.com"
                   />
-                  <Mail
-                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-purple-500"
-                    size={18}
-                  />
+                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-purple-500" size={18} />
                 </div>
+                {errors.email && (
+                  <p className="mt-1 text-sm text-red-600"> {errors.email}</p>
+                )}
               </div>
 
               <div>
-                <label
-                  htmlFor="password"
-                  className="block text-sm font-medium text-purple-700 mb-1"
-                >
+                <label htmlFor="password" className="block text-sm font-medium text-purple-700 mb-1">
                   Password
                 </label>
                 <div className="relative">
@@ -88,13 +95,12 @@ const Login = () => {
                     name="password"
                     value={values.password}
                     onChange={handleChange}
-                    className="w-full pl-10 pr-10 py-3 rounded-lg bg-purple-100 border border-purple-300 text-purple-700 placeholder-purple-500 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200"
+                    className={`w-full pl-10 pr-10 py-3 rounded-lg bg-purple-100 border ${
+                      errors.password ? 'border-red-500' : 'border-purple-300'
+                    } text-purple-700 placeholder-purple-500 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200`}
                     placeholder="Enter your password"
                   />
-                  <Lock
-                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-purple-500"
-                    size={18}
-                  />
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-purple-500" size={18} />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
@@ -103,12 +109,13 @@ const Login = () => {
                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
                 </div>
+                {errors.password && (
+                  <p className="mt-1 text-sm text-red-600">{errors.password}</p>
+                )}
               </div>
+
               <div className="relative">
-                <label
-                  htmlFor="role"
-                  className="block text-sm font-medium text-purple-700 mb-1"
-                >
+                <label htmlFor="role" className="block text-sm font-medium text-purple-700 mb-1">
                   Role
                 </label>
                 <select
@@ -116,7 +123,7 @@ const Login = () => {
                   name="role"
                   value={role}
                   onChange={(e) => changeRole(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 rounded-lg bg-white bg-opacity-20 border border-white border-opacity-30 placeholder-opacity-70 focus:ring-2 focus:ring-white focus:border-transparent transition duration-200"
+                  className="w-full pl-10 pr-4 py-3 rounded-lg bg-purple-100 border border-purple-300 text-purple-700 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200"
                 >
                   <option value="Customer">Customer</option>
                   <option value="Restaurant_Owner">Restaurant Owner</option>
@@ -131,10 +138,7 @@ const Login = () => {
                   disabled={isLoading}
                 >
                   {isLoading ? (
-                    <svg
-                      className="animate-spin h-5 w-5 mr-3 text-white"
-                      viewBox="0 0 24 24"
-                    >
+                    <svg className="animate-spin h-5 w-5 mr-3 text-white" viewBox="0 0 24 24">
                       <circle
                         className="opacity-25"
                         cx="12"
@@ -161,10 +165,7 @@ const Login = () => {
 
             <p className="mt-8 text-center text-sm text-purple-700 text-opacity-80">
               Don't have an account?{" "}
-              <a
-                href="/register"
-                className="font-medium text-purple-700 hover:text-opacity-90 underline"
-              >
+              <a href="/register" className="font-medium text-purple-700 hover:text-opacity-90 underline">
                 Sign up
               </a>
             </p>

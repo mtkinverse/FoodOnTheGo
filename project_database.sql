@@ -36,7 +36,7 @@ CREATE TABLE Restaurant (
     OpensAt TIME NOT NULL,
     ClosesAt TIME NOT NULL,
     Restaurant_Image Varchar(50) NOT NULL,
-    Rating DECIMAL(2,1) DEFAULT NULL, -- ratings like 4.5,4.7
+    Rating DECIMAL(2,1) DEFAULT 5, -- ratings like 4.5,4.7
     Owner_id INT,
     Menu_id INT DEFAULT NULL -- resta urant created,can be added later
 );
@@ -154,9 +154,10 @@ INSERT INTO Restaurant (Restaurant_name,opensAt,closesAt,restaurant_image,rating
 INSERT INTO Restaurant (Restaurant_name,opensAt,closesAt,restaurant_image,rating,owner_id ) VALUES ('Burger O Clock', '1:00:00', '02:00:00', 'http://localhost:8800/images/burgerclock.jpg', 4.5, 1500);
 INSERT INTO Restaurant (Restaurant_name,opensAt,closesAt,restaurant_image,rating,owner_id ) VALUES ('Aussie Burger', '1:00:00', '02:00:00', '/images/aussie.jfif', 4.7, 1500);
 
-
+drop table Restaurant;
 select * from Restaurant;
 
+delete from restaurant where owner_id = 6501;
 select m.item_id,m.dish_name,r.restaurant_name from menu_items m 
 join restaurant r on r.menu_id = m.menu_id
 where r.restaurant_id = 6500;
