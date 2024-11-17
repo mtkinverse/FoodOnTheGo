@@ -40,14 +40,12 @@ const AddRestaurantPopup = ({ isOpen, onClose,fetchRestaurants}) => {
     formData.append("Restaurant_image", formValues.Restaurant_image);
     formData.append("Owner_id", userData.User_id);
 
-    // Example: Sending form data to the backend using axios
     axios
       .post("/api/addRestaurant", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       })
       .then((response) => {
         console.log("Restaurant added:", response.data);
-        // Reset the form
         setFormValues({
           Restaurant_name: "",
           OpensAt: "",
@@ -130,7 +128,7 @@ const AddRestaurantPopup = ({ isOpen, onClose,fetchRestaurants}) => {
               name="Restaurant_image"
               onChange={handleChange}
               className="w-full border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-              accept="image/*" // Restrict to image files only
+              accept="image/*"
               required
             />
           </div>
