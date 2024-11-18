@@ -38,7 +38,7 @@ const UserContextProvider = ({ children }) => {
         let userData;
 
         // Check the role and adjust the destructuring accordingly
-        if (res.data.role === "customer") {
+        if (res.data.role === "Customer") {
           userData = {
             User_id: res.data.Customer_id,
             User_name: res.data.Customer_Name,
@@ -86,8 +86,8 @@ const UserContextProvider = ({ children }) => {
         if ((res.status = 200)) {
           setLoggedIn(false);
           console.log("uC: signedout");
-          alert("user logout successful");
-          //   navigate('/');
+          // alert("user logout successful");
+          // navigate('/');
         }
       })
       .catch((err) => {

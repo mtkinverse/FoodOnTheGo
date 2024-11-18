@@ -1,6 +1,6 @@
 import React from 'react';
-import { FaStar, FaClock, FaUtensils } from 'react-icons/fa';
 import { useUserContext } from '../contexts/userContext';
+import { Clock, Star, Utensils } from 'lucide-react';
 
 const RestaurantCard = ({ restaurant }) => {
   const {
@@ -11,43 +11,67 @@ const RestaurantCard = ({ restaurant }) => {
     Rating,
   } = restaurant;
 
-  const {loggedIn} = useUserContext();
-  
+  const { loggedIn } = useUserContext();
+
+  const isCurrentlyOpen = () => {
+    // This is a placeholder function - you can implement actual logic
+    return true;
+  };
+
   return (
-    <div className="restaurant-card bg-white shadow-lg rounded-lg overflow-hidden transform transition hover:scale-105 duration-300">
-      {/* Restaurant Image */}
-      <img
-        src={Restaurant_Image}
-        alt={Restaurant_Name}
-        className="w-full h-64 object-cover rounded-t-lg"
-      />
-      <div className="p-5">
-        {/* Restaurant Name */}
-        <h2 className="text-2xl font-semibold text-purple-600 mb-3">{Restaurant_Name}</h2>
+    <div className="group relative bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 max-w-sm">
+      <div className="absolute top-4 right-4 z-10">
+        <span className={`px-3 py-1 rounded-full text-sm font-medium text-white
+          ${isCurrentlyOpen() ? 'bg-green-500' : 'bg-red-500'}`}>
+          {isCurrentlyOpen() ? 'Open Now' : 'Closed'}
+        </span>
+      </div>
 
-        {/* Opening Hours */}
-        <div className="flex items-center text-gray-700 mt-2">
-          <FaClock className="mr-2 text-purple-500" />
-          <p className="font-medium">
-            Open: <span className="font-semibold">{OpensAt}</span> -{' '}
-            <span className="font-semibold">{ClosesAt}</span>
-          </p>
-        </div>
+      <div className="relative h-48 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-[1]" />
+        <img
+          src={Restaurant_Image}
+          alt={Restaurant_Name}
+          className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-300"
+        />
 
-        {/* Rating */}
-        <div className="flex items-center mt-2">
-          <FaStar className="text-yellow-500 mr-1" />
-          <p className="text-gray-700 font-medium">{Rating}</p>
+        <div className="absolute bottom-4 left-4 z-10 flex items-center space-x-1 bg-white/90 px-2 py-1 rounded-full">
+          <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+          <span className="text-sm font-semibold">{Rating}</span>
         </div>
       </div>
 
-      {/* View Menu Button */}
-        <div className="p-4 bg-purple-600 text-white text-center rounded-b-lg hover:bg-purple-700 cursor-pointer transition duration-300">
-        <button className="w-full font-semibold flex items-center justify-center space-x-2" disabled={!loggedIn}>
-          <FaUtensils className="mr-2" />
-          <span>View Menu</span>
-        </button>
+      <div className="p-5 space-y-4">
+        <h2 className="text-xl font-bold text-gray-800 line-clamp-1">
+          {Restaurant_Name}
+        </h2>
+
+        <div className="flex items-center text-gray-600 space-x-1">
+          <Clock className="w-4 h-4" />
+          <span className="text-sm ml-2">
+            {OpensAt} - {ClosesAt}
+          </span>
         </div>
+
+        <div className="flex items-center justify-between text-sm text-gray-500">
+          <span className="inline-flex items-center">
+            <span className="w-2 h-2 rounded-full bg-green-500 mr-2"></span>
+            Available for delivery
+          </span>
+        </div>
+
+        <button
+          disabled={!loggedIn}
+          className={`w-full py-3 px-4 flex items-center justify-center space-x-2 rounded-lg transition-colors duration-200
+            ${loggedIn 
+              ? 'bg-purple-600 hover:bg-purple-700 text-white' 
+              : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+            }`}
+        >
+          <Utensils className="w-4 h-4" />
+          <span className="font-medium">View Menu</span>
+        </button>
+      </div>
     </div>
   );
 };

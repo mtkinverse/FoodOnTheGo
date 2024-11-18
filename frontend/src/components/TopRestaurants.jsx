@@ -1,12 +1,36 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { FaArrowRight, FaArrowLeft } from "react-icons/fa";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import RestaurantCard from "./RestaurantCard";
 
 const TopRestaurants = () => {
   const [restaurantData, setRestaurantData] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const itemsToShow = 3;
+  
+  // Responsive items to show based on screen size
+  const getItemsToShow = () => {
+    if (typeof window !== 'undefined') {
+      if (window.innerWidth < 640) return 1;      // Mobile
+      if (window.innerWidth < 1024) return 2;     // Tablet
+      return 3;                                   // Desktop
+    }
+    return 3;
+  };
+
+  const [itemsToShow, setItemsToShow] = useState(getItemsToShow());
+
+  useEffect(() => {
+    const handleResize = () => {
+      setItemsToShow(getItemsToShow());
+      // Adjust currentIndex if needed when screen size changes
+      setCurrentIndex(prev => 
+        Math.min(prev, Math.max(0, restaurantData.length - getItemsToShow()))
+      );
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [restaurantData.length]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -37,56 +61,94 @@ const TopRestaurants = () => {
     setCurrentIndex((prevIndex) => Math.max(prevIndex - 1, 0));
   };
 
-  const visibleRestaurants = restaurantData.slice(currentIndex, currentIndex + itemsToShow);
+  const visibleRestaurants = restaurantData.slice(
+    currentIndex,
+    currentIndex + itemsToShow
+  );
 
   return (
-    <div className="relative w-full max-w-6xl mx-auto py-10">
-      {/* Carousel Wrapper */}
-      <div className="flex items-center justify-between space-x-4">
-
-        {/* Left Arrow Button */}
-        <button
-          onClick={handlePrev}
-          className={`text-white p-4 rounded-full bg-purple-600 hover:bg-purple-700 transition duration-300 ${
-            currentIndex === 0 ? 'opacity-50 cursor-not-allowed' : ''
-          }`}
-          disabled={currentIndex === 0}
-        >
-          <FaArrowLeft size={24} />
-        </button>
-
-        {/* Carousel Items */}
-        <div className="flex overflow-hidden w-full">
-          <div className="flex space-x-4 transition-all duration-500 ease-in-out transform">
-            {visibleRestaurants.map((restaurant) => (
-              <div key={restaurant.Restaurant_id} className="w-full sm:w-1/3 lg:w-1/4 xl:w-1/3">
-                <RestaurantCard restaurant={restaurant} />
-              </div>
+    <div className="relative w-full max-w-7xl mx-auto px-4 py-8">
+      {/* Title and Navigation Controls */}
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-2xl font-bold text-gray-800">Top Restaurants</h2>
+        <div className="flex items-center space-x-2">
+          {/* Navigation Dots */}
+          <div className="hidden md:flex items-center space-x-1 mr-4">
+            {Array.from({ length: Math.ceil(restaurantData.length / itemsToShow) }).map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setCurrentIndex(idx * itemsToShow)}
+                className={`w-2 h-2 rounded-full transition-all duration-300 
+                  ${currentIndex / itemsToShow === idx 
+                    ? 'w-6 bg-indigo-600' 
+                    : 'bg-gray-300 hover:bg-gray-400'}`}
+                aria-label={`Go to slide ${idx + 1}`}
+              />
             ))}
           </div>
+          
+          {/* Arrow Controls */}
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={handlePrev}
+              disabled={currentIndex === 0}
+              className={`p-2 rounded-full border transition-all duration-300
+                ${currentIndex === 0
+                  ? 'border-gray-200 text-gray-300 cursor-not-allowed'
+                  : 'border-gray-300 text-gray-600 hover:border-indigo-600 hover:text-indigo-600'
+                }`}
+              aria-label="Previous slide"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <button
+              onClick={handleNext}
+              disabled={currentIndex >= restaurantData.length - itemsToShow}
+              className={`p-2 rounded-full border transition-all duration-300
+                ${currentIndex >= restaurantData.length - itemsToShow
+                  ? 'border-gray-200 text-gray-300 cursor-not-allowed'
+                  : 'border-gray-300 text-gray-600 hover:border-indigo-600 hover:text-indigo-600'
+                }`}
+              aria-label="Next slide"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
+          </div>
         </div>
-
-        {/* Right Arrow Button */}
-        <button
-          onClick={handleNext}
-          className={`text-white p-4 rounded-full bg-purple-600 hover:bg-purple-700 transition duration-300 ${
-            currentIndex >= restaurantData.length - itemsToShow ? 'opacity-50 cursor-not-allowed' : ''
-          }`}
-          disabled={currentIndex >= restaurantData.length - itemsToShow}
-        >
-          <FaArrowRight size={24} />
-        </button>
       </div>
 
-      {/* Carousel Navigation */}
-      <div className="mt-4 flex justify-center space-x-2">
-        {restaurantData.map((_, idx) => (
+      {/* Carousel Container */}
+      <div className="relative overflow-hidden">
+        <div 
+          className="flex transition-transform duration-500 ease-out"
+          style={{ 
+            transform: `translateX(-${currentIndex * (100 / itemsToShow)}%)`,
+            width: `${(restaurantData.length / itemsToShow) * 100}%`
+          }}
+        >
+          {restaurantData.map((restaurant) => (
+            <div
+              key={restaurant.Restaurant_id}
+              className="px-2"
+              style={{ width: `${100 / restaurantData.length}%` }}
+            >
+              <RestaurantCard restaurant={restaurant} />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Mobile Navigation Dots */}
+      <div className="mt-6 flex md:hidden justify-center space-x-1">
+        {Array.from({ length: Math.ceil(restaurantData.length / itemsToShow) }).map((_, idx) => (
           <button
             key={idx}
-            onClick={() => setCurrentIndex(idx)}
-            className={`w-2.5 h-2.5 bg-purple-600 rounded-full ${
-              currentIndex === idx ? 'bg-purple-900' : 'opacity-50'
-            }`}
+            onClick={() => setCurrentIndex(idx * itemsToShow)}
+            className={`w-2 h-2 rounded-full transition-all duration-300 
+              ${currentIndex / itemsToShow === idx 
+                ? 'w-6 bg-indigo-600' 
+                : 'bg-gray-300 hover:bg-gray-400'}`}
+            aria-label={`Go to slide ${idx + 1}`}
           />
         ))}
       </div>

@@ -42,7 +42,7 @@ const Register = () => {
       });
 
       console.log(res.data);
-      navigate('/');
+      navigate('/login');
 
     } catch (err) {
       console.error(err.response?.data || err.message);

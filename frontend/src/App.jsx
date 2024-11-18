@@ -9,6 +9,7 @@ import Footer from './components/Footer';
 import OwnedRestaurants from './pages/OwnedRestaurants';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
+import ManageRestaurant from './components/ManageRestaurant';
 // const router = createBrowserRouter([
 //    {
 //        path: "/",
@@ -46,6 +47,7 @@ const router = createBrowserRouter(
        <Route path='login' element={<Login />} />
        <Route path='restaurants' element={<Restaurants />} />
        <Route path='ownedRestaurants' element = {<OwnedRestaurants/>}/>
+       {/* <Route path= 'manageRestaurant/:id' element = {<ManageRestaurant/>} /> */}
      </Route>
    ),
  );
