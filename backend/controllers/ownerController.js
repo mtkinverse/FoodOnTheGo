@@ -3,10 +3,7 @@ const path = require('path');
 const fs = require('fs');
 
 module.exports.getOwnedRestaurants = (req, res) => {
-    // const token = req.cookies.access_token;
     console.log('Hit owned restaurants');
-        // const decoded = jwt.verify(token, 'my_key'); 
-        // console.log("decoded cookie : ",decoded);
         const {owner_id} = req.query;
         console.log(owner_id,' found');
         const query = 'SELECT * from Restaurant WHERE Owner_id = ?';
@@ -16,8 +13,6 @@ module.exports.getOwnedRestaurants = (req, res) => {
             }
             if (result.length === 0) return res.status(400).json({ message: 'No restaurants owned' });
             console.log(result);
-            const num_loc_query = 'SELECT Count(location_id) from locations where Restaurant_id = ?';
-            db.query(num_loc_query,[])
             return res.status(200).json({ ownedRestaurants: result });
         });
 };
