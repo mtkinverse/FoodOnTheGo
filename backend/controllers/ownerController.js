@@ -242,3 +242,19 @@ module.exports.getLocations = (req,res) => {
         return res.status(200).json(result);
     });
 }
+
+module.exports.deleteItem = (req,res) => {
+
+}
+
+module.exports.updateItem = (req,res) => {
+
+}
+
+module.exports.updateLocation = (req,res) => {
+
+}
+
+module.exports.deleteLocation = (req,res) => {
+    
+}
