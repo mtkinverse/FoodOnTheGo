@@ -20,7 +20,6 @@ const Login = () => {
 
   const handleChange = (e) => {
     setValues((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-    // Clear errors when user starts typing
     setErrors((prev) => ({ ...prev, [e.target.name]: "" }));
   };
 
@@ -41,7 +40,6 @@ const Login = () => {
       }
     } catch (err) {
       console.error(err.response?.data || err.message);
-      // Set errors from backend response
       if (err.response?.data?.errors) {
         setErrors(err.response.data.errors);
       }
@@ -51,144 +49,122 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-700 via-purple-500 to-purple-500 flex flex-col">
-      <main className="flex-grow container mx-auto px-4 py-16 flex items-center justify-center">
-        <div className="flex flex-col md:flex-row bg-white rounded-lg shadow-lg overflow-hidden w-full max-w-4xl">
-          <div className="w-full md:w-1/2 p-8 lg:p-12">
-            <h2 className="text-4xl font-bold text-purple-700 mb-8">
-              Welcome Back
-            </h2>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-purple-700 mb-1">
-                  Email Address
-                </label>
-                <div className="relative">
-                  <input
-                    required
-                    id="email"
-                    type="email"
-                    name="email"
-                    value={values.email}
-                    onChange={handleChange}
-                    className={`w-full pl-10 pr-4 py-3 rounded-lg bg-purple-100 border ${
-                      errors.email ? 'border-red-500' : 'border-purple-300'
-                    } text-purple-700 placeholder-purple-500 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200`}
-                    placeholder="you@example.com"
-                  />
-                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-purple-500" size={18} />
-                </div>
-                {errors.email && (
-                  <p className="mt-1 text-sm text-red-600"> {errors.email}</p>
-                )}
-              </div>
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12">
+        <div className="max-w-md w-full space-y-8 bg-white rounded-2xl shadow-xl p-8">
+          <div className="text-center">
+            <h2 className="text-3xl font-extrabold text-purple-600">Welcome back</h2>
+            <p className="mt-2 text-sm text-gray-600">
+              Sign in to access your account
+            </p>
+          </div>
 
-              <div>
-                <label htmlFor="password" className="block text-sm font-medium text-purple-700 mb-1">
-                  Password
-                </label>
-                <div className="relative">
-                  <input
-                    required
-                    id="password"
-                    type={showPassword ? "text" : "password"}
-                    name="password"
-                    value={values.password}
-                    onChange={handleChange}
-                    className={`w-full pl-10 pr-10 py-3 rounded-lg bg-purple-100 border ${
-                      errors.password ? 'border-red-500' : 'border-purple-300'
-                    } text-purple-700 placeholder-purple-500 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200`}
-                    placeholder="Enter your password"
-                  />
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-purple-500" size={18} />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-purple-500 hover:text-purple-700 transition duration-200"
-                  >
-                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                  </button>
-                </div>
-                {errors.password && (
-                  <p className="mt-1 text-sm text-red-600">{errors.password}</p>
-                )}
-              </div>
-
+          <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+            {/* Email Field */}
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                Email Address
+              </label>
               <div className="relative">
-                <label htmlFor="role" className="block text-sm font-medium text-purple-700 mb-1">
-                  Role
-                </label>
+                <input
+                  required
+                  id="email"
+                  type="email"
+                  name="email"
+                  value={values.email}
+                  onChange={handleChange}
+                  className={`appearance-none relative block w-full px-5 py-2 pl-10 pr-3 border ${
+                    errors.email ? 'border-red-500' : 'border-gray-300'
+                  } placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm`}
+                  placeholder="you@example.com"
+                />
+                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+              </div>
+              {errors.email && (
+                <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+              )}
+            </div>
+
+            {/* Password Field */}
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                Password
+              </label>
+              <div className="relative">
+                <input
+                  required
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  value={values.password}
+                  onChange={handleChange}
+                  className={`appearance-none relative block w-full px-5 py-2 pl-10 border ${
+                    errors.password ? 'border-red-500' : 'border-gray-300'
+                  } placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm`}
+                  placeholder="Enter your password"
+                />
+                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
+              {errors.password && (
+                <p className="mt-1 text-sm text-red-600">{errors.password}</p>
+              )}
+            </div>
+
+            {/* Role Selection */}
+            <div>
+              <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-1">
+                Role
+              </label>
+              <div className="relative">
                 <select
                   id="role"
                   name="role"
                   value={role}
                   onChange={(e) => changeRole(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 rounded-lg bg-purple-100 border border-purple-300 text-purple-700 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200"
+                  className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm"
                 >
                   <option value="Customer">Customer</option>
                   <option value="Restaurant_Owner">Restaurant Owner</option>
                   <option value="Delivery_Rider">Delivery Rider</option>
                 </select>
-              </div>
-
-              <div>
-                <button
-                  type="submit"
-                  className="w-full bg-purple-700 text-white rounded-lg px-4 py-3 font-medium hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition duration-200 flex items-center justify-center"
-                  disabled={isLoading}
-                >
-                  {isLoading ? (
-                    <svg className="animate-spin h-5 w-5 mr-3 text-white" viewBox="0 0 24 24">
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      />
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      />
-                    </svg>
-                  ) : (
-                    <>
-                      Log In
-                      <ChevronRight className="ml-2" />
-                    </>
-                  )}
-                </button>
-              </div>
-            </form>
-
-            <p className="mt-8 text-center text-sm text-purple-700 text-opacity-80">
-              Don't have an account?{" "}
-              <a href="/register" className="font-medium text-purple-700 hover:text-opacity-90 underline">
-                Sign up
-              </a>
-            </p>
-          </div>
-
-          <div
-            className="hidden md:block w-1/2 bg-cover bg-center relative overflow-hidden"
-            style={{ backgroundImage: "url('/images/home.png')" }}
-          >
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-700 via-purple-500 to-purple-500 opacity-60"></div>
-            <div className="relative h-full flex items-center">
-              <div className="px-12 py-8">
-                <h3 className="text-4xl font-bold text-white mb-4">
-                  Discover Amazing Flavors
-                </h3>
-                <p className="text-lg text-white opacity-90">
-                  Log in to explore our delicious menu and exclusive offers.
-                </p>
+                <ChevronRight className="absolute right-3 top-1/2 transform -translate-y-1/2 rotate-90 text-gray-400" size={16} />
               </div>
             </div>
+
+            {/* Submit Button */}
+            <div>
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isLoading ? (
+                  <svg className="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                  </svg>
+                ) : (
+                  'Sign in'
+                )}
+              </button>
+            </div>
+          </form>
+
+          <div className="text-sm text-center">
+            <span className="text-gray-600">Don't have an account? </span>
+            <a href="/register" className="font-medium text-purple-600 hover:text-purple-500">
+              Sign up
+            </a>
           </div>
         </div>
-      </main>
+      </div>
     </div>
   );
 };

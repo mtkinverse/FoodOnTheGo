@@ -28,10 +28,18 @@ const Navbar = () => {
     { label: 'About Us', path: '/about' },
     { label: 'Contact', path: '/contact' },
   ];
-
-  if (loggedIn && userData.role === 'Restaurant_Owner') {
+  
+  // Remove the 'Restaurants' item if not logged in
+  if (!loggedIn) {
+    const index = navItems.findIndex(item => item.label === 'Restaurants');
+    if (index !== -1) {
+      navItems.splice(index, 1);  
+    }
+  }
+  if (loggedIn && userData?.role === 'Restaurant_Owner') {
     navItems.push({ label: 'Owned', path: '/ownedRestaurants' });
   }
+  
   return (
     <nav className="bg-white shadow-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

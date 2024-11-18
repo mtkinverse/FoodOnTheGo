@@ -15,10 +15,11 @@ const Register = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [roleClicked, setRoleClicked] = useState(false);
-  const [role,changeRole] = useState('customer');
+  const [role, changeRole] = useState('customer');
 
   const handleChange = (e) => {
-    setValues((prev) => ({...prev,
+    setValues((prev) => ({
+      ...prev,
       [e.target.name]: e.target.value,
     }));
   };
@@ -27,137 +28,187 @@ const Register = () => {
     event.preventDefault();
     setIsLoading(true);
     try {
-
       const sendVal = {
         name: values.firstname + " " + values.lastname,
         email: values.email,
         password: values.password,
         phoneNo: values.phoneNo,
-        role:role
+        role: role
       }
       const res = await axios.post('/api/register', JSON.stringify(sendVal), {
         headers: {
           "Content-Type": "application/json"
         }
       });
-
       console.log(res.data);
       navigate('/login');
-
     } catch (err) {
       console.error(err.response?.data || err.message);
-      // Add error handling here (e.g., show error message to user)
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-700 via-purple-500 to-purple-400 flex flex-col">
-      <main className="flex-grow container mx-auto px-4 py-16 flex items-center justify-center">
-        <div className="flex flex-col md:flex-row">
-          <div className="w-full md:w-1/2 p-8 lg:p-12">
-            <h2 className="text-4xl font-bold text-white mb-8">Create an Account</h2>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {[
-                { name: 'firstname', label: 'First Name', type: 'text', icon: User, placeholder: 'Enter your first name' },
-                { name: 'lastname', label: 'Last Name', type: 'text', icon: User, placeholder: 'Enter your last name' },
-                { name: 'phoneNo', label: 'Phone Number', type: 'tel', icon: Phone, placeholder: '+92 --- -------' },
-                { name: 'email', label: 'Email Address', type: 'email', icon: Mail, placeholder: 'you@example.com' },
-                { name: 'password', label: 'Password', type: 'password', icon: Lock, placeholder: 'Create a password' },
-              ].map((field) => (
-                <div key={field.name}>
-                  <label htmlFor={field.name} className="block text-sm font-medium text-white mb-1">
-                    {field.label}
-                  </label>
-                  <div className="relative">
-                    <input
-                      required
-                      id={field.name}
-                      type={field.type}
-                      name={field.name}
-                      value={values[field.name]}
-                      onChange={handleChange}
-                      className="w-full pl-10 pr-4 py-3 rounded-lg bg-white bg-opacity-20 border border-white border-opacity-30 placeholder-white placeholder-opacity-70 focus:ring-2 focus:ring-white focus:border-transparent transition duration-200"
-                      placeholder={field.placeholder}
-                    />
-                    <field.icon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white opacity-70" size={18} />
-                  </div>
-                </div>
-              ))}
-              <div className='relative'>
-                <button
-                  className="w-full bg-white text-purple-700 rounded-lg px-4 py-3 font-medium hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-purple-700 transition duration-200 flex items-center justify-center"
-                  type=''
-                  onClick={e => { e.preventDefault(); setRoleClicked(prev => !prev) }}
-                >
-                  Role
-                  <ChevronRight className="ml-2" />
-                </button>
-                <div className={`bg-white rounded-lg p-[1rem] -right-[26vw] -top-[2vh] z-10 ${roleClicked ? 'absolute' : 'hidden'}`}>
-                  {
-                    [
-                      { name: 'Customer', value: 'Customer' },
-                      { name: 'Owner', value: 'Restaurant_Owner' },
-                      { name: 'Delivery', value: 'Delivery_Staff' }
-                    ].map((ele) => (
-                      <>
-                        <label htmlFor={ele.name}>{ele.name}
-
-                          <span>
-
-                            <input key={ele.value} type="radio" value={ele.value} name='ele.name' className="w-full pl-10 pr-4 py-3 rounded-lg bg-white bg-opacity-20 border border-white border-opacity-30 placeholder-opacity-70 focus:ring-2 focus:ring-white focus:border-transparent transition duration-200"
-                            onClick={()=>{setRoleClicked(false)}}
-                            onChange={e => changeRole(e.target.value)}
-                            />
-
-                          </span>
-                        </label>
-                      </>
-                    ))
-                  }
-                </div>
-              </div>
-              <div>
-                <button
-                  type="submit"
-                  className="w-full bg-white text-purple-700 rounded-lg px-4 py-3 font-medium hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-purple-700 transition duration-200 flex items-center justify-center"
-                  disabled={isLoading}
-                >
-                  {isLoading ? (
-                    <svg className="animate-spin h-5 w-5 mr-3 text-purple-700" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                    </svg>
-                  ) : (
-                    <>
-                      Sign Up
-                      <ChevronRight className="ml-2" />
-                    </>
-                  )}
-                </button>
-              </div>
-            </form>
-            <p className="mt-8 text-center text-sm text-white text-opacity-80">
-              Already have an account?{' '}
-              <a href="/login" className="font-medium text-white hover:text-opacity-90 underline">
-                Log in
-              </a>
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12">
+        <div className="max-w-md w-full space-y-8 bg-white rounded-2xl shadow-xl p-8">
+          <div className="text-center">
+            <h2 className="text-3xl font-extrabold text-purple-600">Create your account</h2>
+            <p className="mt-2 text-sm text-gray-600">
+              Join us to explore amazing food experiences
             </p>
           </div>
 
-          <div className="hidden md:block w-1/2 bg-cover bg-center relative overflow-hidden"
-            style={{ backgroundImage: "url('/images/home.png')" }}>
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-700 via-purple-500 to-purple-400 opacity-60"></div>
-            <div className="relative h-full flex items-center">
-              <div className="px-12 py-8">
-                <h3 className="text-4xl font-bold text-white mb-4">Join the Adventure</h3>
-                <p className="text-lg text-white opacity-90">Join us to explore new experiences and opportunities.</p>
+          <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+            <div className="grid grid-cols-2 gap-4">
+              {/* First Name & Last Name */}
+              <div>
+                <label htmlFor="firstname" className="sr-only">First Name</label>
+                <div className="relative">
+                  <input
+                    required
+                    id="firstname"
+                    name="firstname"
+                    type="text"
+                    value={values.firstname}
+                    onChange={handleChange}
+                    className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm"
+                    placeholder="First Name"
+                  />
+                  <User className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+                </div>
+              </div>
+              <div>
+                <label htmlFor="lastname" className="sr-only">Last Name</label>
+                <div className="relative">
+                  <input
+                    required
+                    id="lastname"
+                    name="lastname"
+                    type="text"
+                    value={values.lastname}
+                    onChange={handleChange}
+                    className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm"
+                    placeholder="Last Name"
+                  />
+                  <User className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+                </div>
               </div>
             </div>
+
+            {/* Phone Number */}
+            <div>
+              <label htmlFor="phoneNo" className="sr-only">Phone Number</label>
+              <div className="relative">
+                <input
+                  required
+                  id="phoneNo"
+                  name="phoneNo"
+                  type="tel"
+                  value={values.phoneNo}
+                  onChange={handleChange}
+                  className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm"
+                  placeholder="+92 --- -------"
+                />
+                <Phone className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+              </div>
+            </div>
+
+            {/* Email */}
+            <div>
+              <label htmlFor="email" className="sr-only">Email Address</label>
+              <div className="relative">
+                <input
+                  required
+                  id="email"
+                  name="email"
+                  type="email"
+                  value={values.email}
+                  onChange={handleChange}
+                  className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm"
+                  placeholder="Email address"
+                />
+                <Mail className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+              </div>
+            </div>
+
+            {/* Password */}
+            <div>
+              <label htmlFor="password" className="sr-only">Password</label>
+              <div className="relative">
+                <input
+                  required
+                  id="password"
+                  name="password"
+                  type="password"
+                  value={values.password}
+                  onChange={handleChange}
+                  className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm"
+                  placeholder="Password"
+                />
+                <Lock className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+              </div>
+            </div>
+
+            {/* Role Selection */}
+            <div className="relative">
+              <button
+                className="w-full flex justify-between items-center px-3 py-2 border border-gray-300 text-gray-700 rounded-lg hover:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500 sm:text-sm"
+                onClick={e => { e.preventDefault(); setRoleClicked(prev => !prev) }}
+              >
+                <span>{role === 'customer' ? 'Select Role' : role}</span>
+                <ChevronRight className={`transform transition-transform duration-200 ${roleClicked ? 'rotate-90' : ''}`} size={16} />
+              </button>
+              
+              {roleClicked && (
+                <div className="absolute z-10 w-full mt-1 bg-white rounded-lg shadow-lg border border-gray-200">
+                  {[
+                    { name: 'Customer', value: 'Customer' },
+                    { name: 'Owner', value: 'Restaurant_Owner' },
+                    { name: 'Delivery', value: 'Delivery_Staff' }
+                  ].map((ele) => (
+                    <button
+                      key={ele.value}
+                      className="w-full text-left px-4 py-2 hover:bg-purple-50 text-sm text-gray-700 first:rounded-t-lg last:rounded-b-lg"
+                      onClick={() => {
+                        changeRole(ele.value);
+                        setRoleClicked(false);
+                      }}
+                    >
+                      {ele.name}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div>
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isLoading ? (
+                  <svg className="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                  </svg>
+                ) : (
+                  'Create Account'
+                )}
+              </button>
+            </div>
+          </form>
+
+          <div className="text-sm text-center">
+            <span className="text-gray-600">Already have an account? </span>
+            <a href="/login" className="font-medium text-purple-600 hover:text-purple-500">
+              Sign in
+            </a>
           </div>
         </div>
-      </main>
+      </div>
     </div>
   );
 };

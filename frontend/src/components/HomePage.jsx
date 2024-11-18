@@ -15,7 +15,7 @@ const HomePage = () => {
               Savor the <span className="text-yellow-300">Moment</span>
             </h1>
             <p className="text-xl mb-10 animate-fade-in-up animation-delay-200">
-  Discover, order, and enjoy culinary excellence at your doorstep 
+  Discover, order, and enjoy culinary excellence at your doorstep. {!loggedIn && <p>Login now to place an order! </p>}
   {loggedIn && userData?.User_name && (
     <span className="font-bold text-yellow-300 bg-purple-600 px-2 py-1 rounded-md">
       {`${userData.User_name}`}

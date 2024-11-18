@@ -3,12 +3,6 @@ CREATE DATABASE online_food_system;
 USE online_food_system;
 
 
---drop table Customer;
---drop table Menu_items;
---drop table Menu;
-drop table Restaurant;
---drop table Restaurant_Owner;
-
 CREATE TABLE Customer(
    Customer_id INT AUTO_INCREMENT PRIMARY KEY,
    Customer_Name VARCHAR(100) NOT NULL,
@@ -42,6 +36,8 @@ CREATE TABLE Restaurant (
 );
 ALTER TABLE Restaurant AUTO_INCREMENT = 6500; -- ids start from 6500
 
+ALTER TABLE Restaurant ADD COLUMN num_locations INT DEFAULT 0;
+
 
 
 CREATE TABLE Locations (
@@ -53,6 +49,32 @@ CREATE TABLE Locations (
 );
 ALTER TABLE Locations AUTO_INCREMENT = 10100 ; -- ids start from 10100
 
+
+\
+CREATE TRIGGER update_num_locations_after_insert
+AFTER INSERT ON Locations
+FOR EACH ROW
+BEGIN
+    -- Update the num_locations for the corresponding restaurant
+    UPDATE Restaurant
+    SET num_locations = num_locations + 1
+    WHERE Restaurant_id = NEW.Restaurant_id;
+END;
+\
+
+\
+CREATE TRIGGER update_num_locations_after_delete
+AFTER DELETE ON Locations
+FOR EACH ROW
+BEGIN
+    -- Update the num_locations for the corresponding restaurant
+    UPDATE Restaurant
+    SET num_locations = num_locations - 1
+    WHERE Restaurant_id = OLD.Restaurant_id;
+END;
+\
+
+SHOW TRIGGERS LIKE 'Locations';
 
 
 CREATE TABLE Menu 
@@ -67,7 +89,7 @@ CREATE TABLE Menu_Items (
     Item_id INT AUTO_INCREMENT PRIMARY KEY,
     Dish_Name VARCHAR(50) NOT NULL,
     Item_Price FLOAT NOT NULL,
-    Item_image Varchar(50) NOT NULL,
+    Item_image Varchar(100) NOT NULL,
     Cuisine VARCHAR(50) NOT NULL,
     Menu_id INT NOT NULL
 );
@@ -96,10 +118,7 @@ CREATE TABLE Delivery_Rider(
 );
 ALTER TABLE Delivery_Rider AUTO_INCREMENT = 102922;
 
---select * from Restaurant_Owner
---delete from Restaurant_Owner where owner_id = 1501;
---
---select * from Delivery_Rider;
+
 
 CREATE TABLE Orders (
     Order_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -113,7 +132,6 @@ CREATE TABLE Orders (
 );
 ALTER TABLE Orders AUTO_INCREMENT = 75638;
 
---payment entity baad mei dekhte
 
 CREATE TABLE Ordered_Items (
     Order_id INT NOT NULL,
@@ -131,8 +149,9 @@ ALTER TABLE Order_Review AUTO_INCREMENT = 73638;
 
 ALTER TABLE Menu_Items ADD CONSTRAINT Menuid_FK FOREIGN KEY (Menu_id) REFERENCES Menu(Menu_id) ON DELETE CASCADE;
 
-ALTER TABLE Restaurant ADD CONSTRAINT Owner_FK FOREIGN KEY(Owner_id) REFERENCES Restaurant_Owner(Owner_id) ON DELETE SET NULL;
-ALTER TABLE Restaurant ADD CONSTRAINT Menu_FK FOREIGN KEY(Menu_id) REFERENCES Menu(Menu_id) ON DELETE SET NULL;
+ALTER TABLE Restaurant ADD CONSTRAINT Owner_FK FOREIGN KEY(Owner_id) REFERENCES Restaurant_Owner(Owner_id) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE Restaurant ADD CONSTRAINT Menu_FK FOREIGN KEY(Menu_id) REFERENCES Menu(Menu_id) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE Restaurant DROP FOREIGN KEY Menu_FK;
 
 ALTER TABLE Locations ADD CONSTRAINT Restaurant_FK FOREIGN KEY(Restaurant_id) REFERENCES Restaurant(Restaurant_id) ON DELETE CASCADE;
 
@@ -146,22 +165,9 @@ ALTER TABLE Ordered_Items ADD CONSTRAINT Item_FK FOREIGN KEY(Item_id) REFERENCES
 ALTER TABLE Ordered_Item ADD CONSTRAINT comp_PK PRIMARY KEY(Order_id,Item_id);
 
 
---sample restaurant data for top restaurants
-select  * from restaurant_owner;
+Select * from restaurant;
+select * from locations;
 
-INSERT INTO Restaurant (Restaurant_name,opensAt,closesAt,restaurant_image,rating,owner_id ) VALUES ('KFC', '12:00:00', '02:00:00', 'http://localhost:8800/images/kfc.jpg', 4.8, 1500);
-INSERT INTO Restaurant (Restaurant_name,opensAt,closesAt,restaurant_image,rating,owner_id ) VALUES ('McDonalds', '1:00:00', '02:00:00', 'http://localhost:8800/images/mcd.jpg', 4.5, 1500);
-INSERT INTO Restaurant (Restaurant_name,opensAt,closesAt,restaurant_image,rating,owner_id ) VALUES ('Burger O Clock', '1:00:00', '02:00:00', 'http://localhost:8800/images/burgerclock.jpg', 4.5, 1500);
-INSERT INTO Restaurant (Restaurant_name,opensAt,closesAt,restaurant_image,rating,owner_id ) VALUES ('Aussie Burger', '1:00:00', '02:00:00', '/images/aussie.jfif', 4.7, 1500);
-
-drop table Restaurant;
-select * from Restaurant;
-
-delete from restaurant where owner_id = 6501;
-select m.item_id,m.dish_name,r.restaurant_name from menu_items m 
-join restaurant r on r.menu_id = m.menu_id
-where r.restaurant_id = 6500;
-
-
-select * from customer;
-
+delete  from restaurant;
+delete from locations;
+delete from locations where location_id = 10101;

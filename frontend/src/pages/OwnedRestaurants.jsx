@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Clock, MapPin, Phone, Store, Plus, Settings, ChevronRight } from "lucide-react";
+import {
+  Clock,
+  MapPin,
+  Phone,
+  Store,
+  Plus,
+  Settings,
+  ChevronRight,
+} from "lucide-react";
 import { useUserContext } from "../contexts/userContext";
 import { useNavigate } from "react-router-dom";
 import AddRestaurantPopup from "../components/AddRestaurant";
@@ -52,8 +60,13 @@ const OwnedRestaurants = () => {
       <div className="min-h-[70vh] flex flex-col items-center justify-center p-8 bg-gray-50">
         <div className="bg-white p-8 rounded-2xl shadow-lg max-w-md w-full text-center">
           <Store className="mx-auto h-16 w-16 text-indigo-500 mb-6" />
-          <h3 className="text-2xl font-bold text-gray-900 mb-3">Start Your Restaurant Journey</h3>
-          <p className="text-gray-600 mb-8">Create your first restaurant listing and start managing your business online.</p>
+          <h3 className="text-2xl font-bold text-gray-900 mb-3">
+            Start Your Restaurant Journey
+          </h3>
+          <p className="text-gray-600 mb-8">
+            Create your first restaurant listing and start managing your
+            business online.
+          </p>
           <button
             onClick={() => setIsPopupOpen(true)}
             className="inline-flex items-center px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-200"
@@ -63,10 +76,10 @@ const OwnedRestaurants = () => {
           </button>
         </div>
         {isPopupOpen && (
-          <AddRestaurantPopup 
-            isOpen={isPopupOpen} 
-            onClose={() => setIsPopupOpen(false)} 
-            fetchRestaurants={fetchRestaurants}   
+          <AddRestaurantPopup
+            isOpen={isPopupOpen}
+            onClose={() => setIsPopupOpen(false)}
+            fetchRestaurants={fetchRestaurants}
           />
         )}
       </div>
@@ -78,8 +91,13 @@ const OwnedRestaurants = () => {
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h2 className="text-3xl font-bold text-gray-900">Your Restaurants</h2>
-            <p className="mt-2 text-gray-600">You currently own {restaurants.length} restaurant{restaurants.length !== 1 ? "s" : ""}</p>
+            <h2 className="text-3xl font-bold text-gray-900">
+              Your Restaurants
+            </h2>
+            <p className="mt-2 text-gray-600">
+              You currently own {restaurants.length} restaurant
+              {restaurants.length !== 1 ? "s" : ""}
+            </p>
           </div>
           <button
             onClick={() => setIsPopupOpen(true)}
@@ -112,7 +130,11 @@ const OwnedRestaurants = () => {
                 <div className="space-y-3">
                   <div className="flex items-center text-gray-600">
                     <MapPin className="h-5 w-5 text-indigo-500 mr-2" />
-                    <span className="text-sm">{restaurant.address || "Address not available"}</span>
+                    <span className="text-sm">
+                      {restaurant.num_locations > 0
+                        ? `Operational in ${restaurant.num_locations} Locations`
+                        : "No locations available"}
+                    </span>
                   </div>
 
                   {restaurant.phone && (
@@ -125,7 +147,9 @@ const OwnedRestaurants = () => {
                   {restaurant.OpensAt && (
                     <div className="flex items-center text-gray-600">
                       <Clock className="h-5 w-5 text-indigo-500 mr-2" />
-                      <span className="text-sm">Opens at {restaurant.OpensAt}</span>
+                      <span className="text-sm">
+                        Opens at {restaurant.OpensAt}
+                      </span>
                     </div>
                   )}
                 </div>
@@ -142,7 +166,9 @@ const OwnedRestaurants = () => {
                     Manage
                   </button>
                   <button
-                    onClick={() => {/* View logic */}}
+                    onClick={() => {
+                      /* View logic */
+                    }}
                     className="flex-1 inline-flex items-center justify-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200"
                   >
                     View Details
@@ -156,19 +182,20 @@ const OwnedRestaurants = () => {
 
         {/* AddRestaurant Popup */}
         {isPopupOpen && (
-          <AddRestaurantPopup 
-            isOpen={isPopupOpen} 
-            onClose={() => setIsPopupOpen(false)} 
+          <AddRestaurantPopup
+            isOpen={isPopupOpen}
+            onClose={() => setIsPopupOpen(false)}
             fetchRestaurants={fetchRestaurants}
           />
         )}
 
         {/* ManageRestaurant Popup */}
         {isManageOpen && (
-          <ManageRestaurant 
-            isOpen={isManageOpen} 
-            onClose={() => setIsManageOpen(false)} 
-            restaurant={currentRestaurant} // Pass the selected restaurant data
+          <ManageRestaurant
+            isOpen={isManageOpen}
+            onClose={() => setIsManageOpen(false)}
+            restaurant={currentRestaurant}
+            fetchRestaurants={fetchRestaurants}
           />
         )}
       </div>
