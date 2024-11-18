@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { TrashIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
 
 const ManageRestaurant = ({
   isOpen,
@@ -35,6 +36,25 @@ const ManageRestaurant = ({
     status: true, // Default value
   });
 
+  //states for updating menu
+  const [updateMenuPopupOpen, setUpdateMenuPopupOpen] = useState(false);
+  const [menuItems, setMenuItems] = useState([]);
+
+  const fetchMenuItems = async () => {
+    try {
+      const response = await axios.get(`/api/menu/${restaurant.Restaurant_id}`);
+      setMenuItems(response.data);
+      console.log("menu items received: ", menuItems);
+    } catch (err) {
+      setError("Failed to fetch menu items.");
+    }
+  };
+
+  const handleUpdateMenuClick = async () => {
+    await fetchMenuItems();
+    setUpdateMenuPopupOpen(true);
+  };
+
   const handleLocationChange = (e) => {
     const { name, value, type, checked } = e.target;
     setLocationData((prevState) => ({
@@ -46,14 +66,14 @@ const ManageRestaurant = ({
   const handleLocationSubmit = async (e) => {
     e.preventDefault();
     try {
-      console.log('sending data to ',locationData)
+      console.log("sending data to ", locationData);
       const response = await axios.post(
         `/api/addLocation/${restaurant.Restaurant_id}`,
         locationData
       );
       alert("Location added successfully!");
-      setAddLocationPopupOpen(false); 
-      fetchRestaurants(); 
+      setAddLocationPopupOpen(false);
+      fetchRestaurants();
     } catch (error) {
       console.error("Error adding location:", error.response?.data || error);
       alert("Failed to add location.");
@@ -89,7 +109,6 @@ const ManageRestaurant = ({
     }
   };
 
-  //for updating tiings
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     console.log(`Input changed: ${name} = ${value}`);
@@ -184,6 +203,26 @@ const ManageRestaurant = ({
     }
   };
 
+  const [viewLocationsPopup, setViewLocationPopup] = useState(false);
+  const [locations, setLocations] = useState([]);
+
+  const fetchLocations = async () => {
+    try {
+      const response = await axios.get(
+        `/api/getLocations/${restaurant.Restaurant_id}`
+      );
+      setLocations(response.data);
+      console.log("locations received: ", locations);
+    } catch (err) {
+      console.log("Failed to fetch restaurant locations.");
+    }
+  };
+
+  const handleViewLocationsClick = async () => {
+    await fetchLocations();
+    setViewLocationPopup(true);
+  };
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg shadow-lg w-3/4 max-w-4xl p-8 relative">
@@ -232,10 +271,61 @@ const ManageRestaurant = ({
           {menuId !== null && (
             <button
               className="w-full bg-purple-600 text-white py-3 px-4 rounded-lg shadow hover:bg-purple-700 transition"
-              onClick={() => {}}
+              onClick={handleUpdateMenuClick}
             >
               Update Menu
             </button>
+          )}
+
+          {updateMenuPopupOpen && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+              <div className="bg-white rounded-lg shadow-lg w-2/3 p-6 relative">
+                <h2 className="text-2xl font-bold text-purple-600 mb-4">
+                  Update Menu
+                </h2>
+                <button
+                  className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 transition"
+                  onClick={() => setUpdateMenuPopupOpen(false)}
+                >
+                  &times;
+                </button>
+                <div>
+                  {menuItems.length > 0 ? (
+                    <ul>
+                      {menuItems.map((item) => (
+                        <li
+                          key={item.id}
+                          className="flex justify-between items-center border-b py-2"
+                        >
+                          <div>
+                            <p className="font-bold">{item.Dish_Name}</p>
+                            <p className="text-gray-600">
+                              Rs.{item.Item_Price}
+                            </p>
+                          </div>
+                          <div className="flex gap-2">
+                            <button
+                              className="text-blue-500 hover:text-blue-700"
+                              onClick={() => handleUpdateItem(item)}
+                            >
+                              <PencilSquareIcon className="h-6 w-6" />
+                            </button>
+                            <button
+                              className="text-red-500 hover:text-red-700"
+                              onClick={() => handleDeleteItem(item.id)}
+                            >
+                              <TrashIcon className="h-6 w-6" />
+                            </button>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-gray-600">No items in the menu.</p>
+                  )}
+                </div>
+              </div>
+            </div>
           )}
 
           {/* Delete Menu button */}
@@ -377,6 +467,61 @@ const ManageRestaurant = ({
           >
             Change Timings
           </button>
+
+          <button
+            className="w-full bg-purple-600 text-white py-3 px-4 rounded-lg shadow hover:bg-purple-700 transition"
+            onClick={handleViewLocationsClick}
+          >
+            View Locations
+          </button>
+
+          {viewLocationsPopup && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+              <div className="bg-white rounded-lg shadow-lg w-2/3 p-6 relative">
+                {/* Restaurant Name */}
+                <h2 className="text-2xl font-bold text-purple-600 mb-4">
+                  {restaurant.Restaurant_Name}
+                </h2>
+
+                {/* Close  */}
+                <button
+                  className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 transition"
+                  onClick={() => setViewLocationPopup(false)}
+                >
+                  &times;
+                </button>
+
+                <div className="space-y-4">
+                  {locations.length > 0 ? (
+                    locations.map((location, index) => (
+                      <div
+                        key={index}
+                        className="border rounded-lg p-4 shadow-md bg-purple-50"
+                      >
+                        <p className="text-lg font-semibold text-purple-700">
+                          Address: {location.Address}
+                        </p>
+                        <p className="text-gray-600">
+                          Contact: {location.Contact_No}
+                        </p>
+                        <p
+                          className={`text-sm font-bold ${
+                            location.Open_Status ? "text-green-600" : "text-red-600"
+                          }`}
+                        >
+                          {location.open ? "Open" : "Closed"}
+                        </p>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-gray-600 text-center">
+                      No locations available.
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
 
           <button
             className="w-full bg-purple-600 text-white py-3 px-4 rounded-lg shadow hover:bg-purple-700 transition"

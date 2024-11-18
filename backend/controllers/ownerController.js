@@ -41,7 +41,6 @@ module.exports.AddRestaurant = (req, res) => {
     console.log('Add menu hit');
     const restaurant_id = req.params.id;
 
-    // Check if the restaurant already has a menu assigned
     const checkQuery = 'SELECT menu_id FROM restaurant WHERE restaurant_id = ?';
 
     db.query(checkQuery, [restaurant_id], (err, results) => {
@@ -50,13 +49,11 @@ module.exports.AddRestaurant = (req, res) => {
             return res.status(500).json({ error: 'Database query failed', details: err.message });
         }
 
-        // If the restaurant already has a menu assigned, return an error
         if (results.length > 0 && results[0].menu_id) {
             console.log('Restaurant already has a menu assigned');
             return res.status(400).json({ message: 'Restaurant already has a menu assigned' });
         }
 
-        // Insert a new menu into the Menu table
         const insertMenuQuery = 'INSERT INTO menu () VALUES ()'; 
         
         db.query(insertMenuQuery, (err, menuResult) => {
@@ -66,7 +63,6 @@ module.exports.AddRestaurant = (req, res) => {
 
             console.log('Menu created successfully with ID:', menuResult.insertId);
 
-            // Now, update the Restaurant table to link this menu to the restaurant
             const updateRestaurantMenuQuery = 'UPDATE restaurant SET menu_id = ? WHERE restaurant_id = ?';
             db.query(updateRestaurantMenuQuery, [menuResult.insertId, restaurant_id], (err, updateResult) => {
                 if (err) {
@@ -74,7 +70,6 @@ module.exports.AddRestaurant = (req, res) => {
                     return res.status(500).json({ error: 'Failed to update restaurant menu', details: err.message });
                 }
 
-                // Successfully updated restaurant with new Menu_id
                 console.log('Restaurant menu updated successfully');
                 return res.status(200).json({
                     message: 'Menu created and assigned to restaurant successfully',
@@ -93,7 +88,7 @@ module.exports.addMenuItem = (req, res) => {
     const restaurant_id = req.params.id;  
  
     const { name,price,cuisine,menu_id } = req.body;
-    const Item_image = req.file ? `https://localhost:8800/images/${restaurant_id}/${req.file.filename}` : null; // Handle file upload
+    const Item_image = req.file ? `http://localhost:8800/images/${restaurant_id}/${req.file.filename}` : null; // Handle file upload
 
     if (!Item_image) {
         console.log('no image found');
@@ -232,5 +227,18 @@ module.exports.addLocation = (req,res) => {
             return res.status(500).json({ error: 'Failed to add location', details: err.message });
         }
         return res.status(200).json({ message: 'Location added successfully',locationId : result.insertId });
+    });
+}
+
+module.exports.getLocations = (req,res) => {
+    const restaurant_id = req.params.id;
+    query = 'SELECT * from locations where restaurant_id = ?';
+
+    db.query(query,[restaurant_id],(err,result) =>{
+        if (err) {
+            console.log('Error fetching locations');
+            return res.status(500).json({ error: 'Failed to get location', details: err.message });
+        }
+        return res.status(200).json(result);
     });
 }

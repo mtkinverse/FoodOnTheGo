@@ -1,6 +1,7 @@
 import React from 'react';
 import { useUserContext } from '../contexts/userContext';
 import { Clock, Star, Utensils } from 'lucide-react';
+import { useNavigate } from 'react-router-dom'; // Importing useNavigate
 
 const RestaurantCard = ({ restaurant }) => {
   const {
@@ -9,12 +10,15 @@ const RestaurantCard = ({ restaurant }) => {
     ClosesAt,
     Restaurant_Image,
     Rating,
+    Restaurant_ID, // Assuming you have Restaurant_ID in the data
   } = restaurant;
 
   const { loggedIn } = useUserContext();
 
+  const navigate = useNavigate(); // Getting navigate function
+
   const isCurrentlyOpen = () => {
-    // This is a placeholder function - you can implement actual logic
+    // Placeholder function - you can implement actual logic
     return true;
   };
 
@@ -62,6 +66,7 @@ const RestaurantCard = ({ restaurant }) => {
 
         <button
           disabled={!loggedIn}
+          onClick={() => loggedIn && navigate(`/menu/${restaurant.Restaurant_id}`)} // Navigate to the menu page
           className={`w-full py-3 px-4 flex items-center justify-center space-x-2 rounded-lg transition-colors duration-200
             ${loggedIn 
               ? 'bg-purple-600 hover:bg-purple-700 text-white' 

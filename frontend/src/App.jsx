@@ -7,7 +7,7 @@ import Restaurants from './pages/Restaurants';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import OwnedRestaurants from './pages/OwnedRestaurants';
-
+import Menu from './components/Menu';  // Your menu component
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ManageRestaurant from './components/ManageRestaurant';
 // const router = createBrowserRouter([
@@ -47,6 +47,7 @@ const router = createBrowserRouter(
        <Route path='login' element={<Login />} />
        <Route path='restaurants' element={<Restaurants />} />
        <Route path='ownedRestaurants' element = {<OwnedRestaurants/>}/>
+       <Route path ='menu/:restaurant_id' element = {<Menu/>}/>
        {/* <Route path= 'manageRestaurant/:id' element = {<ManageRestaurant/>} /> */}
      </Route>
    ),

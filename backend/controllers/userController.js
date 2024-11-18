@@ -161,3 +161,31 @@ module.exports.logoutUser = (req,res) =>{
 }
 
 
+
+module.exports.getMenu = (req, res) => {
+    console.log('menu hit');
+    const restaurant_id = req.params.id;
+    const menu_query = 'SELECT menu_id FROM restaurant WHERE restaurant_id = ?';
+
+    db.query(menu_query, [restaurant_id], (err, result) => {
+        if (err) {
+            return res.status(400).json({ message: 'Database query failed' });
+        }
+
+        if (result.length === 0) {
+            return res.status(404).json({ message: 'Restaurant not found' });
+        }
+
+        const menu_id = result[0].menu_id;
+
+        const items_query = 'SELECT * FROM menu_items WHERE menu_id = ?';
+
+        db.query(items_query, [menu_id], (err, items) => {
+            if (err) {
+                return res.status(400).json({ message: 'Failed to fetch menu items' });
+            }
+           console.log('sending items',items);
+            return res.status(200).json(items);
+        });
+    });
+};
