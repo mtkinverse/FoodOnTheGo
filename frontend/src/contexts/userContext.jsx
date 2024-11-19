@@ -81,7 +81,7 @@ const UserContextProvider = ({ children }) => {
 
   const signout = () => {
     axios
-      .post("api/logout", JSON.stringify(userData), { withCredentials: true })
+      .post("/api/logout", JSON.stringify(userData), { withCredentials: true })
       .then((res) => {
         if ((res.status = 200)) {
           setLoggedIn(false);

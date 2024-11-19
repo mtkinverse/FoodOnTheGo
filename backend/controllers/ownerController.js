@@ -244,15 +244,55 @@ module.exports.getLocations = (req,res) => {
 }
 
 module.exports.deleteItem = (req,res) => {
+    const item_id = req.params.id;
+    let query = 'SELECT * from Menu_Items where item_id = ?';
+    
+    db.query(query,[item_id],(err,result) =>{
+        if (err) {
+            console.log('Error fetching the item to delete');
+            return res.status(500).json({ error: 'Failed to delete item', details: err.message });
+        }
+        else{
+            query = 'delete from Menu_Items where item_id = ?';
+            db.query(query,[item_id],(err,result2) =>{
+                if(err){
+                    console.log('Cannot delete the requested item', item_id);
+                    return res.status(500).json({ error: 'Failed to delete item', details: err.message });
+                }
+                return res.status(200).json(result2);
+            })
+        }
+    });
 
 }
 
 module.exports.updateItem = (req,res) => {
+    console.log('receiced req to update ', req.body);
+    
+    const {Item_id,Dish_Name,Item_Price,Item_image,Cuisine} = req.body;
+    let query = 'SELECT * from Menu_Items where item_id = ?';
+    
+    db.query(query,[Item_id],(err,result) =>{
+        if (err) {
+            console.log('Error fetching the item to update');
+            return res.status(500).json({ error: 'Failed to update item', details: err.message });
+        }
+        else{
+            q = 'update Menu_Items set Dish_Name = ?, Item_Price = ?, Cuisine = ? where item_id = ?';
+            db.query(q,[Dish_Name,Item_Price,Cuisine,Item_id],(err2,result2) =>{
+                if(err2){
+                    console.log('Cannot update the requested item', Item_id);
+                    return res.status(500).json({ error: 'Failed to delete item ' , details: err.message });
+                }
+                return res.status(200).json(result2);
+            })
+        }
+    });
 
 }
 
 module.exports.updateLocation = (req,res) => {
-
+    
 }
 
 module.exports.deleteLocation = (req,res) => {

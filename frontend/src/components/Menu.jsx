@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import { FaCartPlus, FaHeart } from "react-icons/fa"; // Added heart icon for favorite
+import { useUserContext } from "../contexts/userContext";
 
 const Menu = () => {
   const [menuItems, setMenuItems] = useState([]);
@@ -9,6 +10,7 @@ const Menu = () => {
   const [error, setError] = useState("");
   const { restaurant_id } = useParams();
   const navigate = useNavigate();
+  const {loggedIn} = useUserContext();
 
   useEffect(() => {
     const fetchMenuItems = async () => {
@@ -22,9 +24,9 @@ const Menu = () => {
         setLoading(false);
       }
     };
-
+    if(!loggedIn) navigate('/');
     fetchMenuItems();
-  }, [restaurant_id]);
+  }, [restaurant_id,loggedIn]);
 
   if (menuItems.length === 0) navigate('/restaurants');
   if (loading) {

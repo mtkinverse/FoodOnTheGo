@@ -37,9 +37,7 @@ const ManageRestaurant = ({
   });
 
   //states for updating menu
-  const [updateMenuPopupOpen, setUpdateMenuPopupOpen] = useState(false);
   const [menuItems, setMenuItems] = useState([]);
-
   const fetchMenuItems = async () => {
     try {
       const response = await axios.get(`/api/menu/${restaurant.Restaurant_id}`);
@@ -50,10 +48,95 @@ const ManageRestaurant = ({
     }
   };
 
+  
+  const [updateMenuPopupOpen, setUpdateMenuPopupOpen] = useState(false);
+  
+
   const handleUpdateMenuClick = async () => {
     await fetchMenuItems();
     setUpdateMenuPopupOpen(true);
   };
+  
+  const handleDeleteItemClick = async (item_id) => {
+      try { 
+        const response = await axios.post(`/api/deleteItem/${item_id}`);
+        const temp = menuItems;
+        
+        setMenuItems(temp.filter(ele => ele.Item_id != item_id));
+      }
+      catch(err) {
+        console.log('Error deleting menu items');
+      }
+    };
+  
+    
+  const [updatedItem,setUpdated] = useState(
+    {
+      // Item_id : 0,
+      // name: "",
+      // price: "",
+      // cuisine: "",
+      // image: null,
+    }
+  );
+  const [updateItemPopup,setPopup] = useState(false);
+  const handleUpdateItemClick = (item) => {
+    console.log('received item : ', item);
+    
+    setUpdated(item);
+    setPopup(true);
+  }
+
+  const handleupdatedItemChange = (e) => {
+    const { name, value } = e.target;
+    if (name === "image") {
+      console.log("image updated");
+      setUpdated((prevValues) => ({
+        ...prevValues,
+        image: e.target.files[0], 
+      }));
+    } else {
+      console.log("value updated");
+      setUpdated((prevValues) => ({
+        ...prevValues,
+        [name]: value, 
+      }));
+    }
+  }
+
+  const submitUpdatedItem = async (e) => {
+    e.preventDefault();
+    console.log('sending req');
+    console.log(updatedItem);
+
+    try {
+        const res = await axios.post('/api/updateItem', updatedItem, {
+            headers: {
+                'Content-Type': 'application/json', // Ensures the backend interprets the body as JSON
+            },
+        });
+
+        // Update the menu items state
+        setMenuItems(menuItems.map(ele => {
+            if (ele.Item_id === updatedItem.Item_id) {
+                return {
+                    ...ele,
+                    Dish_Name: updatedItem.Dish_Name,
+                    Item_Price: updatedItem.Item_Price,
+                    Cuisine: updatedItem.Cuisine,
+                };
+            }
+            return ele;
+        }));
+
+        console.log('Item updated successfully', res.data);
+        setPopup(false);
+        setUpdated({});
+    } catch (err) {
+        console.error('Error updating item:', err);
+    }
+};
+
 
   const handleLocationChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -73,6 +156,11 @@ const ManageRestaurant = ({
       );
       alert("Location added successfully!");
       setAddLocationPopupOpen(false);
+      setLocationData({
+        address: "",
+        contactNo: "",
+        status: true, // Default value
+      });
       fetchRestaurants();
     } catch (error) {
       console.error("Error adding location:", error.response?.data || error);
@@ -103,6 +191,10 @@ const ManageRestaurant = ({
       console.log("Response:", response.data);
       setTimingPopupOpen(false); // Close the popup after submission
       fetchRestaurants();
+      setTiming({
+        opensAt: "",
+        closesAt: "",
+      });
     } catch (error) {
       console.error("Error updating timings:", error.response?.data || error);
       alert("Failed to update timings.");
@@ -128,13 +220,14 @@ const ManageRestaurant = ({
         image: e.target.files[0], // Store the file object
       }));
     } else {
-      console.log("value updated");
       setMenuItem((prevValues) => ({
         ...prevValues,
         [name]: value, // Update the specific field dynamically
       }));
     }
   };
+
+ 
 
   const handleMenuItemSubmit = async (e) => {
     e.preventDefault();
@@ -159,6 +252,12 @@ const ManageRestaurant = ({
       console.log("Response:", response.data);
       setAddItemPopupOpen(false); // Close the popup after submission
       fetchRestaurants(); // Refresh the menu
+      setMenuItem({
+        name: "",
+        price: "",
+        cuisine: "",
+        image: null,
+      });
     } catch (error) {
       console.error("Error adding menu item:", error.response?.data || error);
       alert("Failed to add menu item.");
@@ -306,13 +405,13 @@ const ManageRestaurant = ({
                           <div className="flex gap-2">
                             <button
                               className="text-blue-500 hover:text-blue-700"
-                              onClick={() => handleUpdateItem(item)}
+                              onClick={() => handleUpdateItemClick(item)}
                             >
                               <PencilSquareIcon className="h-6 w-6" />
                             </button>
                             <button
                               className="text-red-500 hover:text-red-700"
-                              onClick={() => handleDeleteItem(item.id)}
+                              onClick={() => handleDeleteItemClick(item.Item_id)}
                             >
                               <TrashIcon className="h-6 w-6" />
                             </button>
@@ -327,6 +426,105 @@ const ManageRestaurant = ({
               </div>
             </div>
           )}
+          
+          {updateItemPopup && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+              <div className="bg-white rounded-lg shadow-lg w-1/3 p-6">
+                <h2 className="text-2xl font-bold text-purple-600 mb-4">
+                  Update Menu Item
+                </h2>
+                <form onSubmit={submitUpdatedItem}>
+                  <div className="mb-4">
+                    <label
+                      htmlFor="name"
+                      className="block text-gray-700 font-bold mb-2"
+                    >
+                      Item Name 
+                    </label>
+                    <input
+                      type="text"
+                      id="name"
+                      name="Dish_Name"
+                      className="w-full border rounded-lg py-2 px-3 text-gray-700"
+                      value={updatedItem.Dish_Name}
+                      onChange={handleupdatedItemChange}
+                      required
+                    />
+                  </div>
+
+                  <div className="mb-4">
+                    <label
+                      htmlFor="price"
+                      className="block text-gray-700 font-bold mb-2"
+                    >
+                      Price:
+                    </label>
+                    <input
+                      type="number"
+                      id="price"
+                      name="Item_Price"
+                      className="w-full border rounded-lg py-2 px-3 text-gray-700"
+                      value={updatedItem.Item_Price}
+                      onChange={handleupdatedItemChange}
+                      required
+                    />
+                  </div>
+
+                  <div className="mb-4">
+                    <label
+                      htmlFor="cuisine"
+                      className="block text-gray-700 font-bold mb-2"
+                    >
+                      Cuisine:
+                    </label>
+                    <input
+                      type="text"
+                      id="cuisine"
+                      name="Cuisine"
+                      className="w-full border rounded-lg py-2 px-3 text-gray-700"
+                      value={updatedItem.Cuisine}
+                      onChange={handleupdatedItemChange}
+                      required
+                    />
+                  </div>
+
+                  <div className="mb-4">
+                    <label
+                      htmlFor="image"
+                      className="block text-gray-700 font-bold mb-2"
+                    >
+                      Upload Image:
+                    </label>
+                    <input
+                      type="file"
+                      id="image"
+                      name="image"
+                      className="w-full border rounded-lg py-2 px-3 text-gray-700"
+                      onChange={handleupdatedItemChange}
+                      required
+                    />
+                  </div>
+
+                  <div className="flex justify-end">
+                    <button
+                      type="button"
+                      className="mr-4 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400"
+                      onClick={() => setPopup(false)}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      className="bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700"
+                    >
+                      Add Item
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
+
 
           {/* Delete Menu button */}
           {menuId !== null && (
