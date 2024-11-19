@@ -59,7 +59,7 @@ const ManageRestaurant = ({
   
   const handleDeleteItemClick = async (item_id) => {
       try { 
-        const response = await axios.post(`/api/deleteItem/${item_id}`);
+        const response = await axios.post(`/api/deleteItem/${restaurant.Restaurant_id}`,{item_id:item_id});
         const temp = menuItems;
         
         setMenuItems(temp.filter(ele => ele.Item_id != item_id));
@@ -109,14 +109,24 @@ const ManageRestaurant = ({
     console.log('sending req');
     console.log(updatedItem);
 
+    const formData = new FormData();
+    
+    formData.append("Item_id", updatedItem.Item_id);
+    formData.append("Dish_Name", updatedItem.Dish_Name);
+    formData.append("Item_Price", updatedItem.Item_Price);
+    formData.append("Cuisine", updatedItem.Cuisine);
+    
+    if (updatedItem.image) {
+        formData.append("image", updatedItem.image);
+    }
+
     try {
-        const res = await axios.post('/api/updateItem', updatedItem, {
+        const res = await axios.post(`/api/updateItem/${restaurant.Restaurant_id}`, formData, {
             headers: {
-                'Content-Type': 'application/json', // Ensures the backend interprets the body as JSON
+                'Content-Type': 'multipart/form-data',
             },
         });
 
-        // Update the menu items state
         setMenuItems(menuItems.map(ele => {
             if (ele.Item_id === updatedItem.Item_id) {
                 return {
@@ -124,6 +134,7 @@ const ManageRestaurant = ({
                     Dish_Name: updatedItem.Dish_Name,
                     Item_Price: updatedItem.Item_Price,
                     Cuisine: updatedItem.Cuisine,
+                    Image: updatedItem.Item_image
                 };
             }
             return ele;
@@ -136,6 +147,7 @@ const ManageRestaurant = ({
         console.error('Error updating item:', err);
     }
 };
+
 
 
   const handleLocationChange = (e) => {

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { FaBars, FaChevronDown } from 'react-icons/fa';
 import { NavLink, useLocation } from 'react-router-dom';
-import Logo from './Logo';
 import { useUserContext } from '../contexts/userContext';
 
 const Navbar = () => {
@@ -44,8 +43,13 @@ const Navbar = () => {
     <nav className="bg-white shadow-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
+          
+          
           <div className="flex items-center">
-            <Logo />
+            <div className='flex items-center space-x-2'>
+              <img src='images/logo.png' alt='FoodGO Logo' className='h-8 w-auto' />
+              <h2 className='text-2xl font-bold text-purple-600'>FoodGO</h2>
+            </div>
           </div>
 
           <div className="hidden sm:flex sm:space-x-8">

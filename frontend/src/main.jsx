@@ -7,7 +7,7 @@ import App from './App'
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <UserContextProvider>
-      <App />
+     <App/>
     </UserContextProvider>
   </StrictMode>
 )

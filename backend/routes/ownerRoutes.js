@@ -13,5 +13,5 @@ router.post('/updateTimings/:id',updateTimings);
 router.post('/addLocation/:id',addLocation);
 router.get('/getLocations/:id',getLocations);
 router.post('/deleteItem/:id',deleteItem)
-router.post('/updateItem/',updateItem);
+router.post('/updateItem/:id',upload.single('image'),updateItem);
 module.exports = router;

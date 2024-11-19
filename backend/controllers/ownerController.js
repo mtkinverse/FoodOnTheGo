@@ -244,7 +244,9 @@ module.exports.getLocations = (req,res) => {
 }
 
 module.exports.deleteItem = (req,res) => {
-    const item_id = req.params.id;
+    console.log('Delete menu item hit');
+    const restaurant_id = req.params.id;
+    const {item_id} = req.body;
     let query = 'SELECT * from Menu_Items where item_id = ?';
     
     db.query(query,[item_id],(err,result) =>{
@@ -253,43 +255,68 @@ module.exports.deleteItem = (req,res) => {
             return res.status(500).json({ error: 'Failed to delete item', details: err.message });
         }
         else{
-            query = 'delete from Menu_Items where item_id = ?';
-            db.query(query,[item_id],(err,result2) =>{
-                if(err){
-                    console.log('Cannot delete the requested item', item_id);
-                    return res.status(500).json({ error: 'Failed to delete item', details: err.message });
-                }
-                return res.status(200).json(result2);
-            })
+            //first delete the picture from the /images folder
+            const img = result[0].Item_image;
+            const filename = img.split('/').pop(); 
+            const img_path = path.join(__dirname, '..', 'images', restaurant_id, filename);
+            fs.unlink(img_path, (err) => {
+                if (err) {
+                    console.error('Error deleting the old image:', err);
+                    return res.status(500).send({ message: 'Error deleting the old image' });
+                } 
+                query = 'delete from Menu_Items where item_id = ?';
+                db.query(query,[item_id],(err,result2) =>{
+                    if(err){
+                      console.log('Cannot delete the requested item', item_id);
+                      return res.status(500).json({ error: 'Failed to delete item', details: err.message });
+                    }
+                    return res.status(200).json(result2);
+                });
+            });
         }
     });
 
 }
 
-module.exports.updateItem = (req,res) => {
-    console.log('receiced req to update ', req.body);
+
+module.exports.updateItem = (req, res) => {
+    console.log('Received request to update ', req.body);
     
-    const {Item_id,Dish_Name,Item_Price,Item_image,Cuisine} = req.body;
-    let query = 'SELECT * from Menu_Items where item_id = ?';
+    const { Item_id, Dish_Name, Item_Price, Cuisine } = req.body;
+    const new_path = `http://localhost:8800/images/${req.params.id}/${req.file.filename}`;
     
-    db.query(query,[Item_id],(err,result) =>{
+    let query = 'SELECT Item_image FROM Menu_Items WHERE item_id = ?';
+    
+    db.query(query, [Item_id], (err, result) => {
         if (err) {
-            console.log('Error fetching the item to update');
-            return res.status(500).json({ error: 'Failed to update item', details: err.message });
+            return res.status(500).send({ message: 'Error retrieving item from database', error: err });
         }
-        else{
-            q = 'update Menu_Items set Dish_Name = ?, Item_Price = ?, Cuisine = ? where item_id = ?';
-            db.query(q,[Dish_Name,Item_Price,Cuisine,Item_id],(err2,result2) =>{
-                if(err2){
-                    console.log('Cannot update the requested item', Item_id);
-                    return res.status(500).json({ error: 'Failed to delete item ' , details: err.message });
-                }
-                return res.status(200).json(result2);
-            })
+        
+        if (result.length > 0) {
+            const old_image = result[0].Item_image;
+            const old_image_filename = old_image.split('/').pop(); 
+            const old_image_path = path.join(__dirname, '..', 'images', req.params.id, old_image_filename);
+
+            console.log(old_image_path);
+            fs.unlink(old_image_path, (err) => {
+                if (err) {
+                    console.error('Error deleting the old image:', err);
+                    return res.status(500).send({ message: 'Error deleting the old image' });
+                }  
+                let updateQuery = 'UPDATE Menu_Items SET Dish_Name = ?, Item_Price = ?, Cuisine = ?, Item_image = ? WHERE item_id = ?';
+                db.query(updateQuery, [Dish_Name, Item_Price, Cuisine, new_path, Item_id], (err, result) => {
+                    if (err) {
+                        return res.status(500).send({ message: 'Error updating item in database', error: err });
+                    }  
+                    return res.status(200).send({ message: 'Item updated successfully' });
+                });
+            });
+        } else {
+            return res.status(404).send({ message: 'Item not found' });
         }
     });
+};
 
-}
 
 module.exports.updateLocation = (req,res) => {
     

@@ -143,6 +143,7 @@ CREATE TABLE Order_Review(
 ALTER TABLE Order_Review AUTO_INCREMENT = 73638;
 
 
+
 ALTER TABLE Menu_Items ADD CONSTRAINT Menuid_FK FOREIGN KEY (Menu_id) REFERENCES Menu(Menu_id) ON DELETE CASCADE;
 
 ALTER TABLE Restaurant ADD CONSTRAINT Owner_FK FOREIGN KEY(Owner_id) REFERENCES Restaurant_Owner(Owner_id) ON DELETE SET NULL ON UPDATE CASCADE;
@@ -161,6 +162,7 @@ ALTER TABLE Ordered_Items ADD CONSTRAINT Item_FK FOREIGN KEY(Item_id) REFERENCES
 ALTER TABLE Ordered_Items ADD CONSTRAINT comp_PK PRIMARY KEY(Order_id,Item_id);
 
 
+delete from customer;
 Select * from restaurant;
 select * from locations;
 select * from menu_items;
@@ -168,3 +170,5 @@ delete from menu_items where Item_id= 18032;
 delete  from restaurant;
 delete from locations;
 delete from locations where location_id = 10101;
+delete from menu_items;
+select * from customer;

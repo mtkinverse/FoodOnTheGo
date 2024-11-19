@@ -46,6 +46,7 @@ module.exports.getRestaurantMenu = (req, res) => {
         }
 
         const menu_id = data[0].menu_id;
+        const restaurantName = data[0].Restaurant_Name;
         const items_query = 'SELECT * FROM menu_items WHERE menu_id = ?';
         db.query(items_query, [menu_id], (err, items) => {
             if (err) {

@@ -47,7 +47,7 @@ const router = createBrowserRouter(
        <Route path='login' element={<Login />} />
        <Route path='restaurants' element={<Restaurants />} />
        <Route path='ownedRestaurants' element = {<OwnedRestaurants/>}/>
-       <Route path ='menu/:restaurant_id' element = {<Menu/>}/>
+       <Route path ='menu/:restaurant_name/:restaurant_id' element = {<Menu/>}/>
        {/* <Route path= 'manageRestaurant/:id' element = {<ManageRestaurant/>} /> */}
      </Route>
    ),

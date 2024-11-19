@@ -17,7 +17,8 @@ const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     if (file.fieldname === 'Restaurant_image') {
       cb(null, './images'); 
-    } else {
+    } 
+    else {
       const restaurantId = req.params.id;  
       const restaurantFolder = createRestaurantFolder(restaurantId); 
       cb(null, restaurantFolder); 

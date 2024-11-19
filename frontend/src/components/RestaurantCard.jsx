@@ -66,7 +66,7 @@ const RestaurantCard = ({ restaurant }) => {
 
         <button
           disabled={!loggedIn}
-          onClick={() => loggedIn && navigate(`/menu/${restaurant.Restaurant_id}`)} // Navigate to the menu page
+          onClick={() => loggedIn && navigate(`/menu/${restaurant.Restaurant_Name}/${restaurant.Restaurant_id}`)} // Navigate to the menu page
           className={`w-full py-3 px-4 flex items-center justify-center space-x-2 rounded-lg transition-colors duration-200
             ${loggedIn 
               ? 'bg-purple-600 hover:bg-purple-700 text-white' 
