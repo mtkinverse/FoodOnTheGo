@@ -61,8 +61,8 @@ function registerRider(req,res) {
         const salt = bcrypt.genSaltSync(10);
         const hash = bcrypt.hashSync(req.body.password, salt);
         
-        const qInsert = "INSERT INTO Delivery_Rider (Rider_name,Email_address,Account_Password,Phone_no,BikeNo) VALUES (?, ?, ?, ? ,?)";
-        const values = [req.body.name,req.body.email, hash,req.body.phoneNo,req.body.bikeNo];
+        const qInsert = "INSERT INTO Delivery_Rider (Rider_name,Email_address,Account_Password,Phone_no) VALUES (?, ?, ?, ?)";
+        const values = [req.body.name,req.body.email, hash,req.body.phoneNo];
         console.log("Inserting rider:", values);
         db.query(qInsert, values, (err, data) => {
             if (err) return res.status(500).json(err);
@@ -189,3 +189,52 @@ module.exports.getMenu = (req, res) => {
         });
     });
 };
+
+
+module.exports.updateAccount = (req,res) => {
+    const {User_id,User_name,Email_address,phone_no,role} = req.body.userData;
+    let new_password = req.body.password;
+    console.log('updated account hitt');
+    let hash ;
+    if(new_password !== ""){
+        const salt = bcrypt.genSaltSync(10);
+        hash = bcrypt.hashSync(new_password, salt);
+        new_password = hash;
+    }
+    let query ;
+    switch (role) {
+        case 'Customer':
+            if(new_password !== "")
+            query = 'UPDATE Customer SET Customer_name = ?,Email_Address = ?, Account_Password = ? ,Phone_No = ? where Customer_id = ?';
+            else  query = 'UPDATE Customer SET Customer_name = ?,Email_Address = ? ,Phone_No = ? where Customer_id = ?';
+            break;
+        case 'Restaurant_Owner':
+            if(new_password !== "")
+            query = 'UPDATE Restaurant_Owner SET Owner_name = ?,Email_Address = ?, Account_Password = ? ,Phone_No = ? where Owner_id = ?';
+            else query = 'UPDATE Restaurant_Owner SET Owner_name = ?,Email_Address = ? ,Phone_No = ? where Owner_id = ?';
+            break;
+        case 'Delivery_Rider':
+            if(new_password !== "")
+            query = 'UPDATE Delivery_rider SET Rider_name = ?, Email_Address = ?, Account_Password = ? ,Phone_No = ? where Rider_id = ?';
+            else query = 'UPDATE Delivery_rider SET Rider_name = ?, Email_Address = ? ,Phone_No = ? where Rider_id = ?';
+            break;
+    }
+  
+    if(new_password !== ""){
+    db.query(query, [User_name,Email_address,new_password,phone_no,User_id], (err, data) => {
+        if (err) return res.status(500).json(err);
+        if (data.length) return res.status(409).json("Error executing DB query");
+    
+        return res.status(200).json('Owner account updated');
+    });
+  }
+  else {
+    db.query(query, [User_name,Email_address,phone_no,User_id], (err, data) => {
+        if (err) return res.status(500).json(err);
+        if (data.length) return res.status(409).json("Error executing DB query");
+    
+        return res.status(200).json('Owner account updated');
+    });
+  }
+   
+}

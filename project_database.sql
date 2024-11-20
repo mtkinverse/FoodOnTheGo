@@ -109,7 +109,7 @@ CREATE TABLE Delivery_Rider(
     Email_address VARCHAR(100) NOT NULL UNIQUE,
     Account_Password VARCHAR(100) NOT NULL,
     Phone_No VARCHAR(20) NOT NULL,
-    BikeNo VARCHAR(20) NOT NULL,
+    BikeNo VARCHAR(20) DEFAULT NULL,
     Available BOOLEAN DEFAULT TRUE
 );
 ALTER TABLE Delivery_Rider AUTO_INCREMENT = 102922;
@@ -172,3 +172,5 @@ delete from locations;
 delete from locations where location_id = 10101;
 delete from menu_items;
 select * from customer;
+select * from delivery_rider;
+drop table delivery_rider;

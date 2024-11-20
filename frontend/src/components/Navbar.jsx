@@ -1,10 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
-import {
-  FaBars,
-  FaChevronDown,
-  FaUserCircle,
-  FaPencilAlt,
-} from "react-icons/fa";
+import axios from "axios";
+
+import {FaBars,FaChevronDown,FaUserCircle,FaPencilAlt,} from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 import { useUserContext } from "../contexts/userContext";
 import { useCartContext } from "../contexts/cartContext";
@@ -17,8 +14,12 @@ const Navbar = () => {
   const { cartCount } = useCartContext();
   const [viewProfile, setViewProfile] = useState(false);
   const [editMode, setEditMode] = useState(false);
-
-  // State for handling editable inputs
+  const [passwordPopup,setPasswordPop] = useState(false);
+  const [newPassword,setNewPassword] = useState ({
+      first_entry : "",
+      second_entry: ""
+  });
+  const [passwordError,setError] = useState ("");
   const [updatedDetails, setUpdated] = useState({
     User_id: 0,
     User_name: "",
@@ -26,7 +27,6 @@ const Navbar = () => {
     phone_no: "",
     role: "",
   });
-
   const handleDetailChange = (e) => {
     const { name, value } = e.target;
     setUpdated((prevValues) => ({
@@ -99,12 +99,46 @@ const Navbar = () => {
   if (loggedIn && userData?.role === "Restaurant_Owner") {
     navItems.push({ label: "Owned", path: "/ownedRestaurants" });
   }
+  
+  const handlePasswordChange = (e) => {
+    const {name,value} = e.target;
+    setNewPassword((prevPassword) => ({
+      ...prevPassword,
+      [name]: value,
+    }));
+  }
+
+  const handlePasswordSubmit = () => {
+        if(newPassword.first_entry !== newPassword.second_entry) {
+           setError("Passwords do not match");
+           setNewPassword({
+             first_entry: "",
+             second_entry: ""
+           })
+        }
+        else{
+           setPasswordPop(false);
+           handleSave();  
+           setNewPassword({
+            first_entry: "",
+            second_entry: ""
+           })
+        }
+  }
 
   // Save updates
   const handleSave = () => {  
     setUserData(updatedDetails);
-    console.log('Context data',userData);
+      axios.post('/api/updateAccount',{userData : userData,password : newPassword.first_entry})
+     .then(response => {
+          console.log('Updated data in DB successfully');
+     })
+     .catch(error => {
+           console.log('ERror updating data');
+     })
+      console.log('Context data',userData);
     setEditMode(false);
+    setError("");
   };
 
   return (
@@ -168,17 +202,22 @@ const Navbar = () => {
                       View Profile
                     </button>
                     <button
-                      to="/past-orders"
                       className="block px-4 py-2 text-sm text-white hover:bg-purple-800"
                     >
                       View Past Orders
                     </button>
                     <button
-                      to="/track-order"
                       className="block px-4 py-2 text-sm text-white hover:bg-purple-800"
                     >
                       Track Order
                     </button>
+
+                    {userData.role === 'Delivery_Rider' &&  (<button
+                      className="block px-4 py-2 text-sm text-white hover:bg-purple-800"
+                    >
+                      Change Vehicle Details
+                    </button> )}
+
                     <button
                       onClick={signItOut}
                       className="w-full text-left block px-4 py-2 text-sm text-white hover:bg-purple-800"
@@ -210,7 +249,6 @@ const Navbar = () => {
        X
       </button>
 
-      {/* Pencil Icon to Edit */}
       <button
         className="absolute top-4 right-2 text-purple-600 hover:text-purple-800 text-xl"
         onClick={() => setEditMode(!editMode)} // Toggle edit mode
@@ -276,12 +314,71 @@ const Navbar = () => {
       {/* Change Password */}
       <div className="mb-4">
         <button
-          onClick={() => console.log("Change Password Clicked")}
+          onClick={() => setPasswordPop(true)}
           className="w-full py-2 text-white bg-purple-600 rounded-md hover:bg-purple-700 transition duration-200"
         >
           Change Password
         </button>
       </div>
+      
+      {passwordPopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white w-96 p-6 rounded-lg shadow-lg relative">
+            <button
+              className="absolute top-2 right-2 text-purple-600 hover:text-purple-800 text-xl"
+              onClick={() => setPasswordPop(false)}
+            >
+              X
+            </button>
+
+            <h2 className="text-2xl font-bold text-purple-600 mb-6 text-center">
+              Change Password
+            </h2>
+
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                New Password
+              </label>
+              <input
+                type="password"
+                name = "first_entry"
+                value={newPassword.first_entry}
+                onChange={handlePasswordChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-600"
+              />
+            </div>
+
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Confirm New Password
+              </label>
+              <input
+                type="password"
+                name = "second_entry"
+                value={newPassword.second_entry}
+                onChange={handlePasswordChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-600"
+              />
+            </div>
+            {/* Error Message */}
+            {passwordError && (
+              <div className="mb-4 text-red-500 text-sm text-center">
+                {passwordError}
+              </div>
+            )}
+
+            {/* Save Button */}
+            <div className="mb-4">
+              <button
+                onClick={handlePasswordSubmit}
+                className="w-full py-2 text-white bg-purple-600 rounded-md hover:bg-purple-700 transition duration-200"
+              >
+                Save Changes
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Save Button */}
       {editMode && (
