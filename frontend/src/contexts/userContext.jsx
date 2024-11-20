@@ -1,7 +1,6 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { createContext, useContext } from "react";
-
 const UserContext = createContext();
 
 const UserContextProvider = ({ children }) => {
@@ -14,7 +13,7 @@ const UserContextProvider = ({ children }) => {
     phone_no: "",
     role: "",
   });
-
+  
   const login = async (recvData) => {
     try {
       const res = await axios.post(
@@ -80,6 +79,7 @@ const UserContextProvider = ({ children }) => {
   };
 
   const signout = () => {
+
     axios
       .post("/api/logout", JSON.stringify(userData), { withCredentials: true })
       .then((res) => {
@@ -103,6 +103,7 @@ const UserContextProvider = ({ children }) => {
         setLoggedIn,
         userData,
         signout,
+        setUserData
       }}
     >
       {children}

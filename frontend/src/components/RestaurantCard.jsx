@@ -3,6 +3,7 @@ import { useUserContext } from '../contexts/userContext';
 import { Clock, Star, Utensils } from 'lucide-react';
 import { useNavigate } from 'react-router-dom'; // Importing useNavigate
 
+
 const RestaurantCard = ({ restaurant }) => {
   const {
     Restaurant_Name,

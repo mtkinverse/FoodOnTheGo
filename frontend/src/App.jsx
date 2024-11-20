@@ -9,7 +9,6 @@ import Footer from './components/Footer';
 import OwnedRestaurants from './pages/OwnedRestaurants';
 import Menu from './components/Menu';  // Your menu component
 import 'bootstrap/dist/css/bootstrap.min.css';
-import ManageRestaurant from './components/ManageRestaurant';
 // const router = createBrowserRouter([
 //    {
 //        path: "/",

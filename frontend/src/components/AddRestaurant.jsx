@@ -67,7 +67,7 @@ const AddRestaurantPopup = ({ isOpen, onClose,fetchRestaurants}) => {
     <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-50">
       <div className="bg-white w-full max-w-md p-6 rounded-lg shadow-lg">
         <div className="flex justify-between items-center border-b pb-4 mb-4">
-          <h2 className="text-xl font-bold text-purple-900">Add Restaurant</h2>
+          <h2 className="text-xl font-bold text-orange-900">Add Restaurant</h2>
           <button
             onClick={onClose}
             className="text-gray-500 hover:text-gray-700 text-xl"
@@ -85,7 +85,7 @@ const AddRestaurantPopup = ({ isOpen, onClose,fetchRestaurants}) => {
               name="Restaurant_name"
               value={formValues.Restaurant_name}
               onChange={handleChange}
-              className="w-full border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="w-full border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
               placeholder="Enter restaurant name"
               required
             />
@@ -100,7 +100,7 @@ const AddRestaurantPopup = ({ isOpen, onClose,fetchRestaurants}) => {
               name="OpensAt"
               value={formValues.OpensAt}
               onChange={handleChange}
-              className="w-full border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="w-full border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
               required
             />
           </div>
@@ -114,7 +114,7 @@ const AddRestaurantPopup = ({ isOpen, onClose,fetchRestaurants}) => {
               name="ClosesAt"
               value={formValues.ClosesAt}
               onChange={handleChange}
-              className="w-full border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="w-full border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
               required
             />
           </div>
@@ -127,7 +127,7 @@ const AddRestaurantPopup = ({ isOpen, onClose,fetchRestaurants}) => {
               type="file"
               name="Restaurant_image"
               onChange={handleChange}
-              className="w-full border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="w-full border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
               accept="image/*"
               required
             />
@@ -143,7 +143,7 @@ const AddRestaurantPopup = ({ isOpen, onClose,fetchRestaurants}) => {
             </button>
             <button
               type="submit"
-              className="py-2 px-4 rounded-md bg-purple-600 hover:bg-purple-700 text-white"
+              className="py-2 px-4 rounded-md bg-orange-600 hover:bg-orange-700 text-white"
             >
               Add
             </button>
