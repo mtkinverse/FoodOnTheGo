@@ -13,7 +13,14 @@ const UserContextProvider = ({ children }) => {
     phone_no: "",
     role: "",
   });
+
+  //for rider
+  const [bikeDetails,setBikeDetails] = useState({
+     BikeNo : ""
+  })
   
+  const [errors, setErrors] = useState({ email: "", password: "" });
+
   const login = async (recvData) => {
     try {
       const res = await axios.post(
@@ -35,7 +42,7 @@ const UserContextProvider = ({ children }) => {
         console.log("Login successful. Response data:", res.data);
         console.log(res.data.role);
         let userData;
-
+        let bikeData;
         // Check the role and adjust the destructuring accordingly
         if (res.data.role === "Customer") {
           userData = {
@@ -53,6 +60,9 @@ const UserContextProvider = ({ children }) => {
             phone_no: res.data.phone_no,
             role: res.data.role,
           };
+          bikeData = {
+            BikeNo : res.data.BikeNo
+          };
         } else if (res.data.role === "Restaurant_Owner") {
           userData = {
             User_id: res.data.Owner_id,
@@ -67,6 +77,7 @@ const UserContextProvider = ({ children }) => {
 
         // Set the state with the correct user data
         setUserData(userData);
+        setBikeDetails(bikeData);
         setLoggedIn(true);
 
         console.log("User data set for:", userData);
@@ -75,6 +86,8 @@ const UserContextProvider = ({ children }) => {
       }
     } catch (err) {
       console.error("Login error:", err.response?.data || err.message);
+      setErrors(err.response.data.errors);
+      console.log(errors);
     }
   };
 
@@ -103,7 +116,11 @@ const UserContextProvider = ({ children }) => {
         setLoggedIn,
         userData,
         signout,
-        setUserData
+        setUserData,
+        bikeDetails,
+        setBikeDetails,
+        errors,
+        setErrors
       }}
     >
       {children}

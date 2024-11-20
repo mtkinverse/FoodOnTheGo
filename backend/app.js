@@ -7,6 +7,7 @@ const cookieParser = require('cookie-parser');
 const userRoutes = require('./routes/userRoutes');
 const webRoutes = require('./routes/webRoutes');
 const ownerRoutes = require('./routes/ownerRoutes');
+const riderRoutes = require('./routes/riderRoutes');
 
 const app = express();
 
@@ -23,7 +24,7 @@ app.use(cookieParser());
 app.use('/', userRoutes);
 app.use('/', webRoutes);
 app.use('/', ownerRoutes);
-
+app.use('/',riderRoutes);
 const imagesPath = path.join(__dirname, 'images')
 
 app.use('/images', express.static(imagesPath))

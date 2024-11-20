@@ -4,7 +4,7 @@ import TopRestaurants from '../Components/TopRestaurants';
 import { useUserContext } from '../contexts/userContext';
 import Cart from './Cart';
 const HomePage = () => {
-  const {loggedIn,userData} = useUserContext();
+  const {loggedIn} = useUserContext();
   return (
     <>
       {/* Header Section with purple-White Gradient */}

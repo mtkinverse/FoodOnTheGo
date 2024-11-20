@@ -8,13 +8,15 @@ const Login = () => {
   const [values, setValues] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { userData, login, loggedIn } = useUserContext();
+  const { userData, login, loggedIn,errors,setErrors } = useUserContext();
   const [role, changeRole] = useState("Customer");
-  const [errors, setErrors] = useState({ email: "", password: "" });
 
   useEffect(() => {
     if (loggedIn && userData?.User_name) {
-      navigate("/");
+       if(userData.role === "Customer" || userData.role == "Restaurant_Owner") navigate("/");
+       else if(userData.role === "Delivery_Rider"){ 
+         navigate("/RiderDashboard");
+      }
     }
   }, [loggedIn, userData, navigate]);
 
@@ -33,16 +35,9 @@ const Login = () => {
         role,
       };
       console.log("Sending ", sendVal);
-      setErrors({ email: "", password: "" });
       const response = await login(sendVal);
-      if (!loggedIn) {
-        setValues({ email: "", password: "" });
-      }
     } catch (err) {
-      console.error(err.response?.data || err.message);
-      if (err.response?.data?.errors) {
-        setErrors(err.response.data.errors);
-      }
+      console.log('Error executing login()');
     } finally {
       setIsLoading(false);
     }
@@ -60,7 +55,6 @@ const Login = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="mt-8 space-y-6">
-            {/* Email Field */}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
                 Email Address
@@ -73,9 +67,7 @@ const Login = () => {
                   name="email"
                   value={values.email}
                   onChange={handleChange}
-                  className={`appearance-none relative block w-full px-5 py-2 pl-10 pr-3 border ${
-                    errors.email ? 'border-red-500' : 'border-gray-300'
-                  } placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm`}
+                  className={`appearance-none relative block w-full px-5 py-2 pl-10 pr-3 border  placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm`}
                   placeholder="you@example.com"
                 />
                 <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
@@ -84,7 +76,6 @@ const Login = () => {
                 <p className="mt-1 text-sm text-red-600">{errors.email}</p>
               )}
             </div>
-
             {/* Password Field */}
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
@@ -98,9 +89,7 @@ const Login = () => {
                   name="password"
                   value={values.password}
                   onChange={handleChange}
-                  className={`appearance-none relative block w-full px-5 py-2 pl-10 border ${
-                    errors.password ? 'border-red-500' : 'border-gray-300'
-                  } placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm`}
+                  className={`appearance-none relative block w-full px-5 py-2 pl-10 border placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm`}
                   placeholder="Enter your password"
                 />
                 <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />

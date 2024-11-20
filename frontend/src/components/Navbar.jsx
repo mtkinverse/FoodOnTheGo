@@ -10,7 +10,7 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const profileMenuRef = useRef(null); // Ref to handle outside click
-  const { loggedIn, signout, userData, setUserData } = useUserContext();
+  const { loggedIn, signout, userData, setUserData,bikeDetails,setBikeDetails } = useUserContext();
   const { cartCount } = useCartContext();
   const [viewProfile, setViewProfile] = useState(false);
   const [editMode, setEditMode] = useState(false);
@@ -27,6 +27,7 @@ const Navbar = () => {
     phone_no: "",
     role: "",
   });
+  const [bikePopup,setBikePopup] = useState(false);
   const handleDetailChange = (e) => {
     const { name, value } = e.target;
     setUpdated((prevValues) => ({
@@ -39,6 +40,17 @@ const Navbar = () => {
     setIsProfileMenuOpen(!isProfileMenuOpen);
   };
   
+  const handleBikeChange = (e) => {
+    e.preventDefault();
+    axios.post(`/api/updateVehicle/${userData.User_id}`,{bikeNo : bikeDetails.BikeNo})
+    .then(response => {
+      console.log('Bike id updated');
+      setBikePopup(false);
+    })
+    .catch(err => {
+      console.log("error updating bike");
+    })
+  }
   useEffect(() => {
     if (userData) {
       setUpdated({
@@ -90,7 +102,7 @@ const Navbar = () => {
     { label: "Contact", path: "/contact" },
   ];
 
-  if (!loggedIn || userData?.role === "Restaurant_Owner") {
+  if (!loggedIn || userData?.role === "Restaurant_Owner" || userData?.role === "Delivery_Rider") {
     const index = navItems.findIndex((item) => item.label === "Restaurants");
     if (index !== -1) {
       navItems.splice(index, 1);
@@ -99,7 +111,11 @@ const Navbar = () => {
   if (loggedIn && userData?.role === "Restaurant_Owner") {
     navItems.push({ label: "Owned", path: "/ownedRestaurants" });
   }
-  
+
+  if (loggedIn && userData?.role === "Delivery_Rider") {
+    navItems.push({ label: "DashBoard", path: "/RiderDashboard" });
+  }
+
   const handlePasswordChange = (e) => {
     const {name,value} = e.target;
     setNewPassword((prevPassword) => ({
@@ -129,7 +145,7 @@ const Navbar = () => {
   // Save updates
   const handleSave = () => {  
     setUserData(updatedDetails);
-      axios.post('/api/updateAccount',{userData : userData,password : newPassword.first_entry})
+      axios.post('/api/updateAccount',{userData : updatedDetails,password : newPassword.first_entry})
      .then(response => {
           console.log('Updated data in DB successfully');
      })
@@ -201,19 +217,19 @@ const Navbar = () => {
                     >
                       View Profile
                     </button>
-                    <button
-                      className="block px-4 py-2 text-sm text-white hover:bg-purple-800"
-                    >
+                    {userData.role === "Customer" && (
+                      <button
+                      className="block px-4 py-2 text-sm text-white hover:bg-purple-800">
                       View Past Orders
-                    </button>
-                    <button
-                      className="block px-4 py-2 text-sm text-white hover:bg-purple-800"
-                    >
+                    </button> )}
+                     {userData.role === "Customer" && (
+                    <button className="block px-4 py-2 text-sm text-white hover:bg-purple-800">
                       Track Order
                     </button>
-
+                    )}
                     {userData.role === 'Delivery_Rider' &&  (<button
                       className="block px-4 py-2 text-sm text-white hover:bg-purple-800"
+                      onClick={() => setBikePopup(true)}
                     >
                       Change Vehicle Details
                     </button> )}
@@ -236,7 +252,51 @@ const Navbar = () => {
               </NavLink>
             )}
           </div>
-
+          
+          {
+            bikePopup && (
+              <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50">
+          <div className="bg-white w-11/12 max-w-md p-6 rounded-lg shadow-lg">
+            <h2 className="text-2xl font-bold text-purple-700 text-center mb-4">
+              Update Your Vehicle
+            </h2>
+            <p className="text-gray-700 text-sm text-center mb-6">
+              Please provide your new bike's number plate .
+            </p>
+            <form className="space-y-4" onSubmit={handleBikeChange}>
+              <div>
+                <label
+                  htmlFor="numberPlate"
+                  className="block text-gray-600 text-sm font-medium mb-1"
+                >
+                  Bike Number Plate
+                </label>
+                <input
+                  id="numberPlate"
+                  type="text"
+                  name="BikeNo"
+                  value={bikeDetails.BikeNo || ""}
+                  onChange={(e) =>
+                    setBikeDetails((prev) => ({
+                      ...prev,
+                      BikeNo: e.target.value,
+                    }))
+                  }
+                  className="w-full border border-gray-300 rounded-lg p-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                  required
+                />
+              </div>
+              <button
+                type="submit"
+                className="w-full bg-purple-500 text-white py-2 rounded-lg hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
+              >
+                Submit
+              </button>
+            </form>
+          </div>
+        </div>
+            )
+          }
           {viewProfile && (
   <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
     

@@ -9,6 +9,9 @@ import Footer from './components/Footer';
 import OwnedRestaurants from './pages/OwnedRestaurants';
 import Menu from './components/Menu';  // Your menu component
 import 'bootstrap/dist/css/bootstrap.min.css';
+import RiderDashboard from "./views/rider/RiderDashboard";
+
+
 // const router = createBrowserRouter([
 //    {
 //        path: "/",
@@ -47,7 +50,7 @@ const router = createBrowserRouter(
        <Route path='restaurants' element={<Restaurants />} />
        <Route path='ownedRestaurants' element = {<OwnedRestaurants/>}/>
        <Route path ='menu/:restaurant_name/:restaurant_id' element = {<Menu/>}/>
-       {/* <Route path= 'manageRestaurant/:id' element = {<ManageRestaurant/>} /> */}
+       <Route path= 'RiderDashboard' element = {<RiderDashboard/>} />
      </Route>
    ),
  );

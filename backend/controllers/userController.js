@@ -110,7 +110,7 @@ module.exports.loginUser = (req, res) => {
             // Return an error for invalid email
             console.log("email error set");
             return res.status(400).json({
-                errors: { email: "Invalid email address" }
+                errors: { email: "Invalid email address",password : "" }
             });
         }
          
@@ -121,7 +121,7 @@ module.exports.loginUser = (req, res) => {
             // Return an error for invalid password
             console.log("password error set");
             return res.status(401).json({
-                errors: { password: "Incorrect password" }
+                errors: { email: "" ,password: "Incorrect password" }
             });
         }
 
@@ -193,8 +193,9 @@ module.exports.getMenu = (req, res) => {
 
 module.exports.updateAccount = (req,res) => {
     const {User_id,User_name,Email_address,phone_no,role} = req.body.userData;
+    console.log(req.body.userData);
     let new_password = req.body.password;
-    console.log('updated account hitt');
+    console.log('update account hitt');
     let hash ;
     if(new_password !== ""){
         const salt = bcrypt.genSaltSync(10);
