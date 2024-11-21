@@ -832,9 +832,7 @@ const Navbar = () => {
             </div>
           )}
 
-          {/* Rest of the existing code remains the same (bike popup, view profile, etc.) */}
           {bikePopup && (
-            // Existing bike popup code
             <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50">
               <div className="bg-white w-11/12 max-w-md p-6 rounded-lg shadow-lg">
                 <h2 className="text-2xl font-bold text-purple-700 text-center mb-4">
@@ -891,7 +889,7 @@ const Navbar = () => {
 
       <button
         className="absolute top-4 right-2 text-purple-600 hover:text-purple-800 text-xl"
-        onClick={() => setEditMode(!editMode)} // Toggle edit mode
+        onClick={() => setEditMode(!editMode)} 
       >
         <FaPencilAlt />
       </button>
