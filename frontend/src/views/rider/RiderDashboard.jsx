@@ -114,7 +114,7 @@ const RiderDashboard = () => {
     e.preventDefault();
     try {
         console.log("Sending request",bikeDetails.BikeNo,userData.User_id);
-      await axios.post(`/api/addVehicle/${userData.User_id}`, {
+      await axios.post(`/api/setVehicle/${userData.User_id}`, {
         bikeNo: bikeDetails.BikeNo,
       });
       console.log("Vehicle registered");
