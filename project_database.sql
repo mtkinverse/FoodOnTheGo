@@ -120,6 +120,7 @@ CREATE TABLE Orders (
     Order_id INT AUTO_INCREMENT PRIMARY KEY,
     Order_date DATE DEFAULT (CURRENT_DATE),  
     Order_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  
+    Order_date DATE DEFAULT SYSDATE,
     Order_Status VARCHAR(50) CHECK (Order_Status IN ('Placed', 'Preparing', 'Out for delivery', 'Delivered')), 
     Restaurant_id INT NOT NULL, 
     Review_id INT DEFAULT NULL,
