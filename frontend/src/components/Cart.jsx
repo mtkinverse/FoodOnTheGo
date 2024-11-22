@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useCartContext } from "../contexts/cartContext";
 import { FaShoppingCart, FaPlus, FaMinus, FaTrash } from "react-icons/fa";
+import {Banknote} from "lucide-react";
 
 const Cart = () => {
   const { cart, cartCount, handleIncrement, handleDecrement, handleRemove, placeOrder } = useCartContext();
@@ -16,6 +17,7 @@ const Cart = () => {
   const handleOrderPlacment = e => {
     e.preventDefault();
     placeOrder(location.Address,location.NearbyPoint);
+    setOrderPopUp(false);
   }
 
   const changeLocation = e => {
@@ -103,7 +105,7 @@ const Cart = () => {
             <span className="text-xl font-bold text-purple-900">
               Total: Rs.{getTotalAmount()}
             </span>
-            <button
+            {cartCount > 0 && <button
               onClick={e =>{e.preventDefault(); setCartPopup(false); setOrderPopUp(true);}}
               className="w-full bg-purple-600 text-white py-3 
                          rounded-lg hover:bg-purple-700 
@@ -111,70 +113,96 @@ const Cart = () => {
             >
               Place Order
             </button>
+            }
           </div>
         </div>
       </div>
       {orderPopUp && 
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div className="bg-white rounded-lg shadow-lg w-1/3 p-6">
-          <h2 className="text-2xl font-bold text-purple-600 mb-4">
-            Confirm Order
-          </h2>
-          <form onSubmit={handleOrderPlacment}>
-            <div className="mb-4">
-              <label
-                htmlFor="name"
-                className="block text-gray-700 font-bold mb-2"
-              >
-                Address 
-              </label>
-              <input
-                type="text"
-                id="name"
-                name="Address"
-                className="w-full border rounded-lg py-2 px-3 text-gray-700"
-                value={location.Address}
-                onChange={changeLocation}
-                required
-              />
-            </div>
-
-            <div className="mb-4">
-              <label
-                htmlFor="price"
-                className="block text-gray-700 font-bold mb-2"
-              >
-                Near by point
-              </label>
-              <input
-                type="text"
-                id="price"
-                name="NearbyPoint"
-                className="w-full border rounded-lg py-2 px-3 text-gray-700"
-                value={location.NearbyPoint}
-                onChange={changeLocation}
-                required
-              />
-            </div>
-
-            <div className="flex justify-end">
-              <button
-                type="button"
-                className="mr-4 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400"
-                onClick={() => {setOrderPopUp(false); setCartPopup(true);}}
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className="bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700"
-              >
-                Confirm
-              </button>
-            </div>
-          </form>
+        (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
+            <h2 className="text-2xl font-bold text-purple-600 mb-4">
+              Confirm Order
+            </h2>
+            <form onSubmit={handleOrderPlacment}>
+              <div className="mb-4">
+                <label
+                  htmlFor="name"
+                  className="block text-gray-700 font-bold mb-2"
+                >
+                  Address 
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  name="Address"
+                  className="w-full border rounded-lg py-2 px-3 text-gray-700"
+                  value={location.Address}
+                  onChange={changeLocation}
+                  required
+                />
+              </div>
+    
+              <div className="mb-4">
+                <label
+                  htmlFor="price"
+                  className="block text-gray-700 font-bold mb-2"
+                >
+                  Near by point
+                </label>
+                <input
+                  type="text"
+                  id="price"
+                  name="NearbyPoint"
+                  className="w-full border rounded-lg py-2 px-3 text-gray-700"
+                  value={location.NearbyPoint}
+                  onChange={changeLocation}
+                  required
+                />
+              </div>
+    
+              <div className="mb-6">
+                <label className="block text-gray-700 font-bold mb-2">
+                  Payment Method
+                </label>
+                <div className="flex items-center p-3 border rounded-lg bg-gray-50">
+                  <input
+                    type="radio"
+                    id="cod"
+                    name="paymentMethod"
+                    className="w-4 h-4 text-purple-600"
+                    checked={true}
+                    readOnly
+                  />
+                  <label
+                    htmlFor="cod"
+                    className="ml-2 flex items-center text-gray-700"
+                  >
+                    <Banknote className="w-5 h-5 mr-2 text-purple-600" />
+                    Cash on Delivery
+                  </label>
+                </div>
+              </div>
+    
+              <div className="flex flex-col sm:flex-row justify-end gap-3">
+                <button
+                  type="button"
+                  className="bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400 w-full sm:w-auto"
+                  onClick={() => {setOrderPopUp(false); setCartPopup(true);}}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 w-full sm:w-auto"
+                >
+                  Confirm
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
-      </div>
+        )
       }
     </>
   );

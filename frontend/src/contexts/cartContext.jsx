@@ -35,7 +35,7 @@ const CartContextProvider = ({ children }) => {
         Order_id : null
       })
     })
-    console.log('seding items',items);
+    console.log('sending items',items);
     console.log('cart is ',cart);
     
     const req = {
@@ -47,11 +47,15 @@ const CartContextProvider = ({ children }) => {
     }
     console.log('seding request',req);
 
-    axios.
-    post('/api/placeOrder',JSON.stringify(req))
+    axios.post('/api/placeOrder', JSON.stringify(req), {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })    
     .then(res => {
       if(res.status === 200){
         alert(res.data.message);
+        setCart([]);
       }
     })
     .catch(err => {

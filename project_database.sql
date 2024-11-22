@@ -2,6 +2,8 @@ CREATE DATABASE online_food_system;
 
 USE online_food_system;
 
+SHOW TRIGGERS WHERE `Table` = 'customer';
+DROP TRIGGER  assign_cart_to_customer;
 CREATE TABLE Customer(
    Customer_id INT AUTO_INCREMENT PRIMARY KEY,
    Customer_Name VARCHAR(100) NOT NULL,
@@ -137,7 +139,6 @@ BEGIN
     DECLARE currentTime TIME;
     DECLARE opensAt TIME;
     DECLARE closesAt TIME;
-
     SET currentTime = CURRENT_TIME();
 
     SELECT OpensAt, ClosesAt INTO opensAt, closesAt
@@ -225,10 +226,14 @@ ALTER TABLE Ordered_Items ADD CONSTRAINT Item_FK FOREIGN KEY(Item_id) REFERENCES
 ALTER TABLE Ordered_Items ADD CONSTRAINT comp_PK PRIMARY KEY(Order_id,Item_id);
 
 
+select * from customer;
+select * from delivery_rider;
+select * from restaurant_owner;
 delete from customer;
 Select * from restaurant;
 select * from locations;
 select * from menu_items;
+select * from menu;
 delete from menu_items where Item_id= 18032;
 delete  from restaurant;
 delete from locations;
@@ -237,3 +242,8 @@ delete from menu_items;
 select * from customer;
 select * from delivery_rider;
 drop table delivery_rider;
+
+select * from orders;
+select * from ordered_items;
+delete from orders;
+delete from ordered_items;

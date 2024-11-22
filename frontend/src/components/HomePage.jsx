@@ -3,6 +3,7 @@ import { FaFacebook, FaTwitter, FaInstagram, FaUtensils, FaStar, FaClock } from 
 import TopRestaurants from '../Components/TopRestaurants';
 import { useUserContext } from '../contexts/userContext';
 import Cart from './Cart';
+
 const HomePage = () => {
   const {loggedIn} = useUserContext();
   return (
