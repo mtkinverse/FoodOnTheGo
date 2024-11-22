@@ -12,7 +12,7 @@ const Restaurants = () => {
   const getRestaurants = async () => {
     try {
       setIsLoading(true);
-      const response = await axios.get('/api/restaurants', { withCredentials: true });
+      const response = await axios.get('/api/restaurants');
 
       if (Array.isArray(response.data)) {
         setRestaurantData(response.data);
@@ -32,18 +32,13 @@ const Restaurants = () => {
   };
 
   useEffect(() => {
-    if (loggedIn) {
       getRestaurants();
-    } else {
-      setRestaurantData([]);
-      setIsLoading(false);
-    }
-  }, [loggedIn]);
+  }, []);
 
   return (
     <div className="relative bg-purple-50 min-h-screen">
       {/* Main Content Area */}
-      <div className={`w-full ${loggedIn ? 'lg:pr-80' : ''} transition-all duration-300`}>
+      <div className="w-full lg:pr-80 transition-all duration-300">
         <div className="max-w-7xl mx-auto px-4 py-10">
           <h1 className="text-4xl md:text-5xl font-bold text-center text-purple-700 mb-8 md:mb-12">
             Explore Restaurants
@@ -56,9 +51,7 @@ const Restaurants = () => {
           ) : restaurantData.length === 0 ? (
             <div className="bg-white rounded-lg shadow-md p-8 text-center">
               <p className="text-xl text-gray-600">
-                {loggedIn 
-                  ? "No restaurants found. Please check back later."
-                  : "Please login to view restaurants."}
+                No restaurants found. Please check back later.
               </p>
             </div>
           ) : (

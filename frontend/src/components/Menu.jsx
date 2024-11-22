@@ -34,9 +34,8 @@ const Menu = () => {
       }
     };
 
-    if (!loggedIn) navigate("/");
     fetchMenuItems();
-  }, [restaurant_id, restaurant_name, loggedIn, navigate]);
+  }, [restaurant_id, restaurant_name, navigate]);
 
   const categories = ["All", ...new Set(menuItems.map(item => item.Cuisine))];
   const filteredItems = selectedCategory === "All" 
@@ -93,7 +92,7 @@ const Menu = () => {
       </div>
 
       {/* Menu Grid */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+      <div className="max-w-7xl mx-auto overflow-x:hidden px-4 sm:px-6 lg:px-8 pb-20">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredItems.map((item) => (
             <div
@@ -124,9 +123,12 @@ const Menu = () => {
                     Rs.{item.Item_Price}
                   </span>
                   <button
+                    disabled={!loggedIn}
                     onClick={() => handleAddToCart(item)}
-                    className="flex items-center space-x-2 px-4 py-2 bg-purple-600 text-white 
-                             rounded-lg hover:bg-purple-700 transition-colors duration-300"
+                    className={`flex items-center space-x-2 px-4 py-2 
+                      ${!loggedIn ? 'bg-gray-500 cursor-not-allowed' : 'bg-purple-600 hover:bg-purple-700'} 
+                      text-white rounded-lg transition-colors duration-300`}
+                    
                   >
                     <FaCartPlus className="w-4 h-4" />
                     <span>Add</span>
@@ -139,10 +141,11 @@ const Menu = () => {
       </div>
 
       {/* Cart Component */}
-      <div className="fixed bottom-0 right-0 m-4 z-20">
+      {loggedIn && <div className="fixed bottom-0 right-0 m-4 z-20">
         <Cart />
-      </div>
+      </div> }
     </div>
+     
   );
 };
 

@@ -13,7 +13,9 @@ const Login = () => {
 
   useEffect(() => {
     if (loggedIn && userData?.User_name) {
-       if(userData.role === "Customer" || userData.role == "Restaurant_Owner") navigate("/");
+       if(userData.role === "Customer" || userData.role == "Restaurant_Owner") {
+         navigate("/");
+       }
        else if(userData.role === "Delivery_Rider"){ 
          navigate("/RiderDashboard");
       }

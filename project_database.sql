@@ -94,6 +94,17 @@ CREATE TABLE Menu_Items (
 ALTER TABLE Menu_Items AUTO_INCREMENT = 18029;
 
 
+CREATE TRIGGER delete_order_address
+AFTER DELETE ON orders
+FOR EACH ROW
+BEGIN
+    DELETE FROM deliveryaddress
+    WHERE address_id = OLD.Address_id;
+END
+/
+
+
+
 CREATE TABLE DeliveryAddress(
     Address_id INT AUTO_INCREMENT PRIMARY KEY,
     Address VARCHAR(100) NOT NULL,
@@ -117,11 +128,10 @@ CREATE TABLE Delivery_Rider(
 ALTER TABLE Delivery_Rider AUTO_INCREMENT = 102922;
 
 
-
+--order_date dropped ,can be extracted from order_time (timestamp)
 CREATE TABLE Orders (
     Customer_id INT NOT NULL,
     Order_id INT AUTO_INCREMENT PRIMARY KEY,
-    Order_date DATE DEFAULT (CURRENT_DATE),  
     Order_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  
     Order_Status VARCHAR(50) CHECK (Order_Status IN ('Placed', 'Preparing', 'Out for delivery', 'Delivered')), 
     Restaurant_id INT NOT NULL, 
@@ -130,6 +140,8 @@ CREATE TABLE Orders (
     Delivered_by_id INT DEFAULT NULL
 );
 ALTER TABLE Orders AUTO_INCREMENT = 75638;
+
+ALTER TABLE Orders drop column order_date;
 
 drop trigger if exists order_placement;
 create trigger order_placement
@@ -247,3 +259,16 @@ select * from orders;
 select * from ordered_items;
 delete from orders;
 delete from ordered_items;
+select * from deliveryaddress;
+delete from deliveryaddress;
+
+delete from restaurant;
+
+   select o.order_id,o.order_status,r.restaurant_name,o.customer_id,DATE(o.order_time) AS order_date, 
+             TIME(o.order_time) AS order_time,i.item_id,i.dish_name,oo.quantity,i.item_price * oo.quantity AS extended_total
+      from orders o join restaurant r
+      on o.restaurant_id = r.restaurant_id
+      join menu_items i on i.menu_id = r.menu_id
+      join ordered_items oo on i.item_id = oo.item_id
+      where o.customer_id = 99195
+      order by order_date DESC;

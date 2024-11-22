@@ -18,17 +18,31 @@ const RestaurantCard = ({ restaurant }) => {
 
   const navigate = useNavigate(); // Getting navigate function
 
-  const isCurrentlyOpen = () => {
-    // Placeholder function - you can implement actual logic
-    return true;
+  const isCurrentlyOpen = (opensAt, closesAt) => {
+    const timeToMinutes = (time) => {
+      const [hours, minutes, seconds] = time.split(":").map(Number);
+      return hours * 60 + minutes + seconds / 60; // Convert to minutes
+    };
+  
+    const openingTime = timeToMinutes(opensAt);
+    const closingTime = timeToMinutes(closesAt);
+  
+    const now = new Date();
+    const currentTime = now.getHours() * 60 + now.getMinutes() + now.getSeconds() / 60; // Current time in minutes
+  
+    if (closingTime > openingTime) {
+      return currentTime >= openingTime && currentTime < closingTime;
+    } else {
+      return currentTime >= openingTime || currentTime < closingTime;
+    }
   };
 
   return (
     <div className="group relative bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 max-w-sm">
       <div className="absolute top-4 right-4 z-10">
         <span className={`px-3 py-1 rounded-full text-sm font-medium text-white
-          ${isCurrentlyOpen() ? 'bg-green-500' : 'bg-red-500'}`}>
-          {isCurrentlyOpen() ? 'Open Now' : 'Closed'}
+          ${isCurrentlyOpen(OpensAt,ClosesAt) ? 'bg-green-500' : 'bg-red-500'}`}>
+          {isCurrentlyOpen(OpensAt,ClosesAt) ? 'Open Now' : 'Closed'}
         </span>
       </div>
 
@@ -60,19 +74,16 @@ const RestaurantCard = ({ restaurant }) => {
 
         <div className="flex items-center justify-between text-sm text-gray-500">
           <span className="inline-flex items-center">
-            <span className="w-2 h-2 rounded-full bg-green-500 mr-2"></span>
+            <span className={`w-2 h-2 rounded-full ${isCurrentlyOpen(OpensAt, ClosesAt) ? 'bg-green-500' : 'bg-red-500'} mr-2`}></span>
             Available for delivery
           </span>
         </div>
 
         <button
-          disabled={!loggedIn}
-          onClick={() => loggedIn && navigate(`/menu/${restaurant.Restaurant_Name}/${restaurant.Restaurant_id}`)} // Navigate to the menu page
-          className={`w-full py-3 px-4 flex items-center justify-center space-x-2 rounded-lg transition-colors duration-200
-            ${loggedIn 
-              ? 'bg-purple-600 hover:bg-purple-700 text-white' 
-              : 'bg-gray-100 text-gray-400 cursor-not-allowed'
-            }`}
+          // disabled={!loggedIn}
+          onClick={() => navigate(`/menu/${restaurant.Restaurant_Name}/${restaurant.Restaurant_id}`)} // Navigate to the menu page
+          className="w-full py-3 px-4 flex items-center justify-center space-x-2 rounded-lg transition-colors duration-200 bg-purple-600 
+                 hover:bg-purple-700 text-white" 
         >
           <Utensils className="w-4 h-4" />
           <span className="font-medium">View Menu</span>

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";  // Import axios
+import axios from "axios";  
 import { useUserContext } from "../contexts/userContext";
 
 const AddRestaurantPopup = ({ isOpen, onClose,fetchRestaurants}) => {
@@ -9,22 +9,21 @@ const AddRestaurantPopup = ({ isOpen, onClose,fetchRestaurants}) => {
     Restaurant_name: "",
     OpensAt: "",
     ClosesAt: "",
-    Restaurant_image: null, // Initialize for file input
+    Restaurant_image: null, 
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    // Handle file input separately
     if (name === "Restaurant_image") {
       setFormValues((prevValues) => ({
         ...prevValues,
-        Restaurant_image: e.target.files[0], // Store the file object
+        Restaurant_image: e.target.files[0], 
       }));
     } else {
       setFormValues((prevValues) => ({
         ...prevValues,
-        [name]: value, // Update the specific field dynamically
+        [name]: value, 
       }));
     }
   };
@@ -67,7 +66,7 @@ const AddRestaurantPopup = ({ isOpen, onClose,fetchRestaurants}) => {
     <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-50">
       <div className="bg-white w-full max-w-md p-6 rounded-lg shadow-lg">
         <div className="flex justify-between items-center border-b pb-4 mb-4">
-          <h2 className="text-xl font-bold text-orange-900">Add Restaurant</h2>
+          <h2 className="text-xl font-bold text-purple-900">Add Restaurant</h2>
           <button
             onClick={onClose}
             className="text-gray-500 hover:text-gray-700 text-xl"

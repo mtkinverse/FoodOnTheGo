@@ -18,6 +18,10 @@ const Cart = () => {
     e.preventDefault();
     placeOrder(location.Address,location.NearbyPoint);
     setOrderPopUp(false);
+    setLocation({
+      Address : "",
+      NearbyPoint:""
+    })
   }
 
   const changeLocation = e => {

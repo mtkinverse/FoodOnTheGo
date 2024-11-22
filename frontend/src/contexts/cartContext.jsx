@@ -5,10 +5,10 @@ import axios from "axios";
 const CartContext = createContext();
 
 const CartContextProvider = ({ children }) => {
-  const { loggedIn, userData } = useUserContext();
+  const { loggedIn, userData,fetchOrders } = useUserContext();
   const [cart, setCart] = useState([]);
   const [cartCount, setCartCount] = useState(0);
-
+  
   useEffect(() => {
     if (loggedIn && userData?.User_id) {
       const storage_name = `${userData.User_id}_cart`;
@@ -56,11 +56,12 @@ const CartContextProvider = ({ children }) => {
       if(res.status === 200){
         alert(res.data.message);
         setCart([]);
+        fetchOrders();
       }
     })
     .catch(err => {
-      alert('Cannot place order !');
-      console.log(err);
+     // alert('Cannot place order !');
+    //  console.log(err);
     })
   }
 
