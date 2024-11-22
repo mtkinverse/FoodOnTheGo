@@ -3,11 +3,29 @@ import { useCartContext } from "../contexts/cartContext";
 import { FaShoppingCart, FaPlus, FaMinus, FaTrash } from "react-icons/fa";
 
 const Cart = () => {
-  const { cart, cartCount, handleIncrement, handleDecrement, handleRemove } = useCartContext();
+  const { cart, cartCount, handleIncrement, handleDecrement, handleRemove, placeOrder } = useCartContext();
+  const [location,setLocation] = useState({
+    Address : "", NearbyPoint : ""
+  });
+  const [orderPopUp,setOrderPopUp] = useState(false);
   const [cartPopup, setCartPopup] = useState(false);
 
   const getTotalAmount = () =>
     cart.reduce((total, item) => total + item.Item_Price * item.quantity, 0);
+
+  const handleOrderPlacment = e => {
+    e.preventDefault();
+    placeOrder(location.Address,location.NearbyPoint);
+  }
+
+  const changeLocation = e => {
+    setLocation(prev => (
+      {
+      ...prev,
+      [e.target.name] : e.target.value
+      }
+    ))
+  }
 
   return (
     <>
@@ -86,7 +104,7 @@ const Cart = () => {
               Total: Rs.{getTotalAmount()}
             </span>
             <button
-              onClick={() => {}}
+              onClick={e =>{e.preventDefault(); setCartPopup(false); setOrderPopUp(true);}}
               className="w-full bg-purple-600 text-white py-3 
                          rounded-lg hover:bg-purple-700 
                          transition duration-300"
@@ -96,6 +114,68 @@ const Cart = () => {
           </div>
         </div>
       </div>
+      {orderPopUp && 
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="bg-white rounded-lg shadow-lg w-1/3 p-6">
+          <h2 className="text-2xl font-bold text-purple-600 mb-4">
+            Confirm Order
+          </h2>
+          <form onSubmit={handleOrderPlacment}>
+            <div className="mb-4">
+              <label
+                htmlFor="name"
+                className="block text-gray-700 font-bold mb-2"
+              >
+                Address 
+              </label>
+              <input
+                type="text"
+                id="name"
+                name="Address"
+                className="w-full border rounded-lg py-2 px-3 text-gray-700"
+                value={location.Address}
+                onChange={changeLocation}
+                required
+              />
+            </div>
+
+            <div className="mb-4">
+              <label
+                htmlFor="price"
+                className="block text-gray-700 font-bold mb-2"
+              >
+                Near by point
+              </label>
+              <input
+                type="text"
+                id="price"
+                name="NearbyPoint"
+                className="w-full border rounded-lg py-2 px-3 text-gray-700"
+                value={location.NearbyPoint}
+                onChange={changeLocation}
+                required
+              />
+            </div>
+
+            <div className="flex justify-end">
+              <button
+                type="button"
+                className="mr-4 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400"
+                onClick={() => {setOrderPopUp(false); setCartPopup(true);}}
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700"
+              >
+                Confirm
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+      }
     </>
   );
 };

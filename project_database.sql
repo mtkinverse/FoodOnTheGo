@@ -117,10 +117,10 @@ ALTER TABLE Delivery_Rider AUTO_INCREMENT = 102922;
 
 
 CREATE TABLE Orders (
+    Customer_id INT NOT NULL,
     Order_id INT AUTO_INCREMENT PRIMARY KEY,
     Order_date DATE DEFAULT (CURRENT_DATE),  
     Order_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  
-    Order_date DATE DEFAULT SYSDATE,
     Order_Status VARCHAR(50) CHECK (Order_Status IN ('Placed', 'Preparing', 'Out for delivery', 'Delivered')), 
     Restaurant_id INT NOT NULL, 
     Review_id INT DEFAULT NULL,
@@ -129,9 +129,70 @@ CREATE TABLE Orders (
 );
 ALTER TABLE Orders AUTO_INCREMENT = 75638;
 
+drop trigger if exists order_placement;
+create trigger order_placement
+before insert on orders
+for each row
+BEGIN
+    DECLARE currentTime TIME;
+    DECLARE opensAt TIME;
+    DECLARE closesAt TIME;
+
+    SET currentTime = CURRENT_TIME();
+
+    SELECT OpensAt, ClosesAt INTO opensAt, closesAt
+    FROM Restaurant
+    WHERE Restaurant_id = NEW.Restaurant_id;
+
+    IF currentTime < opensAt OR currentTime > closesAt THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Order cannot be placed as the restaurant is closed.';
+    END IF;
+END;
+/
+
+drop procedure if exists PlaceOrder;
+CREATE PROCEDURE PlaceOrder(
+    IN p_Customer_id INT,
+    IN p_Restaurant_id INT,
+    IN p_Address VARCHAR(100),
+    IN p_NearbyPoint VARCHAR(50),
+    OUT p_Order_id INT
+)
+BEGIN
+    DECLARE tempPhoneNO VARCHAR(20);
+    DECLARE tempAddress_id INT;
+
+    DECLARE exit handler FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+        SET p_Order_id = NULL;
+    END;
+
+    START TRANSACTION;
+
+    SELECT phone_No INTO tempPhoneNo 
+    FROM customer 
+    WHERE Customer_id = p_Customer_id;
+
+    INSERT INTO DeliveryAddress (Address, phoneNo, nearbyPoint) 
+    VALUES (p_Address, tempPhoneNo, p_NearbyPoint); 
+-- Bhai y ese nahi ho rha
+--    select address_id into tempAddress_id from deliveryAddress where phoneNo = tempPhoneNo;
+    set tempAddress_id  = LAST_INSERT_ID();
+
+    INSERT INTO Orders (Customer_id, Restaurant_id, Address_id, Order_Status)
+    VALUES (p_Customer_id, p_Restaurant_id, tempAddress_id, 'Placed');
+    
+    SET p_Order_id = LAST_INSERT_ID();
+
+    COMMIT;
+
+END;
+/
 
 CREATE TABLE Ordered_Items (
-    Order_id INT NOT NULL,
+    Order_id INT default NULL,
     Item_id INT NOT NULL,
     quantity FLOAT NOT NULL
 );
@@ -157,6 +218,7 @@ ALTER TABLE Orders ADD CONSTRAINT O_R_FK FOREIGN KEY(Restaurant_id) REFERENCES R
 ALTER TABLE Orders ADD CONSTRAINT Review_FK FOREIGN KEY(Review_id) REFERENCES Order_Review(Review_id) ON DELETE SET NULL;
 ALTER TABLE Orders ADD CONSTRAINT Address_FK FOREIGN KEY(Address_id) REFERENCES DeliveryAddress(Address_id) ON DELETE cascade;
 ALTER TABLE Orders ADD CONSTRAINT delivery_id FOREIGN KEY(Delivered_by_id) REFERENCES Delivery_Rider(Rider_id) ON DELETE SET NULL;
+ALTER TABLE Orders ADD CONSTRAINT Customer_fk FOREIGN KEY(Customer_id) REFERENCES Customer(Customer_id) ON DELETE cascade;
 
 ALTER TABLE Ordered_Items ADD CONSTRAINT Order_FK FOREIGN KEY(Order_id) REFERENCEs Orders(Order_id) ON DELETE cascade;
 ALTER TABLE Ordered_Items ADD CONSTRAINT Item_FK FOREIGN KEY(Item_id) REFERENCES Menu_Items(Item_id) ON DELETE cascade;

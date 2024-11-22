@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useUserContext } from "./userContext";
+import axios from "axios";
 
 const CartContext = createContext();
 
@@ -23,6 +24,41 @@ const CartContextProvider = ({ children }) => {
     }
     setCartCount(cart.reduce((count, item) => count + item.quantity, 0));
   }, [cart, userData?.User_id]);
+
+  const placeOrder = (addressRecv,pointNear) => {
+    console.log('I received ', cart,cartCount);
+    let items = [];
+    cart.forEach(ele => {
+      items = items.concat({
+        Item_id : ele.Item_id,
+        quantity : ele.quantity,
+        Order_id : null
+      })
+    })
+    console.log('seding items',items);
+    console.log('cart is ',cart);
+    
+    const req = {
+      Customer_id : userData.User_id,
+      Menu_Id : cart[0].Menu_id,
+      Address : addressRecv,
+      NearbyPoint : pointNear,
+      items : items
+    }
+    console.log('seding request',req);
+
+    axios.
+    post('/api/placeOrder',JSON.stringify(req))
+    .then(res => {
+      if(res.status === 200){
+        alert(res.data.message);
+      }
+    })
+    .catch(err => {
+      alert('Cannot place order !');
+      console.log(err);
+    })
+  }
 
   const handleAddToCart = (item) => {
     const prevMenuId = cart.length > 0 ? cart[0].Menu_id : null;
@@ -80,6 +116,7 @@ const CartContextProvider = ({ children }) => {
         handleDecrement,
         handleIncrement,
         handleRemove,
+        placeOrder
       }}
     >
       {children}
