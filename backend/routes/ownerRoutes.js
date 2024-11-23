@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const {addMenu,addMenuItem,getOwnedRestaurants,AddRestaurant,deleteMenu,updateTimings,ChangeImage, addLocation, getLocations, deleteItem, updateItem} = require('../controllers/ownerController');
+const {addMenu,addMenuItem,getOwnedRestaurants,AddRestaurant,deleteMenu,
+      updateTimings,ChangeImage, addLocation, getLocations,
+      deleteItem, updateItem, addAdmin} = require('../controllers/ownerController');
 const upload = require("../multerConfig");
 
 router.post('/addMenu/:id',addMenu);
@@ -10,8 +12,9 @@ router.post('/addRestaurant',upload.single('Restaurant_image'),AddRestaurant);
 router.post('/changeRestaurantImage/:id',upload.single('Restaurant_image'),ChangeImage);
 router.post('/deleteMenu/:id',deleteMenu);
 router.post('/updateTimings/:id',updateTimings);
-router.post('/addLocation/:id',addLocation);
+router.post('/addLocation',addLocation);
 router.get('/getLocations/:id',getLocations);
 router.post('/deleteItem/:id',deleteItem)
 router.post('/updateItem/:id',upload.single('image'),updateItem);
+router.post('/addAdmin/:id',addAdmin);
 module.exports = router;

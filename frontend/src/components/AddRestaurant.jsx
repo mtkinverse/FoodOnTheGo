@@ -9,6 +9,8 @@ const AddRestaurantPopup = ({ isOpen, onClose,fetchRestaurants}) => {
     Restaurant_name: "",
     OpensAt: "",
     ClosesAt: "",
+    Address: "",
+    Loc_Contact_No: "",
     Restaurant_image: null, 
   });
 
@@ -38,7 +40,8 @@ const AddRestaurantPopup = ({ isOpen, onClose,fetchRestaurants}) => {
     formData.append("ClosesAt", formValues.ClosesAt);
     formData.append("Restaurant_image", formValues.Restaurant_image);
     formData.append("Owner_id", userData.User_id);
-
+    formData.append("Address",formValues.Address);
+    formData.append("Loc_Contact_No",formValues.Loc_Contact_No);
     axios
       .post("/api/addRestaurant", formData, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -84,7 +87,7 @@ const AddRestaurantPopup = ({ isOpen, onClose,fetchRestaurants}) => {
               name="Restaurant_name"
               value={formValues.Restaurant_name}
               onChange={handleChange}
-              className="w-full border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="w-full border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
               placeholder="Enter restaurant name"
               required
             />
@@ -99,7 +102,7 @@ const AddRestaurantPopup = ({ isOpen, onClose,fetchRestaurants}) => {
               name="OpensAt"
               value={formValues.OpensAt}
               onChange={handleChange}
-              className="w-full border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="w-full border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
               required
             />
           </div>
@@ -113,7 +116,35 @@ const AddRestaurantPopup = ({ isOpen, onClose,fetchRestaurants}) => {
               name="ClosesAt"
               value={formValues.ClosesAt}
               onChange={handleChange}
-              className="w-full border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="w-full border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+              required
+            />
+          </div>
+          
+          <div className="mb-4">
+            <label className="block mb-1 text-gray-700 font-semibold">
+              Your first location's address
+            </label>
+            <input
+              type="text"
+              name="Address"
+              value={formValues.Address}
+              onChange={handleChange}
+              className="w-full border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+              required
+            />
+          </div>
+          
+          <div className="mb-4">
+            <label className="block mb-1 text-gray-700 font-semibold">
+              Your first location's contact number
+            </label>
+            <input
+              type="text"
+              name="Loc_Contact_No"
+              value={formValues.Loc_Contact_No}
+              onChange={handleChange}
+              className="w-full border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
               required
             />
           </div>
@@ -126,7 +157,7 @@ const AddRestaurantPopup = ({ isOpen, onClose,fetchRestaurants}) => {
               type="file"
               name="Restaurant_image"
               onChange={handleChange}
-              className="w-full border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="w-full border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
               accept="image/*"
               required
             />
@@ -142,7 +173,7 @@ const AddRestaurantPopup = ({ isOpen, onClose,fetchRestaurants}) => {
             </button>
             <button
               type="submit"
-              className="py-2 px-4 rounded-md bg-orange-600 hover:bg-orange-700 text-white"
+              className="py-2 px-4 rounded-md bg-purple-600 hover:bg-purple-700 text-white"
             >
               Add
             </button>

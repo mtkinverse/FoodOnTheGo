@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { createContext, useContext,useEffect } from "react";
+import { redirect } from "react-router-dom";
 const UserContext = createContext();
 
 const UserContextProvider = ({ children }) => {
@@ -18,66 +19,16 @@ const UserContextProvider = ({ children }) => {
   const [bikeDetails,setBikeDetails] = useState({
      BikeNo : ""
   })
+  
 
   const [errors, setErrors] = useState({ email: "", password: "" });
   const [orders,setOrders] = useState([]);
-  const [currentOrders, setCurrentOrders] = useState([]);
-  const [pastOrders, setPastOrders] = useState([]);
+  const [currentOrders, setCurrentOrders] = useState([]); // ye customer ke hain
+  const [pastOrders, setPastOrders] = useState([]);// ye bhi
+  
 
-  //  this is what API response looks like [
-//     {
-//         "order_id": 75645,
-//         "order_date": "2024-11-21T19:00:00.000Z",
-//         "order_time": "17:29:50",
-//         "customer_id": 99191,
-//         "restaurant_name": "KFC",
-//         "total_amount": 5800,
-//         "items": [
-//             {
-//                 "item_id": 18051,
-//                 "dish_name": "Zinger Burger",
-//                 "quantity": 1,
-//                 "sub_total": 700
-//             },
-//             {
-//                 "item_id": 18052,
-//                 "dish_name": "French Fries",
-//                 "quantity": 1,
-//                 "sub_total": 300
-//             },
-//             {
-//                 "item_id": 18053,
-//                 "dish_name": "Mighty Zinger",
-//                 "quantity": 4,
-//                 "sub_total": 4800
-//             }
-//         ]
-//     },
-//     {
-//         "order_id": 75647,
-//         "order_date": "2024-11-21T19:00:00.000Z",
-//         "order_time": "17:53:08",
-//         "customer_id": 99191,
-//         "restaurant_name": "14th Street Pizza",
-//         "total_amount": 3900,
-//         "items": [
-//             {
-//                 "item_id": 18056,
-//                 "dish_name": "Chicken Tikka ",
-//                 "quantity": 3,
-//                 "sub_total": 1800
-//             },
-//             {
-//                 "item_id": 18057,
-//                 "dish_name": "Slice for one",
-//                 "quantity": 3,
-//                 "sub_total": 2100
-//             }
-//         ]
-//     }
-// ]
-
-const fetchOrders = async () => {
+  const [restaurantOrders,setRestaurantOrders] = useState([]);
+  const fetchOrders = async () => {
   try {
     const response = await axios.get(`/api/getAllOrders/${userData.User_id}`);
     console.log(response.data);
@@ -104,7 +55,7 @@ const fetchOrders = async () => {
 };
 
 useEffect(() => {
-  if (userData.User_id !== 0) {
+  if (userData.User_id !== 0 && userData.role === "Customer") {
     fetchOrders();
   }
 }, [userData.User_id]);
@@ -116,9 +67,7 @@ useEffect(() => {
 
   const login = async (recvData) => {
     try {
-      const res = await axios.post(
-        "/api/login",
-        JSON.stringify({
+      const res = await axios.post("/api/login",JSON.stringify({
           email: recvData.email,
           password: recvData.password,
           role: recvData.role,
@@ -150,7 +99,7 @@ useEffect(() => {
             User_id: res.data.Rider_id,
             User_name: res.data.Rider_name,
             Email_address: res.data.Email_address,
-            phone_no: res.data.phone_no,
+            phone_no: res.data.Phone_No,
             role: res.data.role,
           };
           bikeData = {
@@ -164,43 +113,52 @@ useEffect(() => {
             phone_no: res.data.phone_no,
             role: res.data.role,
           };
-        }else if(res.data.role === 'Restaurant_Admin'){
+        }
+        else if(res.data.role === "Restaurant_Admin"){
           tempUserData = {
             User_id: res.data.Admin_id,
             User_name: res.data.Admin_Name,
+            Location_id: res.data.Location_id,
             Email_address: res.data.Email_address,
             phone_no: res.data.Phone_no,
             role: res.data.role,
-            Branch_id : res.data.Branch_id
-          };
+          }
         }
          else {
           throw new Error("Unknown role");
         }
 
-        // Set the state with the correct user data
         setUserData(tempUserData);
-        setBikeDetails(bikeData);
         setLoggedIn(true);
+        setBikeDetails(bikeData);
+          
         console.log("User data set for:", tempUserData);
-        
+        setErrors({
+          email: "",
+          password:""
+        })
       } else {
         throw new Error(res.message || "Unexpected error occurred");
       }
     } catch (err) {
-      console.error("Login error:", err.response?.data || err.message);
-      setErrors(err.response.data.errors);
+      console.error("Login error:", err.message);
+      setErrors(err);
       console.log(errors);
     }
   };
 
-  const signout = () => {
-
+  const signout = async () => {
     axios
       .post("/api/logout", JSON.stringify(userData), { withCredentials: true })
-      .then((res) => {
+      .then( async (res) => {
         if ((res.status = 200)) {
-          setLoggedIn(false);
+          await Promise.all([
+            setLoggedIn(false),
+            setUserData({
+              User_id: 0, User_name: "", Email_address: "",phone_no: "",role: "",
+           })
+          ]);
+
           console.log("uC: signedout");
           // alert("user logout successful");
           // navigate('/');
@@ -212,12 +170,12 @@ useEffect(() => {
       });
   };
 
+  //this is for admin
   const getRestaurantOrders = () => {
     axios
-    // .get('/api/getOrders/' + userData.Branch_id)
-    .get('/api/getOrders/' + 1234)
+    .get(`/api/getOrders/${userData.Location_id}`)
     .then(res => {
-      setCurrentOrders(res.data.orders);
+      setRestaurantOrders(res.data.orders);
     })
     .catch(err => {
       console.log('getting orders failed ',err.message);
@@ -241,7 +199,9 @@ useEffect(() => {
         setCurrentOrders,
         pastOrders,
         fetchOrders,
-        getRestaurantOrders
+        getRestaurantOrders,
+        restaurantOrders,
+        setRestaurantOrders
       }}
     >
       {children}

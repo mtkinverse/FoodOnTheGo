@@ -131,9 +131,7 @@ const OwnedRestaurants = () => {
                   <div className="flex items-center text-gray-600">
                     <MapPin className="h-5 w-5 text-indigo-500 mr-2" />
                     <span className="text-sm">
-                      {restaurant.num_locations > 0
-                        ? `Operational in ${restaurant.num_locations} Location`
-                        :  restaurant.num_locations > 0 ?  `Operational in ${restaurant.num_locations} Locations` : "No locations available"}
+                          {restaurant.Address}
                     </span>
                   </div>
 

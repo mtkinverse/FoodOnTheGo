@@ -12,12 +12,15 @@ const Login = () => {
   const [role, changeRole] = useState("Customer");
 
   const setNavigation = () => {
+    console.log('In navigation',userData.role);
     if (loggedIn && userData?.User_name) {
-      if(userData.role === "Customer" || userData.role == "Restaurant_Owner") {
+      if(userData.role === "Customer" || userData.role === "Restaurant_Owner") {
+        console.log('navigating ',userData.role,' to homepage');
         navigate("/");
       }
       else if(userData.role === "Delivery_Rider"){ 
         navigate("/RiderDashboard");
+        console.log('navigating ',userData.role,' to rider dashboard');
      }
      else if(userData.role === "Restaurant_Admin"){
        console.log('admin found ');
@@ -28,10 +31,19 @@ const Login = () => {
    }
   }
 
-  useEffect(() => {
-    console.log('login UE')
+useEffect(() => {
+  console.log("Login useEffect triggered with:", {
+    loggedIn,
+    userDataRole: userData?.role,
+    userDataComplete: !!userData?.User_name
+  });
+  
+  if (loggedIn && userData?.role) {
+    console.log("Attempting navigation for role:", userData.role);
     setNavigation();
-  }, [loggedIn, userData, navigate]);
+  }
+}, [loggedIn, userData]);
+
 
   const handleChange = (e) => {
     setValues((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -47,13 +59,14 @@ const Login = () => {
         password: values.password,
         role,
       };
-      console.log("Sending ", sendVal);
       const response = await login(sendVal);
+      console.log('User logged in ',userData);
     } catch (err) {
       console.log('Error executing login()');
     } finally {
-      console.log(loggedIn,isLoading,userData);
+      console.log('Setting loading false');
       setIsLoading(false);
+      console.log('Not here');
     }
   };
 

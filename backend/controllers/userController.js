@@ -133,7 +133,7 @@ module.exports.loginUser = (req, res) => {
             "my_key", 
             { expiresIn: 600 }
         );
-
+        console.log('Login successful for ', role);
         res.status(200).cookie("access_token", token, {
             httpOnly: true
         }).json({

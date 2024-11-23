@@ -1,13 +1,48 @@
 const db = require('../db');
 const path = require('path');
 const fs = require('fs');
+const bcrypt = require('bcrypt');
+
+module.exports.addAdmin = (req,res) => {
+     const restaurant_id = req.params.id;
+     const { adminData, Location_id } = req.body; 
+
+     const { Admin_Name, Email_address,Account_Password, Phone_no} = adminData;
+
+     console.log('Hit add admin ',Location_id ,Admin_Name, Email_address,Account_Password, Phone_no);
+     
+     const salt = bcrypt.genSaltSync(10);
+     const hash = bcrypt.hashSync(Account_Password, salt);
+     const admin_q = 'INSERT INTO restaurant_admin (Location_id,Admin_name,email_address,account_password,phone_no) VALUES(?,?,?,?,?)';
+
+     db.query(admin_q,[Location_id ,Admin_Name, Email_address,hash, Phone_no],(err,result)=>{
+        if(err){
+            console.log('Admin error',err.message);
+            return res.status(500).json({ error: 'Database query failed', details: err.message });
+        }
+        const admin_id = result.insertId;
+        const set_q = 'UPDATE restaurant SET r_admin = ? where restaurant_id = ?';
+        db.query(set_q,[admin_id,restaurant_id],(err1,result1) =>{
+            if(err1){
+                console.log('updating error');
+                return res.status(500).json({ error: 'Database query failed', details: err.message });
+            }
+            res.status(200).json({admin_id});
+        })
+     })
+}
 
 module.exports.getOwnedRestaurants = (req, res) => {
     console.log('Hit owned restaurants');
         const {owner_id} = req.query;
         console.log(owner_id,' found');
-        const query = 'SELECT * from Restaurant WHERE Owner_id = ?';
-        db.query(query, [owner_id], (err, result) => {
+        const query = 
+         `select * from restaurant r
+          join locations loc
+          on r.location_id = loc.location_id
+          where r.owner_id = ?`;
+        
+          db.query(query, [owner_id], (err, result) => {
             if (err) {
                 return res.status(500).json({ error: 'Database query failed', details: err.message });
             }
@@ -18,23 +53,33 @@ module.exports.getOwnedRestaurants = (req, res) => {
 };
 
 module.exports.AddRestaurant = (req, res) => {
-    const { Restaurant_name, OpensAt, ClosesAt,Owner_id } = req.body;
+    const { Restaurant_name, OpensAt, ClosesAt,Owner_id,Address,Loc_Contact_No } = req.body;
     console.log('Add Restaurant hit');
     const Restaurant_Image = `http://localhost:8800/images/${req.file.filename}`;
-    console.log(Restaurant_name, OpensAt, ClosesAt,Owner_id);
-    const query = `
-      INSERT INTO Restaurant 
-      (Restaurant_Name, OpensAt, ClosesAt, Restaurant_Image, Owner_id) 
-      VALUES (?, ?, ?, ?, ?)`;
-    console.log(Restaurant_Image);
-    db.query(query, [Restaurant_name, OpensAt, ClosesAt, Restaurant_Image, Owner_id], (err, result) => {
-      if (err) {
-        console.log('err');
-        return res.status(500).json({ error: "Database query failed", details: err.message });
-      }
-      console.log(result);
-      return res.status(200).json({ restaurantId: result.insertId });
-    });
+    console.log(Restaurant_name, OpensAt, ClosesAt,Owner_id,Address,Loc_Contact_No );
+
+    const loc_q = 'INSERT INTO Locations (Address,Contact_no) VALUES (?,?)';
+
+    db.query(loc_q,[Address,Loc_Contact_No],(err1,result1) => {
+        if (err1) {
+            console.log('err',err1.message);
+            return res.status(500).json({ error: "Database query failed", details: err1.message });
+        }
+        const Location_id = result1.insertId;
+        const query = `
+        INSERT INTO Restaurant 
+        (Restaurant_Name, OpensAt, ClosesAt, Restaurant_Image, Owner_id,Location_id) 
+        VALUES (?, ?, ?, ?, ?,?)`;
+        console.log(Restaurant_Image);
+        db.query(query, [Restaurant_name, OpensAt, ClosesAt, Restaurant_Image, Owner_id,Location_id], (err2, result2) => {
+          if (err2) {
+            console.log('err');
+            return res.status(500).json({ error: "Database query failed", details: err2.message });
+          }
+          console.log(result2);
+          return res.status(200).json({ restaurantId: result2.insertId });
+      });
+    })
   };
 
   module.exports.addMenu = (req, res) => {
@@ -214,21 +259,35 @@ module.exports.ChangeImage = (req, res) => {
     });
   };
 
-module.exports.addLocation = (req,res) => {
-    restaurant_id = req.params.id;
+  module.exports.addLocation = (req, res) => {
     console.log('hit add location');
-    const {address,contactNo,status} = req.body;
-    console.log(req.body);
-    const insertQuery = 'INSERT INTO Locations (Address,Contact_No,Open_Status,Restaurant_id) VALUES (?,?,?,?)';
+    const { Restaurant_Name, OpensAt, closesAt, Restaurant_Image, Owner_id, Address, Contact_No } = req.body;
+    console.log(Restaurant_Name, OpensAt, closesAt, Restaurant_Image, Owner_id, Address, Contact_No );
+    const insertQuery = 'INSERT INTO Locations (Address, Contact_No) VALUES (?, ?)';
 
-    db.query(insertQuery,[address,contactNo,status,restaurant_id],(err,result)=>{
+    db.query(insertQuery, [Address, Contact_No], (err, result) => {
         if (err) {
-            console.log('Error adding location');
+            console.error('Error adding location:', err.message);
             return res.status(500).json({ error: 'Failed to add location', details: err.message });
         }
-        return res.status(200).json({ message: 'Location added successfully',locationId : result.insertId });
+        const location_id = result.insertId;
+
+        const q = `
+            INSERT INTO Restaurant 
+            (Restaurant_name, OpensAt, ClosesAt, Restaurant_Image, Owner_id, Location_id) 
+            VALUES (?, ?, ?, ?, ?, ?)`;
+
+        db.query(q, [Restaurant_Name, OpensAt, closesAt, Restaurant_Image, Owner_id, location_id], (err1, result1) => {
+            if (err1) {
+                console.error('Error adding restaurant:', err1.message);
+                return res.status(500).json({ error: 'Failed to add restaurant', details: err1.message });
+            }
+
+            return res.status(200).json({ message: 'Restaurant added successfully', resId: result1.insertId });
+        });
     });
-}
+};
+
 
 module.exports.getLocations = (req,res) => {
     const restaurant_id = req.params.id;

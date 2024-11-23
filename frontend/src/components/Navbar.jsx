@@ -158,11 +158,11 @@ const Navbar = () => {
   if (loggedIn && userData?.role === "Delivery_Rider") {
     navItems.push({ label: "DashBoard", path: "/RiderDashboard" });
   }
-  
   if (loggedIn && userData?.role === "Restaurant_Admin") {
-    let val = 1;
-    while(val)  navItems.pop();
+    navItems.push({ label: "DashBoard", path: "/AdminDashboard" });
   }
+  
+
 
   const handlePasswordChange = (e) => {
     const { name, value } = e.target;

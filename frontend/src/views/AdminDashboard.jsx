@@ -1,217 +1,366 @@
 import React, { useEffect, useState } from "react";
 import { useUserContext } from "../contexts/userContext";
-import {ChevronRight} from 'lucide-react'
+import { ChevronRight } from "lucide-react";
 import axios from "axios";
-
+import { useNavigate } from "react-router-dom";
+   
 const AdminDashboard = () => {
-  const { getRestaurantOrders, currentOrders } = useUserContext();
+  const { getRestaurantOrders, restaurantOrders, loggedIn, setRestaurantOrders, userData } = useUserContext();
+  const navigate = useNavigate();
   const [managePopup, toggleManagePopup] = useState(false);
-  const [riders,setRiders] = useState([]);
+  const [riders, setRiders] = useState([]); 
   const [dispatchPopup, toggleDispatchPopup] = useState(false);
+  const [detailsPopup, setDetailsPopup] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [selectedRider, setSelectedRider] = useState(null);
 
-  const [orderDetails, setOrderDetails] = useState({
-    Customer_name: '', Address: ''
-  });
+  useEffect(() => {
+    if (!loggedIn) navigate("/");
+  }, [loggedIn]);
 
-  useEffect(()=>{
-    axios
-    .get('/api/getAvaliableRiders')
-    .then(res => {
-      console.log('setting riders ',res.data.riders);
+  useEffect(() => {
+    if (dispatchPopup) {
+      axios
+        .get(`/api/getAvaliableRiders/${userData.Location_id}`)
+        .then((res) => {
+          console.log("setting riders ", res.data);
+          setRiders(res.data);
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
+    }
+  }, [dispatchPopup, userData.Location_id]);
+ 
+  const handleUpdateStatus = async (order, new_status) => {
+    try {
+      const response = await axios.post(`/api/updateOrder/${order.order_id}`, {status: new_status});
+      if(response.status === 200){
+        const updatedOrder = { ...order, status: new_status };
+        const updatedOrders = restaurantOrders.map((order) =>
+          order.order_id === updatedOrder.order_id ? updatedOrder : order
+        );
+        setRestaurantOrders(updatedOrders);
+        toggleManagePopup(false);
+      }
+    } catch (err) {
+      console.error('Error updating order status:', err);
+    }
+  };
+  
+  const handleDispatch = async () => {
+    if (!selectedOrder || !selectedRider) return;
+
+    try {
+      // First update the order status
+      await handleUpdateStatus(selectedOrder, 'Out for Delivery');
       
-      setRiders(res.data.riders);
-    }).catch(err => {
-      console.log(err.message);
-    })
-  },[])
-
-  const ManageIt = (id) => {
-    const order = currentOrders.find(order => order.Order_id === id);
-    if (order) {
-      setOrderDetails(order);
-      toggleManagePopup(true);
+      // Then update the rider status
+      const response = await axios.post(`/api/updateRiderStatus/${selectedRider.rider_id}`, { status: false });
+      
+      if (response.status === 200) {
+        const updatedRiders = riders.map((rider) =>
+          rider.rider_id === selectedRider.rider_id ? { ...rider, status: false } : rider
+        );
+        setRiders(updatedRiders);
+        toggleDispatchPopup(false);
+        setSelectedRider(null);
+      }
+    } catch (err) {
+      console.error('Error dispatching order or updating rider status:', err);
     }
   };
 
-
-  const DispatchIt = id => {
-    
-
-  }
-
-  const changeRider = value => {
-    setOrderDetails(prev => ({
-      ...prev,
-      Delivered_by_id : value
-    }))
-  }
-
-  const userOrders = [
-    { id: 1, customerName: "John Doe", orderDetails: "Pizza, Salad", status: "In Process" },
-    { id: 2, customerName: "Jane Smith", orderDetails: "Pasta, Soup", status: "Placed" },
-  ];
-
-  const ordersInProcess = [
-    { id: 3, customerName: "Alice Brown", orderDetails: "Burger, Fries", chef: "Chef Mike" },
-    { id: 4, customerName: "Bob Martin", orderDetails: "Sushi, Tea", chef: "Chef Alice" },
-  ];
+  useEffect(() => {
+    getRestaurantOrders();
+  }, []);
 
   useEffect(() => {
-    // async function fetchOrders() {
-    //   await getRestaurantOrders();
-    // }
-    // fetchOrders();
-    getRestaurantOrders();
-  }, [])
+    if (!dispatchPopup) {
+      setSelectedRider(null);
+    }
+  }, [dispatchPopup]);
 
   return (
-    <>
-      <div className="container mx-auto p-4 space-y-6">
-        {/* Header Section */}
-        <div className="text-center text-purple-700">
-          <h1 className="text-3xl font-bold">Restaurant Admin Dashboard</h1>
-          <p className="text-sm text-gray-600">Manage orders efficiently</p>
+    <div className="container mx-auto p-4 space-y-6">
+      {/* Header Section */}
+      <div className="text-center text-purple-700">
+        <h1 className="text-3xl font-bold">Restaurant Admin Dashboard</h1>
+        <p className="text-sm text-gray-600">Manage orders efficiently</p>
+      </div>
+
+     {/* Orders Placed Section */}
+<section className="bg-white rounded-lg shadow-md p-4">
+  <div className="flex justify-start items-center mb-3">
+    <h2 className="text-xl font-bold text-purple-700">Orders Placed</h2>
+  </div>
+  <ul className="space-y-2">
+    {restaurantOrders.filter((order) => order.status === "Placed").length > 0 ? (
+      restaurantOrders
+        .filter((order) => order.status === "Placed")
+        .map((order) => (
+          <li key={order.order_id} className="border-b pb-2 text-gray-700">
+            <div className="flex justify-between">
+              <div>
+                <span className="font-semibold text-purple-500">Order ID:</span>{" "}
+                {order.order_id} - {order.address}
+              </div>
+              <div className="space-x-4 flex items-center">
+                {/* View Details Button */}
+                <button
+                  className="bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  onClick={() => {
+                    setSelectedOrder(order); // Set the selected order
+                    setDetailsPopup(true); // Show the details popup
+                  }}
+                >
+                  View Details
+                </button>
+                
+                {/* Manage Order Button */}
+                <button
+                  className="bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  onClick={() => {
+                    setSelectedOrder(order); // Set the selected order
+                    toggleManagePopup(true); // Show the manage popup
+                  }}
+                >
+                  Manage Order
+                </button>
+              </div>
+            </div>
+          </li>
+        ))
+    ) : (
+      <li className="text-gray-500 italic">No orders placed yet!</li>
+    )}
+  </ul>
+</section>
+
+
+      {/* Order Details Popup */}
+      {detailsPopup && selectedOrder && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-lg w-full max-w-lg p-6">
+            <h2 className="text-2xl font-bold text-purple-600 mb-4 text-center">
+              Order Details
+            </h2>
+            {selectedOrder.items && selectedOrder.items.length > 0 ? (
+              <>
+                <ul className="space-y-4">
+                  {selectedOrder.items.map((item, index) => (
+                    <li
+                      key={index}
+                      className="border-b pb-2 text-gray-700 flex justify-between items-center"
+                    >
+                      <div>
+                        <span className="font-semibold text-purple-500 block">
+                          {item.dish_name}
+                        </span>
+                        <p className="text-sm text-gray-600 italic">
+                          {`Qty: ${item.quantity}`}
+                        </p>
+                      </div>
+                      <span className="text-gray-500 text-right">
+                        Subtotal: Rs. {item.sub_total}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+                <div className="border-t mt-4 pt-4 flex justify-between text-lg font-semibold text-gray-800">
+                  <span>Total</span>
+                  <span>Rs.{selectedOrder.total}</span>
+                </div>
+              </>
+            ) : (
+              <p className="text-gray-500 italic">No items in this order.</p>
+            )}
+            <div className="flex justify-end mt-6">
+              <button
+                className="bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 w-full sm:w-auto"
+                onClick={() => setDetailsPopup(false)}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Manage Order Popup */}
+{managePopup && selectedOrder && (
+  <div className="fixed inset-0 flex justify-center items-center bg-gray-600 bg-opacity-50 z-50">
+    <div className="bg-white rounded-lg shadow-lg p-6 w-96">
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="text-xl font-semibold text-purple-700">Manage Order</h3>
+        <button
+          className="text-gray-500 hover:text-gray-700"
+          onClick={() => toggleManagePopup(false)} // Close the popup
+        >
+          <span className="text-2xl">&times;</span>
+        </button>
+      </div>
+
+      <div className="space-y-4">
+        {/* Order Details */}
+        <div className="text-gray-700">
+          <p><strong>Order ID:</strong> {selectedOrder.order_id}</p>
+          <p><strong>Address:</strong> {selectedOrder.address}</p>
+          <p><strong>Status:</strong> {selectedOrder.status}</p>
         </div>
 
-        {/* Orders Placed by Users Section */}
-        <section className="bg-white rounded-lg shadow-md p-4">
-          <div className="flex justify-start items-center mb-3">
-            <h2 className="text-xl font-bold text-purple-700">Orders Placed</h2>
+        {/* Status Update Button */}
+        <div className="flex justify-center">
+          <button
+            className="bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition-all duration-200 ease-in-out"
+            onClick={() => handleUpdateStatus(selectedOrder,"Preparing")}
+          >
+            Change Status to Preparing
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
 
-          </div>
-          <ul className="space-y-2">
-            {console.log('placed orders are ', currentOrders.filter(ele => ele.Order_status === 'Placed'))}
-            {console.log(currentOrders.filter(ele => ele.Order_status === 'Preparing'))}
-            {currentOrders.length > 0 ? (
-              currentOrders.filter(ele => ele.Order_status === 'Placed').map((order) => (
-                <li key={order.Order_id} className="border-b pb-2 text-gray-700">
-                  <div className="justify-between flex flex-row flex-wrap-reverse">
+
+      {/* Orders Preparing Section */}
+      <section className="bg-purple-50 rounded-lg shadow-md p-4">
+        <div className="flex justify-start items-center mb-3">
+          <h2 className="text-xl font-bold text-purple-700">
+            Orders In Process
+          </h2>
+        </div>
+        <ul className="space-y-2">
+          {restaurantOrders.filter((order) => order.status === "Preparing")
+            .length > 0 ? (
+            restaurantOrders
+              .filter((order) => order.status === "Preparing")
+              .map((order) => (
+                <li
+                  key={order.order_id}
+                  className="border-b pb-2 text-gray-700"
+                >
+                  <div className="flex justify-between">
                     <div>
                       <span className="font-semibold text-purple-500">
-                        {order.Customer_name}
+                        Order ID:
                       </span>{" "}
-                      - {order.Address}{" "}
-                      <span className="text-sm text-gray-500 italic">({order.Order_status})</span>
+                      {order.order_id} - {order.address}
                     </div>
-                    <div>
-                      <button className="bg-purple-600 text-white py-1 px-2 mx-1 rounded-lg hover:bg-purple-700 w-full sm:w-auto" onClick={() => ManageIt(order.Order_id)}>Manage</button>
-                      <button className="bg-purple-600 text-white py-1 px-2 rounded-lg hover:bg-purple-700 w-full sm:w-auto" onClick={() => { DispatchIt(order.Order_id) }}>Dispatch</button>
+                    <div className="space-x-2">
+                      <button
+                        className="bg-purple-600 text-white py-1 px-2 rounded-lg hover:bg-purple-700"
+                        onClick={() => { 
+                          toggleDispatchPopup(true) 
+                          setSelectedOrder(order); 
+                        }}
+                      >
+                        Dispatch Order
+                      </button>
                     </div>
                   </div>
                 </li>
               ))
-            ) : (
-              <li className="text-gray-500 italic">No orders placed yet!</li>
-            )}
-          </ul>
-        </section>
+          ) : (
+            <li className="text-gray-500 italic">No orders in process!</li>
+          )}
+        </ul>
+      </section>
+      
+      {dispatchPopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white rounded-lg shadow-lg p-6 max-w-sm w-full">
+            <h3 className="text-2xl font-semibold text-purple-700 mb-4">Dispatch Order</h3>
 
-        {/* Orders In Process Section */}
-        <section className="bg-purple-50 rounded-lg shadow-md p-4">
-          <div className="flex justify-start items-center mb-3">
-            <h2 className="text-xl font-bold text-purple-700">Orders In Process</h2>
-          </div>
-          <ul className="space-y-2">
-            {currentOrders.length > 0 ? (
-              currentOrders.filter(ele => ele.Order_status === 'Preparing').map((order) => (
-                <li key={order.Order_id} className="text-gray-700">
-                  <span className="font-semibold text-purple-500">
-                    {order.Customer_name}
-                  </span>{" "}
-                  - {order.Address}
-                  {order.Delivered_by_id &&
-                    <span className="text-purple-600">{' Delivered by ' + order.Delivered_by_id}</span>
-                  }
-                </li>
-              ))
-            ) : (
-              <li className="text-gray-500 italic">No orders in process!</li>
-            )}
-          </ul>
-        </section>
-      </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Select Rider</label>
+              <select
+                value={selectedRider ? selectedRider.rider_id : ''}
+                onChange={(e) => {
+                  const rider = riders.find((r) => r.rider_id === e.target.value);
+                  setSelectedRider(rider);
+                }}
+                className="w-full p-2 border border-gray-300 rounded-lg bg-purple-50"
+              >
+                <option value="">Select a Rider</option>
+                {riders.map((rider) => (
+                  <option key={rider.rider_id} value={rider.rider_id}>
+                    {rider.rider_name} - Bike no {rider.bikeNo}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-      {managePopup
-        &&
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
-            <h2 className="text-2xl font-bold text-purple-600 mb-4">
-              Manage Order
-            </h2>
-            <form>
-              <div className="mb-4">
-                <label
-                  htmlFor="name"
-                  className="block text-gray-700 font-bold mb-2"
-                >
-                  Customer Name
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  name="Customer_name"
-                  className="w-full border rounded-lg py-2 px-3 text-gray-700"
-                  value={orderDetails.Customer_name}
-                />
-              </div>
-
-              <div className="mb-4">
-                <label
-                  htmlFor="price"
-                  className="block text-gray-700 font-bold mb-2"
-                >
-                  Address
-                </label>
-                <input
-                  type="text"
-                  id="price"
-                  name="Address"
-                  className="w-full border rounded-lg py-2 px-3 text-gray-700"
-                  value={orderDetails.Address}
-                />
-              </div>
-
-              <div className="mb-4">
-                <label
-                  htmlFor="price"
-                  className="block text-gray-700 font-bold mb-2"
-                >
-                  Rider
-                </label>
-                <div className="relative">
-                  <select
-                    id="role"
-                    name="role"
-                    value={orderDetails.Delivered_by_id}
-                    onChange={(e) => changeRider(e.target.value)}
-                    className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm"
-                  >
-                    {riders.length > 0 ?
-                      riders.map(ele => (
-                        <option value={ele.Rider_id}>{ele.Rider_name}</option>
-                      ))
-                      :
-                      <option value="">No Rider Available</option>
-                    }
-                  </select>
-                  <ChevronRight className="absolute right-3 top-1/2 transform -translate-y-1/2 rotate-90 text-gray-400" size={16} />
-                </div>
-              </div>
-
-              <div className="flex flex-col sm:flex-row justify-end gap-3">
-                <button
-                  type="button"
-                  className="bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 w-full sm:w-auto"
-                  onClick={() => { setOrderDetails({}); toggleManagePopup(false); }}
-                >
-                  Done
-                </button>
-              </div>
-            </form>
+            <div className="flex justify-end space-x-3">
+              <button
+                className="bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600"
+                onClick={() => {
+                  toggleDispatchPopup(false);
+                  setSelectedRider(null);
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                className="bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                onClick={handleDispatch}
+                disabled={!selectedRider}
+              >
+                Dispatch Order
+              </button>
+            </div>
           </div>
         </div>
-      }
-    </>
+      )}
+
+
+      {/* Orders Out for Delivery Section */}
+      <section className="bg-blue-50 rounded-lg shadow-md p-4">
+        <div className="flex justify-start items-center mb-3">
+          <h2 className="text-xl font-bold text-blue-700">
+            Orders Out for Delivery
+          </h2>
+        </div>
+        <ul className="space-y-2">
+          {restaurantOrders.filter(
+            (order) => order.status === "Out for delivery"
+          ).length > 0 ? (
+            restaurantOrders
+              .filter((order) => order.status === "Out for delivery")
+              .map((order) => (
+                <li
+                  key={order.order_id}
+                  className="border-b pb-2 text-gray-700"
+                >
+                  <div className="flex justify-between">
+                    <div>
+                      <span className="font-semibold text-blue-500">
+                        Order ID:
+                      </span>{" "}
+                      {order.order_id} - {order.address}
+                    </div>
+                    <div className="space-x-2">
+                      <button
+                        className="bg-purple-600 text-white py-1 px-2 rounded-lg hover:bg-purple-700"
+                        onClick={() => viewOrderDetails(order.order_id)}
+                      >
+                        View Details
+                      </button>
+                    </div>
+                  </div>
+                </li>
+              ))
+          ) : (
+            <li className="text-gray-500 italic">
+              No orders out for delivery!
+            </li>
+          )}
+        </ul>
+      </section>
+
+    
+
+    </div>
   );
 };
 

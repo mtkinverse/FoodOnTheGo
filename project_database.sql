@@ -3,7 +3,7 @@ CREATE DATABASE online_food_system;
 USE online_food_system;
 
 SHOW TRIGGERS WHERE `Table` = 'customer';
-DROP TRIGGER  assign_cart_to_customer;
+
 CREATE TABLE Customer(
    Customer_id INT AUTO_INCREMENT PRIMARY KEY,
    Customer_Name VARCHAR(100) NOT NULL,
@@ -24,6 +24,7 @@ CREATE TABLE Restaurant_Owner (
 );
 ALTER TABLE Restaurant_Owner AUTO_INCREMENT = 1500; -- id starts from 1500
 
+
 CREATE TABLE Restaurant (
     Restaurant_id INT AUTO_INCREMENT PRIMARY KEY,
     Restaurant_Name VARCHAR(100) NOT NULL,
@@ -32,44 +33,40 @@ CREATE TABLE Restaurant (
     Restaurant_Image Varchar(50) NOT NULL,
     Rating DECIMAL(2,1) DEFAULT 5, -- ratings like 4.5,4.7
     Owner_id INT,
+    Location_id INT,
     Menu_id INT DEFAULT NULL -- resta urant created,can be added later
 );
 ALTER TABLE Restaurant AUTO_INCREMENT = 6500; -- ids start from 6500
+ALTER TABLE Restaurant ADD COLUMN open_status bool DEFAULT TRUE;
+ALTER TABLE Restaurant ADD COLUMN r_admin INT DEFAULT NULL;
 
-ALTER TABLE Restaurant ADD COLUMN num_locations INT DEFAULT 0;
+ALTER TABLE Restaurant ADD CONSTRAINT location_fk FOREIGN KEY(Location_id) REFERENCES Locations(Location_id);
+ALTER TABLE Restaurant ADD CONSTRAINT admin_fk FOREIGN KEY(r_admin) REFERENCES restaurant_admin(admin_id);
+ALTER TABLE Restaurant DROP COLUMN r_admin;
 
-
-
+drop table Locations;
 CREATE TABLE Locations (
     Location_id INT AUTO_INCREMENT PRIMARY KEY,
     Address VARCHAR(100) NOT NULL,
-    Contact_No VARCHAR(20) NOT NULL,
+    Contact_No VARCHAR(20) NOT NULL
 );
 ALTER TABLE Locations AUTO_INCREMENT = 10100 ; -- ids start from 10100
 
 
-create table Branch(
-    Branch_id int AUTO_INCREMENT UNIQUE,
-    restaurant_id int,
-    location_id int,
-    open_status BOOLEAN default false
-);
-ALTER TABLE Branch AUTO_INCREMENT = 1234;
-ALTER TABLE Branch ADD CONSTRAINT PRIMARY KEY (restaurant_id, location_id);
-ALTER TABLE Branch ADD CONSTRAINT FOREIGN KEY (location_id) REFERENCES Locations(location_id);
-ALTER TABLE Branch ADD CONSTRAINT FOREIGN KEY (restaurant_id) REFERENCES Restaurant(restaurant_id);
 
 CREATE TABLE Restaurant_Admin (
    Admin_id INT AUTO_INCREMENT PRIMARY KEY,
-   Branch_id INT NOT NULL,
+   Location_id INT NOT NULL,
    Admin_Name VARCHAR(100) NOT NULL,
    Email_address VARCHAR(100) NOT NULL UNIQUE,
    Account_Password VARCHAR(100) NOT NULL,
    Phone_no VARCHAR(20) NOT NULL
 );
 ALTER TABLE Restaurant_Admin AUTO_INCREMENT = 9150;
-ALTER TABLE Restaurant_Admin ADD CONSTRAINT FOREIGN KEY (Branch_id) references Branch(branch_id);
 
+
+
+INSERT INTO 
 
 CREATE TRIGGER update_num_locations_after_insert
 AFTER INSERT ON Locations
@@ -94,7 +91,6 @@ END;
 /
 
 SHOW TRIGGERS LIKE 'Locations';
-
 
 CREATE TABLE Menu 
 (
@@ -144,10 +140,37 @@ CREATE TABLE Delivery_Rider(
     Account_Password VARCHAR(100) NOT NULL,
     Phone_No VARCHAR(20) NOT NULL,
     BikeNo VARCHAR(20) DEFAULT NULL,
-    Available BOOLEAN DEFAULT TRUE
+    Available BOOLEAN DEFAULT TRUE,
+    Restaurant_id INT DEFAULT NULL
 );
 ALTER TABLE Delivery_Rider AUTO_INCREMENT = 102922;
+ALTER TABLE Delivery_Rider ADD COLUMN Restaurant_id INT DEFAULT NULL;
+ALTER TABLE Delivery_Rider ADD CONSTRAINT Restaurant_fk Foreign key (Restaurant_id) REFERENCES Restaurant(Restaurant_id);
 
+CREATE TRIGGER AssignRestaurantToRider
+BEFORE INSERT ON Delivery_Rider
+FOR EACH ROW
+BEGIN
+    DECLARE available_restaurant_id INT;
+
+    -- Find a restaurant with less than 5 riders
+    SELECT r.Restaurant_id 
+    INTO available_restaurant_id
+    FROM Restaurant r
+    LEFT JOIN Delivery_Rider dr ON r.Restaurant_id = dr.Restaurant_id
+    GROUP BY r.Restaurant_id
+    HAVING COUNT(dr.Rider_id) < 5
+    LIMIT 1;
+
+    -- Assign the restaurant ID to the new rider
+    IF available_restaurant_id IS NOT NULL THEN
+        SET NEW.Restaurant_id = available_restaurant_id;
+    ELSE
+        -- Handle the case where no restaurants are available
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'No restaurants with available rider slots';
+    END IF;
+END
 
 --order_date dropped ,can be extracted from order_time (timestamp)
 CREATE TABLE Orders (
@@ -162,7 +185,8 @@ CREATE TABLE Orders (
 );
 ALTER TABLE Orders AUTO_INCREMENT = 75638;
 
-ALTER TABLE Orders drop column order_date;
+--ALTER TABLE Orders drop column order_date;
+
 
 drop trigger if exists order_placement;
 create trigger order_placement
@@ -246,7 +270,6 @@ ALTER TABLE Restaurant ADD CONSTRAINT Owner_FK FOREIGN KEY(Owner_id) REFERENCES 
 ALTER TABLE Restaurant ADD CONSTRAINT Menu_FK FOREIGN KEY(Menu_id) REFERENCES Menu(Menu_id) ON DELETE SET NULL ON UPDATE CASCADE;
 ALTER TABLE Restaurant DROP FOREIGN KEY Menu_FK;
 
-ALTER TABLE Locations ADD CONSTRAINT Restaurant_FK FOREIGN KEY(Restaurant_id) REFERENCES Restaurant(Restaurant_id) ON DELETE CASCADE;
 
 ALTER TABLE Orders ADD CONSTRAINT O_R_FK FOREIGN KEY(Restaurant_id) REFERENCES Restaurant(Restaurant_id) ON DELETE cascade;
 ALTER TABLE Orders ADD CONSTRAINT Review_FK FOREIGN KEY(Review_id) REFERENCES Order_Review(Review_id) ON DELETE SET NULL;
@@ -257,6 +280,7 @@ ALTER TABLE Orders ADD CONSTRAINT Customer_fk FOREIGN KEY(Customer_id) REFERENCE
 ALTER TABLE Ordered_Items ADD CONSTRAINT Order_FK FOREIGN KEY(Order_id) REFERENCEs Orders(Order_id) ON DELETE cascade;
 ALTER TABLE Ordered_Items ADD CONSTRAINT Item_FK FOREIGN KEY(Item_id) REFERENCES Menu_Items(Item_id) ON DELETE cascade;
 ALTER TABLE Ordered_Items ADD CONSTRAINT comp_PK PRIMARY KEY(Order_id,Item_id);
+
 
 
 select * from customer;
@@ -274,8 +298,9 @@ delete from locations where location_id = 10101;
 delete from menu_items;
 select * from customer;
 select * from delivery_rider;
+delete from delivery_rider;
 drop table delivery_rider;
-
+delete from locations where location_id = 10105;
 select * from orders;
 select * from ordered_items;
 delete from orders;
@@ -293,3 +318,30 @@ delete from restaurant;
       join ordered_items oo on i.item_id = oo.item_id
       where o.customer_id = 99195
       order by order_date DESC;
+      
+      drop table orders;
+      drop table menu_items;
+      drop table menu;
+      drop table restaurant;
+      drop table ordered_items;
+      
+select * from restaurant r
+join locations loc
+on r.location_id = loc.location_id;
+
+select * from orderd_items;
+select * from orders;
+select * from restaurant;
+select * from restaurant_admin;
+delete from restaurant_admin;
+
+select o.order_id,o.order_status,TIME(o.order_time) AS Ordered_at,mm.dish_name,i.quantity,mm.item_price * i.quantity as sub_total ,d.address
+from orders o join deliveryaddress d on o.address_id = d.address_id
+join restaurant r on r.restaurant_id = o.restaurant_id
+join ordered_items i on i.order_id = o.order_id
+join menu_items mm on i.item_id = mm.item_id
+where r.location_id = 10112 and o.order_status IN ('Placed','Preparing','Out for delivery');
+
+   SELECT d.rider_id,d.rider_name,d.available from delivery_rider d
+       join restaurant r on d.restaurant_id = d.restaurant_id
+       where r.location_id = 10112 and d.Available = true;
