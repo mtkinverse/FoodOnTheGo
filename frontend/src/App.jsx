@@ -10,6 +10,7 @@ import OwnedRestaurants from './pages/OwnedRestaurants';
 import Menu from './components/Menu';  // Your menu component
 import 'bootstrap/dist/css/bootstrap.min.css';
 import RiderDashboard from "./views/rider/RiderDashboard";
+import AdminDashboard from './views/AdminDashboard';
 
 
 // const router = createBrowserRouter([
@@ -51,6 +52,7 @@ const router = createBrowserRouter(
        <Route path='ownedRestaurants' element = {<OwnedRestaurants/>}/>
        <Route path ='menu/:restaurant_name/:restaurant_id' element = {<Menu/>}/>
        <Route path= 'RiderDashboard' element = {<RiderDashboard/>} />
+       <Route path= 'AdminDashboard' element = {<AdminDashboard/>} />
      </Route>
    ),
  );

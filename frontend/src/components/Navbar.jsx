@@ -143,7 +143,8 @@ const Navbar = () => {
 
   if (
     userData?.role === "Restaurant_Owner" ||
-    userData?.role === "Delivery_Rider"
+    userData?.role === "Delivery_Rider" ||
+    userData?.role === "Restaurant_Admin"
   ) {
     const index = navItems.findIndex((item) => item.label === "Restaurants");
     if (index !== -1) {
@@ -156,6 +157,11 @@ const Navbar = () => {
 
   if (loggedIn && userData?.role === "Delivery_Rider") {
     navItems.push({ label: "DashBoard", path: "/RiderDashboard" });
+  }
+  
+  if (loggedIn && userData?.role === "Restaurant_Admin") {
+    let val = 1;
+    while(val)  navItems.pop();
   }
 
   const handlePasswordChange = (e) => {

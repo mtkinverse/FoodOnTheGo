@@ -11,15 +11,26 @@ const Login = () => {
   const { userData, login, loggedIn,errors,setErrors } = useUserContext();
   const [role, changeRole] = useState("Customer");
 
-  useEffect(() => {
+  const setNavigation = () => {
     if (loggedIn && userData?.User_name) {
-       if(userData.role === "Customer" || userData.role == "Restaurant_Owner") {
-         navigate("/");
-       }
-       else if(userData.role === "Delivery_Rider"){ 
-         navigate("/RiderDashboard");
+      if(userData.role === "Customer" || userData.role == "Restaurant_Owner") {
+        navigate("/");
       }
-    }
+      else if(userData.role === "Delivery_Rider"){ 
+        navigate("/RiderDashboard");
+     }
+     else if(userData.role === "Restaurant_Admin"){
+       console.log('admin found ');
+       navigate('/AdminDashboard');
+     }
+     else console.log('no role found');
+     
+   }
+  }
+
+  useEffect(() => {
+    console.log('login UE')
+    setNavigation();
   }, [loggedIn, userData, navigate]);
 
   const handleChange = (e) => {
@@ -41,6 +52,7 @@ const Login = () => {
     } catch (err) {
       console.log('Error executing login()');
     } finally {
+      console.log(loggedIn,isLoading,userData);
       setIsLoading(false);
     }
   };
@@ -124,6 +136,7 @@ const Login = () => {
                   <option value="Customer">Customer</option>
                   <option value="Restaurant_Owner">Restaurant Owner</option>
                   <option value="Delivery_Rider">Delivery Rider</option>
+                  <option value="Restaurant_Admin">Restaurant Admin</option>
                 </select>
                 <ChevronRight className="absolute right-3 top-1/2 transform -translate-y-1/2 rotate-90 text-gray-400" size={16} />
               </div>

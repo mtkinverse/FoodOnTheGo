@@ -44,10 +44,31 @@ CREATE TABLE Locations (
     Location_id INT AUTO_INCREMENT PRIMARY KEY,
     Address VARCHAR(100) NOT NULL,
     Contact_No VARCHAR(20) NOT NULL,
-    Open_Status BOOLEAN DEFAULT FALSE,
-    Restaurant_id INT NOT NULL
 );
 ALTER TABLE Locations AUTO_INCREMENT = 10100 ; -- ids start from 10100
+
+
+create table Branch(
+    Branch_id int AUTO_INCREMENT UNIQUE,
+    restaurant_id int,
+    location_id int,
+    open_status BOOLEAN default false
+);
+ALTER TABLE Branch AUTO_INCREMENT = 1234;
+ALTER TABLE Branch ADD CONSTRAINT PRIMARY KEY (restaurant_id, location_id);
+ALTER TABLE Branch ADD CONSTRAINT FOREIGN KEY (location_id) REFERENCES Locations(location_id);
+ALTER TABLE Branch ADD CONSTRAINT FOREIGN KEY (restaurant_id) REFERENCES Restaurant(restaurant_id);
+
+CREATE TABLE Restaurant_Admin (
+   Admin_id INT AUTO_INCREMENT PRIMARY KEY,
+   Branch_id INT NOT NULL,
+   Admin_Name VARCHAR(100) NOT NULL,
+   Email_address VARCHAR(100) NOT NULL UNIQUE,
+   Account_Password VARCHAR(100) NOT NULL,
+   Phone_no VARCHAR(20) NOT NULL
+);
+ALTER TABLE Restaurant_Admin AUTO_INCREMENT = 9150;
+ALTER TABLE Restaurant_Admin ADD CONSTRAINT FOREIGN KEY (Branch_id) references Branch(branch_id);
 
 
 CREATE TRIGGER update_num_locations_after_insert

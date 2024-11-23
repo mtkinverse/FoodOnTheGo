@@ -9,6 +9,7 @@ const webRoutes = require('./routes/webRoutes');
 const ownerRoutes = require('./routes/ownerRoutes');
 const riderRoutes = require('./routes/riderRoutes');
 const customerRoutes = require('./routes/customerRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 
 const app = express();
 
@@ -27,6 +28,7 @@ app.use('/', webRoutes);
 app.use('/', ownerRoutes);
 app.use('/',riderRoutes);
 app.use('/',customerRoutes);
+app.use('/',adminRoutes);
 const imagesPath = path.join(__dirname, 'images')
 
 app.use('/images', express.static(imagesPath))

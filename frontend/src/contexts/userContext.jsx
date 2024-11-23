@@ -134,11 +134,11 @@ useEffect(() => {
       if (res.status === 200) {
         console.log("Login successful. Response data:", res.data);
         console.log(res.data.role);
-        let userData;
+        let tempUserData;
         let bikeData;
         // Check the role and adjust the destructuring accordingly
         if (res.data.role === "Customer") {
-          userData = {
+          tempUserData = {
             User_id: res.data.Customer_id,
             User_name: res.data.Customer_Name,
             Email_address: res.data.Email_address,
@@ -146,7 +146,7 @@ useEffect(() => {
             role: res.data.role,
           };
         } else if (res.data.role === "Delivery_Rider") {
-          userData = {
+          tempUserData = {
             User_id: res.data.Rider_id,
             User_name: res.data.Rider_name,
             Email_address: res.data.Email_address,
@@ -157,22 +157,32 @@ useEffect(() => {
             BikeNo : res.data.BikeNo
           };
         } else if (res.data.role === "Restaurant_Owner") {
-          userData = {
+          tempUserData = {
             User_id: res.data.Owner_id,
             User_name: res.data.Owner_Name,
             Email_address: res.data.Email_address,
             phone_no: res.data.phone_no,
             role: res.data.role,
           };
-        } else {
+        }else if(res.data.role === 'Restaurant_Admin'){
+          tempUserData = {
+            User_id: res.data.Admin_id,
+            User_name: res.data.Admin_Name,
+            Email_address: res.data.Email_address,
+            phone_no: res.data.Phone_no,
+            role: res.data.role,
+            Branch_id : res.data.Branch_id
+          };
+        }
+         else {
           throw new Error("Unknown role");
         }
 
         // Set the state with the correct user data
-        setUserData(userData);
+        setUserData(tempUserData);
         setBikeDetails(bikeData);
         setLoggedIn(true);
-        console.log("User data set for:", userData);
+        console.log("User data set for:", tempUserData);
         
       } else {
         throw new Error(res.message || "Unexpected error occurred");
@@ -201,6 +211,19 @@ useEffect(() => {
         alert("signout fail");
       });
   };
+
+  const getRestaurantOrders = () => {
+    axios
+    // .get('/api/getOrders/' + userData.Branch_id)
+    .get('/api/getOrders/' + 1234)
+    .then(res => {
+      setCurrentOrders(res.data.orders);
+    })
+    .catch(err => {
+      console.log('getting orders failed ',err.message);
+    })
+  }
+
   return (
     <UserContext.Provider
       value={{
@@ -217,7 +240,8 @@ useEffect(() => {
         currentOrders,
         setCurrentOrders,
         pastOrders,
-        fetchOrders
+        fetchOrders,
+        getRestaurantOrders
       }}
     >
       {children}

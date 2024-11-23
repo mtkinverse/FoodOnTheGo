@@ -129,7 +129,7 @@ module.exports.loginUser = (req, res) => {
         console.log(other);
 
         const token = jwt.sign(
-            { id: role === 'Customer' ? user.Customer_id : role == 'Restaurant_owner' ? user.Owner_id : user.Rider_id }, 
+            { id: role === 'Customer' ? user.Customer_id : role == 'Restaurant_owner' ? user.Owner_id : role == 'Restaurant_Admin' ? user.Admin_id : user.Rider_id }, 
             "my_key", 
             { expiresIn: 600 }
         );
