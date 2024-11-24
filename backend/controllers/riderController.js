@@ -33,3 +33,7 @@ module.exports.getRestaurantInfo = (req,res) => {
         return res.status(200).json(result);
     })
 }
+
+module.exports.getPendingOrders = (req,res) =>{
+    
+}

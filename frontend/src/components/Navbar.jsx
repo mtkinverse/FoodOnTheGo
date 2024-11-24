@@ -101,7 +101,8 @@ const Navbar = () => {
       });
     }
   }, [userData]);
-
+  
+  
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -439,76 +440,82 @@ const Navbar = () => {
             </div>
           )}
 
-          {currentPopup && (
-            <div className="fixed inset-0 bg-opacity-60 flex items-center justify-center z-50">
-              <div className="bg-white w-full max-w-3xl p-6 rounded-lg shadow-lg overflow-auto max-h-[90vh]">
-                <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-2xl font-bold text-purple-700">
-                    Current Orders
-                  </h2>
-                  <button
-                    className="text-purple-700 hover:text-purple-900 text-2xl font-bold"
-                    onClick={() => CurrentOrdersPopup(false)}
-                  >
-                    &times;
-                  </button>
-                </div>
+{currentPopup && (
+  <div className="fixed inset-0 bg-opacity-60 flex items-center justify-center z-50">
+    <div className="bg-white w-full max-w-3xl p-6 rounded-lg shadow-lg overflow-auto max-h-[90vh]">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-2xl font-bold text-purple-700">
+          Current Orders
+        </h2>
+        <button
+          className="text-purple-700 hover:text-purple-900 text-2xl font-bold"
+          onClick={() => CurrentOrdersPopup(false)}
+        >
+          &times;
+        </button>
+      </div>
 
-                <p className="text-gray-700 text-sm text-center mb-6">
-                  You have {currentOrders.length} orders in process.
-                </p>
+      <p className="text-gray-700 text-sm text-center mb-6">
+        You have {currentOrders.length} orders in process.
+      </p>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {currentOrders.map((order, index) => (
-                    <div
-                      key={index}
-                      className="relative border border-purple-300 p-4 rounded-md shadow-sm bg-purple-50"
-                    >
-                      <h3 className="font-semibold text-purple-700">
-                        Order #{order.order_id}
-                      </h3>
-                      <p className="text-xs text-gray-600">
-                        <span className="font-medium">Restaurant:</span>{" "}
-                        {order.restaurant_name}
-                      </p>
-                      <p className="text-xs text-gray-600 mt-1">
-                        Total: Rs {order.total_amount}
-                      </p>
-                      <p className="text-xs text-gray-600 mt-1"> To be delivered at: <strong>{order.address} </strong></p>
-                      {(order.status === "Placed" ||
-                        order.status === "Preparing") && (
-                        <button
-                          className="absolute top-2 right-2 text-purple-600 hover:text-purple-800"
-                          onClick={() => cancelOrder(order.order_id)}
-                          title="Cancel Order"
-                        >
-                          <FaTrashAlt className="h-5 w-5" />
-                        </button>
-                      )}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {currentOrders.map((order, index) => (
+          <div
+            key={index}
+            className="relative border border-purple-300 p-4 rounded-md shadow-sm bg-purple-50"
+          >
+            <h3 className="font-semibold text-purple-700 flex justify-between items-center">
+              Order #{order.order_id}
+              {order.status === 'Out for delivery' && (
+                <span className="ml-2 px-2 py-1 text-xs font-bold text-green-700 bg-green-200 rounded-full">
+                  {order.status}
+                </span>
+              )}
+            </h3>
+            <p className="text-xs text-gray-600">
+              <span className="font-medium">Restaurant:</span>{" "}
+              {order.restaurant_name}
+            </p>
+            <p className="text-xs text-gray-600 mt-1">
+              Total: Rs {order.total_amount}
+            </p>
+            <p className="text-xs text-gray-600 mt-1">
+              To be delivered at: <strong>{order.address}</strong>
+            </p>
+            {(order.status === "Placed" || order.status === "Preparing") && (
+              <button
+                className="absolute top-2 right-2 text-purple-600 hover:text-purple-800"
+                onClick={() => cancelOrder(order.order_id)}
+                title="Cancel Order"
+              >
+                <FaTrashAlt className="h-5 w-5" />
+              </button>
+            )}
 
-                      {/* Items List */}
-                      <div className="mt-2">
-                        <p className="font-medium text-xs text-gray-700">
-                          Items:
-                        </p>
-                        <ul className="list-none space-y-1 text-xs text-gray-600">
-                          {order.items.slice(0, 3).map((item, idx) => (
-                            <li key={idx}>
-                              {item.dish_name} ({item.quantity}x) --- sub-total
-                              : Rs{item.sub_total}
-                            </li>
-                          ))}
-                          {order.items.length > 3 && (
-                            <li>+ {order.items.length - 3} more</li>
-                          )}
-                        </ul>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+            {/* Items List */}
+            <div className="mt-2">
+              <p className="font-medium text-xs text-gray-700">
+                Items:
+              </p>
+              <ul className="list-none space-y-1 text-xs text-gray-600">
+                {order.items.slice(0, 3).map((item, idx) => (
+                  <li key={idx}>
+                    {item.dish_name} ({item.quantity}x) --- sub-total:
+                    Rs{item.sub_total}
+                  </li>
+                ))}
+                {order.items.length > 3 && (
+                  <li>+ {order.items.length - 3} more</li>
+                )}
+              </ul>
             </div>
-          )}
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+)}
 
           {pastPopup && (
             <div className="fixed inset-0 bg-opacity-60 flex items-center justify-center z-50">

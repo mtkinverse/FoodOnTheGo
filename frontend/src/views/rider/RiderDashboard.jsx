@@ -145,7 +145,7 @@ const RiderDashboard = () => {
 
   useEffect(() => {
    // fetchHistory();
-   // fetchPending();
+    fetchPending();
   }, []);
 
   const handleBikeRegistration = async (e) => {

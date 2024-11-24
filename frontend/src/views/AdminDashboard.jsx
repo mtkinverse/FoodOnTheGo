@@ -52,19 +52,26 @@ const AdminDashboard = () => {
     if (!selectedOrder || !selectedRider) return;
 
     try {
-      // First update the order status
-      await handleUpdateStatus(selectedOrder, 'Out for Delivery');
-      
-      // Then update the rider status
-      const response = await axios.post(`/api/updateRiderStatus/${selectedRider.rider_id}`, { status: false });
+      // First update the order status 
+      await handleUpdateStatus(selectedOrder, 'Out for delivery');   
+      // Then update the rider status and rider_id in orders
+      const response = await axios.post(`/api/updateRiderStatus/${selectedRider.rider_id}`, { status: false, order_id : selectedOrder.order_id });
       
       if (response.status === 200) {
         const updatedRiders = riders.map((rider) =>
           rider.rider_id === selectedRider.rider_id ? { ...rider, status: false } : rider
         );
+        let order = selectedOrder;
+        const updatedOrder = { ...order, rider_id: selectedRider.rider_id };
+        const updatedOrders = restaurantOrders.map((order) =>
+          order.order_id === updatedOrder.order_id ? updatedOrder : order
+        );
+       
+        setRestaurantOrders(updatedOrders);
         setRiders(updatedRiders);
         toggleDispatchPopup(false);
         setSelectedRider(null);
+        setSelectedOrder(null);
       }
     } catch (err) {
       console.error('Error dispatching order or updating rider status:', err);
@@ -277,9 +284,10 @@ const AdminDashboard = () => {
               <select
                 value={selectedRider ? selectedRider.rider_id : ''}
                 onChange={(e) => {
-                  const rider = riders.find((r) => r.rider_id === e.target.value);
+                  const rider = riders.find((r) => r.rider_id === Number(e.target.value));
                   setSelectedRider(rider);
                 }}
+                
                 className="w-full p-2 border border-gray-300 rounded-lg bg-purple-50"
               >
                 <option value="">Select a Rider</option>
@@ -342,7 +350,12 @@ const AdminDashboard = () => {
                     <div className="space-x-2">
                       <button
                         className="bg-purple-600 text-white py-1 px-2 rounded-lg hover:bg-purple-700"
-                        onClick={() => viewOrderDetails(order.order_id)}
+                        onClick={() => 
+                        {
+                            setDetailsPopup(true);
+                            setSelectedOrder(order);
+                        }
+                        }
                       >
                         View Details
                       </button>

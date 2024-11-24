@@ -28,6 +28,8 @@ const UserContextProvider = ({ children }) => {
   
 
   const [restaurantOrders,setRestaurantOrders] = useState([]);
+  
+  //this is for customer ;
   const fetchOrders = async () => {
   try {
     const response = await axios.get(`/api/getAllOrders/${userData.User_id}`);
@@ -64,7 +66,13 @@ useEffect(() => {
     console.log("Current orders updated ",currentOrders);
     console.log("Past ORders updated ",pastOrders);
   },[currentOrders,pastOrders]);
-
+  
+  useEffect(() => {
+    if (userData.User_id !== 0 && userData.role === "Customer") {
+      fetchOrders();
+    }
+  },[restaurantOrders]);
+  
   const login = async (recvData) => {
     try {
       const res = await axios.post("/api/login",JSON.stringify({
