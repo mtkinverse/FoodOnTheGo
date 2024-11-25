@@ -5,4 +5,5 @@ const { PlaceOrder,getAllOrders,cancelOrder } = require('../controllers/customer
 router.post('/placeOrder',PlaceOrder);
 router.get('/getAllOrders/:id',getAllOrders);
 router.post('/cancelOrder/:id',cancelOrder);
+
 module.exports = router;

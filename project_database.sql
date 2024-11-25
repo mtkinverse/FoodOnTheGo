@@ -335,6 +335,10 @@ select * from restaurant;
 select * from restaurant_admin;
 delete from restaurant_admin;
 
+update orders set order_status = 'Preparing' where order_id = 75639;
+
+update delivery_rider set available = true where rider_id = 102924;
+
 select o.order_id,o.order_status,TIME(o.order_time) AS Ordered_at,mm.dish_name,i.quantity,mm.item_price * i.quantity as sub_total ,d.address
 from orders o join deliveryaddress d on o.address_id = d.address_id
 join restaurant r on r.restaurant_id = o.restaurant_id
