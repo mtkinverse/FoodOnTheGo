@@ -260,6 +260,19 @@ const ManageRestaurant = ({
     Phone_no: "",
   });
 
+  const handleAdminCred = e => {
+    e.preventDefault();
+    if (restaurant.r_admin && !adminData.Email_address) {
+      axios.get('/api/getAdmin/' + restaurant.Location_id)
+        .then(res => {
+          console.log('received ', res.data.admin);
+          setAdminData({...res.data.admin,newPassword : ""})
+        })
+        .catch(err => console.log(err.message))
+    }
+    setAdminPopup(true);
+  }
+
   const handleAdminChange = (e) => {
     const { name, value } = e.target;
     setAdminData((prevState) => ({
@@ -272,22 +285,26 @@ const ManageRestaurant = ({
     e.preventDefault();
     try {
       console.log(restaurant.Location_id);
-      const response = await axios.post(
-        `/api/addAdmin/${restaurant.Restaurant_id}`,
-        { adminData, Location_id: restaurant.Location_id }
-      );
-      console.log("Admin added successfully");
+
+      if (restaurant.r_admin === null) {
+        console.log('not me',adminData);
+        
+        const response = await axios.post(
+          `/api/addAdmin/${restaurant.Restaurant_id}`,
+          { adminData, Location_id: restaurant.Location_id }
+        );
+      } 
+      else{
+        console.log('heres : ', adminData)
+        axios.post('/api/updateAdmin',JSON.stringify({adminData}), {withCredentials: true, headers:{"Content-Type":"application/json"}})
+        .then(res => alert('Admin updated successfully'))
+        .catch(err => console.log(err.message))
+      }
+      console.log("Admin updated successfully");
       setAdminPopup(false);
-      setAdminData({
-        Location_id: 0,
-        Admin_Name: "",
-        Email_address: "",
-        Account_Password: "",
-        Phone_no: "",
-      });
-      restaurant.r_admin = response.data;
+      
     } catch (err) {
-      console.log("Error adding admin");
+      console.log("Error adding admin" + err.message);
       window.alert("Error adding admin");
     }
   };
@@ -420,30 +437,20 @@ const ManageRestaurant = ({
             </button>
           )}
 
-          {restaurant.r_admin === null && (
-            <button
-              className="w-full bg-purple-600 text-white py-3 px-4 rounded-lg shadow hover:bg-purple-700 transition"
-              onClick={() => setAdminPopup(true)}
-            >
-              Add Admin
-            </button>
-          )}
-          
-          {restaurant.r_admin !== null && (
-            <button
-              className="w-full bg-purple-600 text-white py-3 px-4 rounded-lg shadow hover:bg-purple-700 transition"
-              onClick={() => setAdminPopup(true)}
-            >
-              Update Admin details
-             </button>
-          )}
+          <button
+            className="w-full bg-purple-600 text-white py-3 px-4 rounded-lg shadow hover:bg-purple-700 transition"
+            onClick={handleAdminCred}
+          >
+            {restaurant.r_admin === null ? 'Add Admin' : 'Update Admin'}
+          </button>
+
 
 
           {adminPopup && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
               <div className="bg-white rounded-lg shadow-lg w-full max-w-md mx-4 sm:mx-0 p-6">
                 <h2 className="text-xl font-bold mb-4 text-center">
-                  Create Admin
+                  {restaurant.r_admin === null ? 'Create Admin' : 'Update Admin'}
                 </h2>
                 <form onSubmit={handleAdminSubmit} className="space-y-4">
                   <div>
@@ -485,7 +492,7 @@ const ManageRestaurant = ({
                       htmlFor="account_password"
                       className="block text-sm font-medium text-gray-700"
                     >
-                      Password
+                      {restaurant.r_admin ? 'Current Password': 'Password'}
                     </label>
                     <input
                       type="password"
@@ -497,6 +504,24 @@ const ManageRestaurant = ({
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-blue-200"
                     />
                   </div>
+                  {restaurant.r_admin &&
+                    <div>
+                    <label
+                      htmlFor="account_password"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      New Password
+                    </label>
+                    <input
+                      type="password"
+                      id="account_password"
+                      name="newPassword"
+                      value={adminData.newPassword}
+                      onChange={handleAdminChange}
+                      required
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-blue-200"
+                    />
+                  </div>}
                   <div>
                     <label
                       htmlFor="phone_no"
@@ -519,7 +544,7 @@ const ManageRestaurant = ({
                       type="submit"
                       className="bg-purple-600 text-white px-4 py-2 rounded-lg shadow hover:bg-purple-700 focus:outline-none focus:ring focus:ring-blue-300"
                     >
-                      Create Admin
+                      {restaurant.r_admin === null ? 'Create Admin' : 'Update Admin'}
                     </button>
                     <button
                       type="button"

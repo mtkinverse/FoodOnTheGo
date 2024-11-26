@@ -100,6 +100,7 @@ const Navbar = () => {
         role: userData.role,
       });
     }
+    setIsProfileMenuOpen(false);
   }, [userData]);
   
   
@@ -264,7 +265,7 @@ const Navbar = () => {
                 {isProfileMenuOpen && (
                   <div
                     ref={profileMenuRef}
-                    className="absolute right-0 mt-2 w-48 bg-purple-600 border border-purple-600 rounded-md shadow-lg z-10"
+                    className="absolute right-0 mt-2 w-48 bg-purple-600 border border-purple-600 rounded-md shadow-lg z-20"
                   >
                     <button
                       className="block px-4 py-2 text-sm text-white hover:bg-purple-800"

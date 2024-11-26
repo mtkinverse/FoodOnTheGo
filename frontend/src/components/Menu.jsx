@@ -57,7 +57,7 @@ const Menu = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-purple-100">
       {/* Header Section */}
-      <div className="bg-white shadow-sm sticky top-0 z-5">
+      <div className="bg-white shadow-sm sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">

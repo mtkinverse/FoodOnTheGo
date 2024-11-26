@@ -35,5 +35,39 @@ module.exports.getRestaurantInfo = (req,res) => {
 }
 
 module.exports.getPendingOrders = (req,res) =>{
+    console.log('received1 : ',req.params.id);
     
+    const q = 'SELECT o.*,d.*,c.Customer_Name FROM Orders o NATURAL JOIN Customer c NATURAL JOIN DeliveryAddress d WHERE Delivered_by_id = ? AND Order_status = \'Out for delivery\'';
+    db.query(q,[req.params.id], (err,result) => {
+        if (err) console.log(err);
+
+        if(err || result.length <= 0) res.status(500).json({message : 'Cannot get pending orders'})
+        else res.status(200).json({orders : result})
+    })
+}
+
+module.exports.getHistory = (req,res) => {
+    console.log('received2 : ',req.params.id);
+    const q = 'SELECT * FROM Orders WHERE Delivered_by_id = ? and Order_Status = \'Delivered\'';
+    db.query(q,[req.params.id], (err,result) => {
+        if(err) res.status(500).json({message : 'Cannot get History'})
+        else res.status(200).json({orders : result})
+    })
+}
+
+module.exports.markOrderDelivered = (req,res) => {
+    const {Order_id, Rider_id} = req.body;
+    console.log('recieved order id : ',Order_id);
+    const q = 'UPDATE Orders SET Order_Status = \'Delivered\' WHERE Order_id = ?';
+    db.query(q,[Order_id], (err,result) => {
+        if(err || result.length <= 0) res.status(500).json({message : 'Cannot mark as delivered'});
+        else {
+            const q2 = 'Update Delivery_Rider set Available = true where rider_id = ?';
+            db.query(q2,[Rider_id], (err,result) => {
+
+                if(err) res.status(500).json({message : 'Failed to update the status of rider'})
+                else res.status(200).json({success : true});
+            })
+        }
+    })
 }

@@ -77,7 +77,7 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     getRestaurantOrders();
-  }, [getRestaurantOrders]);
+  }, []);
 
   useEffect(() => {
     if (!dispatchPopup) {

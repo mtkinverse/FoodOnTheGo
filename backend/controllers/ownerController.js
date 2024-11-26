@@ -2,67 +2,68 @@ const db = require('../db');
 const path = require('path');
 const fs = require('fs');
 const bcrypt = require('bcrypt');
+const e = require('express');
 
-module.exports.addAdmin = (req,res) => {
-     const restaurant_id = req.params.id;
-     const { adminData, Location_id } = req.body; 
+module.exports.addAdmin = (req, res) => {
+    const restaurant_id = req.params.id;
+    const { adminData, Location_id } = req.body;
 
-     const { Admin_Name, Email_address,Account_Password, Phone_no} = adminData;
+    const { Admin_Name, Email_address, Account_Password, Phone_no } = adminData;
 
-     console.log('Hit add admin ',Location_id ,Admin_Name, Email_address,Account_Password, Phone_no);
-     
-     const salt = bcrypt.genSaltSync(10);
-     const hash = bcrypt.hashSync(Account_Password, salt);
-     const admin_q = 'INSERT INTO restaurant_admin (Location_id,Admin_name,email_address,account_password,phone_no) VALUES(?,?,?,?,?)';
+    console.log('Hit add admin ', Location_id, Admin_Name, Email_address, Account_Password, Phone_no);
 
-     db.query(admin_q,[Location_id ,Admin_Name, Email_address,hash, Phone_no],(err,result)=>{
-        if(err){
-            console.log('Admin error',err.message);
+    const salt = bcrypt.genSaltSync(10);
+    const hash = bcrypt.hashSync(Account_Password, salt);
+    const admin_q = 'INSERT INTO restaurant_admin (Location_id,Admin_name,email_address,account_password,phone_no) VALUES(?,?,?,?,?)';
+
+    db.query(admin_q, [Location_id, Admin_Name, Email_address, hash, Phone_no], (err, result) => {
+        if (err) {
+            console.log('Admin error', err.message);
             return res.status(500).json({ error: 'Database query failed', details: err.message });
         }
         const admin_id = result.insertId;
         const set_q = 'UPDATE restaurant SET r_admin = ? where restaurant_id = ?';
-        db.query(set_q,[admin_id,restaurant_id],(err1,result1) =>{
-            if(err1){
+        db.query(set_q, [admin_id, restaurant_id], (err1, result1) => {
+            if (err1) {
                 console.log('updating error');
                 return res.status(500).json({ error: 'Database query failed', details: err.message });
             }
-            res.status(200).json({admin_id});
+            res.status(200).json({ admin_id });
         })
-     })
+    })
 }
 
 module.exports.getOwnedRestaurants = (req, res) => {
     console.log('Hit owned restaurants');
-        const {owner_id} = req.query;
-        console.log(owner_id,' found');
-        const query = 
-         `select * from restaurant r
+    const { owner_id } = req.query;
+    console.log(owner_id, ' found');
+    const query =
+        `select * from restaurant r
           join locations loc
           on r.location_id = loc.location_id
           where r.owner_id = ?`;
-        
-          db.query(query, [owner_id], (err, result) => {
-            if (err) {
-                return res.status(500).json({ error: 'Database query failed', details: err.message });
-            }
-            if (result.length === 0) return res.status(400).json({ message: 'No restaurants owned' });
-            console.log(result);
-            return res.status(200).json({ ownedRestaurants: result });
-        });
+
+    db.query(query, [owner_id], (err, result) => {
+        if (err) {
+            return res.status(500).json({ error: 'Database query failed', details: err.message });
+        }
+        if (result.length === 0) return res.status(400).json({ message: 'No restaurants owned' });
+        console.log(result);
+        return res.status(200).json({ ownedRestaurants: result });
+    });
 };
 
 module.exports.AddRestaurant = (req, res) => {
-    const { Restaurant_name, OpensAt, ClosesAt,Owner_id,Address,Loc_Contact_No } = req.body;
+    const { Restaurant_name, OpensAt, ClosesAt, Owner_id, Address, Loc_Contact_No } = req.body;
     console.log('Add Restaurant hit');
     const Restaurant_Image = `http://localhost:8800/images/${req.file.filename}`;
-    console.log(Restaurant_name, OpensAt, ClosesAt,Owner_id,Address,Loc_Contact_No );
+    console.log(Restaurant_name, OpensAt, ClosesAt, Owner_id, Address, Loc_Contact_No);
 
     const loc_q = 'INSERT INTO Locations (Address,Contact_no) VALUES (?,?)';
 
-    db.query(loc_q,[Address,Loc_Contact_No],(err1,result1) => {
+    db.query(loc_q, [Address, Loc_Contact_No], (err1, result1) => {
         if (err1) {
-            console.log('err',err1.message);
+            console.log('err1', err1.message);
             return res.status(500).json({ error: "Database query failed", details: err1.message });
         }
         const Location_id = result1.insertId;
@@ -71,18 +72,18 @@ module.exports.AddRestaurant = (req, res) => {
         (Restaurant_Name, OpensAt, ClosesAt, Restaurant_Image, Owner_id,Location_id) 
         VALUES (?, ?, ?, ?, ?,?)`;
         console.log(Restaurant_Image);
-        db.query(query, [Restaurant_name, OpensAt, ClosesAt, Restaurant_Image, Owner_id,Location_id], (err2, result2) => {
-          if (err2) {
-            console.log('err');
-            return res.status(500).json({ error: "Database query failed", details: err2.message });
-          }
-          console.log(result2);
-          return res.status(200).json({ restaurantId: result2.insertId });
-      });
+        db.query(query, [Restaurant_name, OpensAt, ClosesAt, Restaurant_Image, Owner_id, Location_id], (err2, result2) => {
+            if (err2) {
+                console.log('err');
+                return res.status(500).json({ error: "Database query failed", details: err2.message });
+            }
+            console.log(result2);
+            return res.status(200).json({ restaurantId: result2.insertId });
+        });
     })
-  };
+};
 
-  module.exports.addMenu = (req, res) => {
+module.exports.addMenu = (req, res) => {
     console.log('Add menu hit');
     const restaurant_id = req.params.id;
 
@@ -99,8 +100,8 @@ module.exports.AddRestaurant = (req, res) => {
             return res.status(400).json({ message: 'Restaurant already has a menu assigned' });
         }
 
-        const insertMenuQuery = 'INSERT INTO menu () VALUES ()'; 
-        
+        const insertMenuQuery = 'INSERT INTO menu () VALUES ()';
+
         db.query(insertMenuQuery, (err, menuResult) => {
             if (err) {
                 return res.status(500).json({ error: 'Failed to create menu', details: err.message });
@@ -130,20 +131,20 @@ module.exports.AddRestaurant = (req, res) => {
 
 module.exports.addMenuItem = (req, res) => {
     console.log('hit add item');
-    const restaurant_id = req.params.id;  
- 
-    const { name,price,cuisine,menu_id } = req.body;
+    const restaurant_id = req.params.id;
+
+    const { name, price, cuisine, menu_id } = req.body;
     const Item_image = req.file ? `http://localhost:8800/images/${restaurant_id}/${req.file.filename}` : null; // Handle file upload
 
     if (!Item_image) {
         console.log('no image found');
-         return res.status(400).json({ error: 'Image file is required' });
+        return res.status(400).json({ error: 'Image file is required' });
     }
 
     const insert_query = 'INSERT INTO menu_items (Dish_Name, Item_Price, Item_image, Cuisine, Menu_id) VALUES (?, ?, ?, ?, ?)';
 
-     db.query(insert_query, [name, price, Item_image, cuisine, menu_id], (err, menuResult) => {
-         if (err) {
+    db.query(insert_query, [name, price, Item_image, cuisine, menu_id], (err, menuResult) => {
+        if (err) {
             return res.status(500).json({ error: 'Failed to add menu item', details: err.message });
         }
         console.log('menu item added');
@@ -198,14 +199,14 @@ module.exports.deleteMenu = (req, res) => {
 };
 
 
-module.exports.updateTimings = (req,res) => {
+module.exports.updateTimings = (req, res) => {
     console.log('hit update timings')
     restaurant_id = req.params.id;
-    const {OpensAt,ClosesAt} = req.body;
-    console.log(OpensAt,ClosesAt)
+    const { OpensAt, ClosesAt } = req.body;
+    console.log(OpensAt, ClosesAt)
     updateQuery = 'UPDATE restaurant set OpensAt = ?, ClosesAt =? WHERE Restaurant_id = ?';
 
-    db.query(updateQuery,[OpensAt,ClosesAt,restaurant_id],(err,result) =>{
+    db.query(updateQuery, [OpensAt, ClosesAt, restaurant_id], (err, result) => {
         if (err) {
             console.log('Error updating restaurant timings');
             return res.status(500).json({ error: 'Failed to update restaurant', details: err.message });
@@ -218,51 +219,51 @@ module.exports.updateTimings = (req,res) => {
 module.exports.ChangeImage = (req, res) => {
     const restaurant_id = req.params.id;
     console.log('Update Restaurant image hit');
-    
-    const Restaurant_Image = `http://localhost:8800/images/${req.file.filename}`;
-  
-    const imageQuery = 'SELECT Restaurant_Image FROM Restaurant WHERE Restaurant_Id = ?';
-    
-    db.query(imageQuery, [restaurant_id], (err, result) => {
-      if (err) {
-        console.error('Error fetching current image:', err);
-        return res.status(500).send('Error fetching current image.');
-      }
-  
-      if (result.length === 0) {
-        return res.status(404).send('Restaurant not found.');
-      }
-  
-      const oldImagePath = result[0].Restaurant_Image.split('/images/')[1];
-  
-      const oldImageFullPath = path.join(__dirname, '../images', oldImagePath);
-  
-      fs.unlink(oldImageFullPath, (unlinkErr) => {
-        if (unlinkErr) {
-          console.error('Error deleting old image:', unlinkErr);
-          return res.status(500).send('Error deleting old image.');
-        }
-  
-        console.log('Old image deleted successfully.');
-  
-        const updateQuery = 'UPDATE Restaurant SET Restaurant_Image = ? WHERE Restaurant_Id = ?';
-        
-        db.query(updateQuery, [Restaurant_Image, restaurant_id], (updateErr, updateResult) => {
-          if (updateErr) {
-            console.error('Error updating restaurant image:', updateErr);
-            return res.status(500).send('Error updating restaurant image.');
-          }
-            console.log('Restaurant image updated successfully');
-          return res.status(200).send('Restaurant image updated successfully!');
-        });
-      });
-    });
-  };
 
-  module.exports.addLocation = (req, res) => {
+    const Restaurant_Image = `http://localhost:8800/images/${req.file.filename}`;
+
+    const imageQuery = 'SELECT Restaurant_Image FROM Restaurant WHERE Restaurant_Id = ?';
+
+    db.query(imageQuery, [restaurant_id], (err, result) => {
+        if (err) {
+            console.error('Error fetching current image:', err);
+            return res.status(500).send('Error fetching current image.');
+        }
+
+        if (result.length === 0) {
+            return res.status(404).send('Restaurant not found.');
+        }
+
+        const oldImagePath = result[0].Restaurant_Image.split('/images/')[1];
+
+        const oldImageFullPath = path.join(__dirname, '../images', oldImagePath);
+
+        fs.unlink(oldImageFullPath, (unlinkErr) => {
+            if (unlinkErr) {
+                console.error('Error deleting old image:', unlinkErr);
+                return res.status(500).send('Error deleting old image.');
+            }
+
+            console.log('Old image deleted successfully.');
+
+            const updateQuery = 'UPDATE Restaurant SET Restaurant_Image = ? WHERE Restaurant_Id = ?';
+
+            db.query(updateQuery, [Restaurant_Image, restaurant_id], (updateErr, updateResult) => {
+                if (updateErr) {
+                    console.error('Error updating restaurant image:', updateErr);
+                    return res.status(500).send('Error updating restaurant image.');
+                }
+                console.log('Restaurant image updated successfully');
+                return res.status(200).send('Restaurant image updated successfully!');
+            });
+        });
+    });
+};
+
+module.exports.addLocation = (req, res) => {
     console.log('hit add location');
     const { Restaurant_Name, OpensAt, closesAt, Restaurant_Image, Owner_id, Address, Contact_No } = req.body;
-    console.log(Restaurant_Name, OpensAt, closesAt, Restaurant_Image, Owner_id, Address, Contact_No );
+    console.log(Restaurant_Name, OpensAt, closesAt, Restaurant_Image, Owner_id, Address, Contact_No);
     const insertQuery = 'INSERT INTO Locations (Address, Contact_No) VALUES (?, ?)';
 
     db.query(insertQuery, [Address, Contact_No], (err, result) => {
@@ -289,11 +290,11 @@ module.exports.ChangeImage = (req, res) => {
 };
 
 
-module.exports.getLocations = (req,res) => {
+module.exports.getLocations = (req, res) => {
     const restaurant_id = req.params.id;
     query = 'SELECT * from locations where restaurant_id = ?';
 
-    db.query(query,[restaurant_id],(err,result) =>{
+    db.query(query, [restaurant_id], (err, result) => {
         if (err) {
             console.log('Error fetching locations');
             return res.status(500).json({ error: 'Failed to get location', details: err.message });
@@ -302,32 +303,32 @@ module.exports.getLocations = (req,res) => {
     });
 }
 
-module.exports.deleteItem = (req,res) => {
+module.exports.deleteItem = (req, res) => {
     console.log('Delete menu item hit');
     const restaurant_id = req.params.id;
-    const {item_id} = req.body;
+    const { item_id } = req.body;
     let query = 'SELECT * from Menu_Items where item_id = ?';
-    
-    db.query(query,[item_id],(err,result) =>{
+
+    db.query(query, [item_id], (err, result) => {
         if (err) {
             console.log('Error fetching the item to delete');
             return res.status(500).json({ error: 'Failed to delete item', details: err.message });
         }
-        else{
+        else {
             //first delete the picture from the /images folder
             const img = result[0].Item_image;
-            const filename = img.split('/').pop(); 
+            const filename = img.split('/').pop();
             const img_path = path.join(__dirname, '..', 'images', restaurant_id, filename);
             fs.unlink(img_path, (err) => {
                 if (err) {
                     console.error('Error deleting the old image:', err);
                     return res.status(500).send({ message: 'Error deleting the old image' });
-                } 
+                }
                 query = 'delete from Menu_Items where item_id = ?';
-                db.query(query,[item_id],(err,result2) =>{
-                    if(err){
-                      console.log('Cannot delete the requested item', item_id);
-                      return res.status(500).json({ error: 'Failed to delete item', details: err.message });
+                db.query(query, [item_id], (err, result2) => {
+                    if (err) {
+                        console.log('Cannot delete the requested item', item_id);
+                        return res.status(500).json({ error: 'Failed to delete item', details: err.message });
                     }
                     return res.status(200).json(result2);
                 });
@@ -340,20 +341,24 @@ module.exports.deleteItem = (req,res) => {
 
 module.exports.updateItem = (req, res) => {
     console.log('Received request to update ', req.body);
-    
+
+    const token = req.cookies.access_token;
+    if(!token){
+        return res.status(401).json({message : 'unauthorized access'});
+    }
     const { Item_id, Dish_Name, Item_Price, Cuisine } = req.body;
     const new_path = `http://localhost:8800/images/${req.params.id}/${req.file.filename}`;
-    
+
     let query = 'SELECT Item_image FROM Menu_Items WHERE item_id = ?';
-    
+
     db.query(query, [Item_id], (err, result) => {
         if (err) {
             return res.status(500).send({ message: 'Error retrieving item from database', error: err });
         }
-        
+
         if (result.length > 0) {
             const old_image = result[0].Item_image;
-            const old_image_filename = old_image.split('/').pop(); 
+            const old_image_filename = old_image.split('/').pop();
             const old_image_path = path.join(__dirname, '..', 'images', req.params.id, old_image_filename);
 
             console.log(old_image_path);
@@ -361,12 +366,12 @@ module.exports.updateItem = (req, res) => {
                 if (err) {
                     console.error('Error deleting the old image:', err);
                     return res.status(500).send({ message: 'Error deleting the old image' });
-                }  
+                }
                 let updateQuery = 'UPDATE Menu_Items SET Dish_Name = ?, Item_Price = ?, Cuisine = ?, Item_image = ? WHERE item_id = ?';
                 db.query(updateQuery, [Dish_Name, Item_Price, Cuisine, new_path, Item_id], (err, result) => {
                     if (err) {
                         return res.status(500).send({ message: 'Error updating item in database', error: err });
-                    }  
+                    }
                     return res.status(200).send({ message: 'Item updated successfully' });
                 });
             });
@@ -376,11 +381,58 @@ module.exports.updateItem = (req, res) => {
     });
 };
 
-
-module.exports.updateLocation = (req,res) => {
-    
+module.exports.getAdmin = (req, res) => {
+    const q1 = 'SELECT * FROM Restaurant_Admin WHERE Location_id = ?';
+    db.query(q1, [req.params.id], (err, result1) => {
+        if (err || result1.length <= 0) {
+            res.status(500).json({ message: 'Cannot get the admin' })
+        }
+        else {
+            const { Account_Password, ...other } = result1[0];
+            res.status(200).json({ admin: other })
+        }
+    })
 }
 
-module.exports.deleteLocation = (req,res) => {
+module.exports.updateAdmin = (req, res) => {
     
+    console.log('what', req.body.adminData)
+    
+
+
+    const { Admin_Name, Email_address, Phone_no, Account_Password, newPassword, Location_id } = req.body.adminData;
+console.log(Admin_Name,Email_address,Phone_no,Account_Password,newPassword,Location_id);
+
+    const check = 'select * from restaurant_admin where location_id = ?';
+    db.query(check, [Location_id], (err, result) => {
+        console.log('cnide ' ,result , Location_id);
+        
+        if (err || result.length <= 0) res.status(500).json({ message: 'Cannot find the admin' })
+        else {
+            const isPasswordValid = bcrypt.compareSync(Account_Password, result[0].Account_Password);
+            if (!isPasswordValid) {
+                return res.status(401).json({ message: 'Authentication failed' });
+            } else {
+                const salt = bcrypt.genSaltSync(10);
+                const hash = bcrypt.hashSync(newPassword, salt);
+
+                const q = 'UPDATE Restaurant_Admin SET Admin_Name = ?, Email_address = ?, Phone_no = ?, Account_password = ?';
+                db.query(q, [Admin_Name, Email_address, Phone_no,hash], (err, result) => {
+                    if (err) res.status(500).json({ message: 'Failed to updated admin' })
+                    else {
+                        res.status(200).json({ success: true })
+                    }
+                })
+            }
+        };
+    })
+}
+
+
+module.exports.updateLocation = (req, res) => {
+
+}
+
+module.exports.deleteLocation = (req, res) => {
+
 }
