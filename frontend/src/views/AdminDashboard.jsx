@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState ,setI } from "react";
 import { useUserContext } from "../contexts/userContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -13,10 +13,30 @@ const AdminDashboard = () => {
   const [detailsPopup, setDetailsPopup] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [selectedRider, setSelectedRider] = useState(null);
+  const [viewdeliveryDetails,setDeliveryDetailsPopup] = useState(false);
+  const [deliveryDetails,setDeliveryDetails] = useState(null);
+  
+  //ye karna hai
+  const [newPromo,setNewpromo] = useState({
+    promo_code : '',
+    promo_value : '',
+    start_date : '',
+    end_date : '',
+    status : 'active',
+    limit : 0,
+    restaurant_id : ''
+  })
+
+  const [promoPopup,setpromopopup] = useState(false);
+
 
   useEffect(() => {
     if (!loggedIn) navigate("/");
   }, [loggedIn, navigate]);
+  
+  useEffect(() => {
+
+  },[restaurantOrders]);
 
   useEffect(() => {
     if (dispatchPopup) {
@@ -30,7 +50,21 @@ const AdminDashboard = () => {
           console.log(err.message);
         });
     }
-  }, [dispatchPopup, userData.Location_id]);
+  }, [dispatchPopup,userData.Location_id]);
+
+  useEffect(() => {
+    if(viewdeliveryDetails) {
+      console.log('selected order out deliver ',selectedOrder);
+      axios.get(`/api/getDeliveryDetails/${selectedOrder.order_id}`)
+      .then((res) => {
+          console.log('Delivery details fetched ',res.data);
+          setDeliveryDetails(res.data);
+      })
+      .catch((err) => {
+         console.log(err.message);
+      })
+    }
+  },[selectedOrder]);
 
   const handleUpdateStatus = async (order, new_status) => {
     try {
@@ -53,19 +87,14 @@ const AdminDashboard = () => {
 
     try {
       await handleUpdateStatus(selectedOrder, 'Out for delivery');
-      const response = await axios.post(`/api/updateRiderStatus/${selectedRider.rider_id}`, { status: false, order_id: selectedOrder.order_id });
+      const response = await axios.post(`/api/dispatchOrder/${selectedOrder.order_id}`, {rider_id: selectedRider.rider_id });
 
       if (response.status === 200) {
-        const updatedRiders = riders.map((rider) =>
-          rider.rider_id === selectedRider.rider_id ? { ...rider, status: false } : rider
-        );
         const updatedOrder = { ...selectedOrder, rider_id: selectedRider.rider_id };
         const updatedOrders = restaurantOrders.map((order) =>
           order.order_id === updatedOrder.order_id ? updatedOrder : order
         );
-
         setRestaurantOrders(updatedOrders);
-        setRiders(updatedRiders);
         toggleDispatchPopup(false);
         setSelectedRider(null);
         setSelectedOrder(null);
@@ -77,14 +106,18 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     getRestaurantOrders();
-  }, []);
+    const interval = setInterval(() => {
+      getRestaurantOrders();
+    }, 30000); 
+    return () => clearInterval(interval); 
+  }, [managePopup,dispatchPopup]); // Em
 
   useEffect(() => {
     if (!dispatchPopup) {
       setSelectedRider(null);
     }
   }, [dispatchPopup]);
-
+  
   return (
     <div className="min-h-screen bg-gray-100 py-8">
       <div className="container mx-auto px-4">
@@ -198,16 +231,14 @@ const AdminDashboard = () => {
                   <p className="text-gray-600 mb-4">{order.address}</p>
                   <div className="flex justify-end space-x-2">
                       <button
-                        onClick={() => {setDetailsPopup(true);setSelectedOrder(order)}}
+                        onClick={() => {
+                          setSelectedOrder(order);
+                          setDeliveryDetailsPopup(true);
+                        }
+                        }
                         className="bg-indigo-100 text-indigo-600 px-3 py-1 rounded-md hover:bg-indigo-200 transition duration-300 flex items-center"
                       >
-                        <FaEye className="mr-2" /> View Details
-                      </button>
-                      <button
-                        onClick={() => {toggleDispatchPopup(true);setSelectedOrder(order)}}
-                        className="bg-green-100 text-green-600 px-3 py-1 rounded-md hover:bg-green-200 transition duration-300 flex items-center"
-                      >
-                        <FaTruck className="mr-2" /> Dispatch
+                        <FaEye className="mr-2" /> View Delivery Details
                       </button>
                   </div>
                 </div>
@@ -217,6 +248,33 @@ const AdminDashboard = () => {
             )}
           </section>
         </div>
+        
+        {
+  deliveryDetails && viewdeliveryDetails  &&  (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-lg shadow-lg w-full max-w-lg p-6">
+        <h2 className="text-2xl font-bold text-gray-800 mb-4">Order Delivery Details</h2>
+        <div className="space-y-4">
+          <div className="text-gray-700">
+            <strong>Rider ID:</strong> {deliveryDetails.rider_id}
+          </div>
+          <div className="text-gray-700">
+            <strong>Rider Name:</strong> {deliveryDetails.rider_name}
+          </div>
+          <button
+                className="mt-6 w-full bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 transition duration-300"
+                onClick={() =>{ 
+                  setDeliveryDetailsPopup(false)
+                  setDeliveryDetails(null)
+                }}
+              >
+                Close
+              </button>
+        </div>
+      </div>
+    </div>
+  )
+}
 
         {detailsPopup && selectedOrder && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">

@@ -1,5 +1,52 @@
 const db = require('../db');
 
+module.exports.reviewOrder = (req,res) => {
+    console.log('i am here to review order');
+   const order_id = req.params.id;
+   const {rating,description} = req.body;
+   const q = 'INSERT INTO order_review (rating,Review_Description) VALUES(?,?)';
+
+   db.query(q,[rating,description],(err,result) => {
+      if(err){
+        console.log(err.message);
+        return res.status(400).json({error : err.message});
+      }
+      //set order review here;
+      const qq = 'UPDATE orders set review_id = ? where order_id = ?';
+      db.query(qq,[result.insertId,order_id],(err1,result1) => {
+        if(err1){
+            console.log('err1',err1.message);
+            return res.status(400).json({error : err1.message});
+        }
+        res.status(200).json({message : 'Order rated successfully'});
+      })
+   });
+
+}
+
+module.exports.getLastOrder  = (req,res) =>{
+     
+    const customer_id = req.params.id;
+    console.log('HEre to fetch last order : ',customer_id);
+    const q = ` 
+       SELECT o.order_id,r.restaurant_name,r.restaurant_id
+       from orders o join customer c on o.customer_id = c.customer_id
+       join restaurant r on o.restaurant_id = r.restaurant_id
+       where c.customer_id = ? and o.Review_id IS NULL
+       order by o.order_time
+       LIMIT 1;
+    `;
+
+    db.query(q,[customer_id],(err,result) =>{
+        if (err) {
+            console.log('error fetching recent order');
+            return res.status(500).json({ error : err.message });
+        }
+        console.log(result);
+        return res.status(200).json(result);
+    })
+}
+
 module.exports.PlaceOrder = (req, res) => {
     console.log('received', req.body);
 

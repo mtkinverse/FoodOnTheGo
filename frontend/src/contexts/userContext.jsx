@@ -1,7 +1,6 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { createContext, useContext,useEffect } from "react";
-import { redirect } from "react-router-dom";
 const UserContext = createContext();
 
 const UserContextProvider = ({ children }) => {
@@ -59,6 +58,10 @@ const UserContextProvider = ({ children }) => {
 useEffect(() => {
   if (userData.User_id !== 0 && userData.role === "Customer") {
     fetchOrders();
+    const interval = setInterval(() => {
+      fetchOrders();
+    }, 30000); //30 seconds 
+    return () => clearInterval(interval); 
   }
 }, [userData.User_id]);
   
@@ -109,6 +112,7 @@ useEffect(() => {
             Email_address: res.data.Email_address,
             phone_no: res.data.Phone_No,
             role: res.data.role,
+            status: res.data.Available
           };
           bikeData = {
             BikeNo : res.data.BikeNo

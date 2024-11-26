@@ -54,6 +54,8 @@ const Navbar = () => {
   };
 
   const [currentPopup, CurrentOrdersPopup] = useState(false);
+  
+
 
   const cancelOrder = (order_id) => {
     axios
@@ -161,6 +163,7 @@ const Navbar = () => {
     navItems.push({ label: "DashBoard", path: "/RiderDashboard" });
   }
   if (loggedIn && userData?.role === "Restaurant_Admin") {
+    while(navItems.length > 0) navItems.pop();
     navItems.push({ label: "DashBoard", path: "/AdminDashboard" });
   }
   
@@ -303,7 +306,8 @@ const Navbar = () => {
                         Change Vehicle Details
                       </button>
                     )}
-
+                    
+                  
                     <button
                       onClick={signItOut}
                       className="w-full text-left block px-4 py-2 text-sm text-white hover:bg-purple-800"
@@ -382,6 +386,17 @@ const Navbar = () => {
                       >
                         View Profile
                       </button>
+                      
+                      
+                      {userData.role === "Restaurant_Admin" && (
+                        <button
+                          // onClick={() => {}}
+                            className="block w-full text-left px-3 py-2 text-base font-medium text-purple-600 hover:bg-purple-100 hover:text-purple-700"
+                            >
+                          Start a new promo
+                        </button>
+                      )}
+
 
                       {userData.role === "Customer" &&
                         currentOrders.length > 0 && (
@@ -425,6 +440,19 @@ const Navbar = () => {
                           Change Vehicle Details
                         </button>
                       )}
+
+                      {userData.role === "Delivery_Rider" && (
+                        <button
+                          onClick={() => {
+                            setBikePopup(true);
+                            setIsMenuOpen(false);
+                          }}
+                          className="block w-full text-left px-3 py-2 text-base font-medium text-purple-600 hover:bg-purple-100 hover:text-purple-700"
+                        >
+                          Change Vehicle Details
+                        </button>
+                      )}
+  
                       <button
                         onClick={(e) => {
                           signItOut(e);
@@ -470,6 +498,16 @@ const Navbar = () => {
               Order #{order.order_id}
               {order.status === 'Out for delivery' && (
                 <span className="ml-2 px-2 py-1 text-xs font-bold text-green-700 bg-green-200 rounded-full">
+                  {order.status}
+                </span>
+              )}
+               {order.status === 'Placed' && (
+                <span className="ml-2 px-2 py-1 text-xs font-bold text-yellow-700 bg-yellow-200 rounded-full">
+                  {order.status}
+                </span>
+              )}
+               {order.status === 'Preparing' && (
+                <span className="ml-2 px-2 py-1 text-xs font-bold text-red-700 bg-red-200 rounded-full">
                   {order.status}
                 </span>
               )}

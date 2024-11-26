@@ -35,6 +35,11 @@ const Menu = () => {
     };
 
     fetchMenuItems();
+
+    const interval = setInterval(() => {
+      fetchMenuItems();
+    }, 50000); 
+    return () => clearInterval(interval); 
   }, [restaurant_id, restaurant_name, navigate]);
 
   const categories = ["All", ...new Set(menuItems.map(item => item.Cuisine))];

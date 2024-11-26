@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import { TrashIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
+import { TrashIcon, PencilSquareIcon,XMarkIcon  } from "@heroicons/react/24/outline";
 
 const ManageRestaurant = ({
   isOpen,
@@ -403,7 +403,7 @@ const ManageRestaurant = ({
 
         {/* Buttons Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {/* Add Menu button */}
+          {/* Add Menu button
           {menuId === null && (
             <button
               className="w-full bg-purple-600 text-white py-3 px-4 rounded-lg shadow hover:bg-purple-700 transition"
@@ -426,7 +426,7 @@ const ManageRestaurant = ({
             >
               Add Menu
             </button>
-          )}
+          )} */}
 
           {menuId !== null && (
             <button
@@ -441,7 +441,7 @@ const ManageRestaurant = ({
             className="w-full bg-purple-600 text-white py-3 px-4 rounded-lg shadow hover:bg-purple-700 transition"
             onClick={handleAdminCred}
           >
-            {restaurant.r_admin === null ? 'Add Admin' : 'Update Admin'}
+            {restaurant.r_admin ? 'Update Admin' : 'Add Admin'}
           </button>
 
 
@@ -450,7 +450,7 @@ const ManageRestaurant = ({
             <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
               <div className="bg-white rounded-lg shadow-lg w-full max-w-md mx-4 sm:mx-0 p-6">
                 <h2 className="text-xl font-bold mb-4 text-center">
-                  {restaurant.r_admin === null ? 'Create Admin' : 'Update Admin'}
+                  {restaurant.r_admin ? 'Update Admin' : 'Add Admin'}
                 </h2>
                 <form onSubmit={handleAdminSubmit} className="space-y-4">
                   <div>
@@ -544,7 +544,7 @@ const ManageRestaurant = ({
                       type="submit"
                       className="bg-purple-600 text-white px-4 py-2 rounded-lg shadow hover:bg-purple-700 focus:outline-none focus:ring focus:ring-blue-300"
                     >
-                      {restaurant.r_admin === null ? 'Create Admin' : 'Update Admin'}
+                      {restaurant.r_admin ? 'Update Admin' : 'Create Admin'}
                     </button>
                     <button
                       type="button"
@@ -560,56 +560,58 @@ const ManageRestaurant = ({
           )}
 
           {updateMenuPopupOpen && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-              <div className="bg-white rounded-lg shadow-lg w-2/3 p-6 relative">
-                <h2 className="text-2xl font-bold text-purple-600 mb-4">
-                  Update Menu
-                </h2>
-                <button
-                  className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 transition"
-                  onClick={() => setUpdateMenuPopupOpen(false)}
-                >
-                  &times;
-                </button>
-                <div>
-                  {menuItems.length > 0 ? (
-                    <ul>
-                      {menuItems.map((item) => (
-                        <li
-                          key={item.id}
-                          className="flex justify-between items-center border-b py-2"
-                        >
-                          <div>
-                            <p className="font-bold">{item.Dish_Name}</p>
-                            <p className="text-gray-600">
-                              Rs.{item.Item_Price}
-                            </p>
-                          </div>
-                          <div className="flex gap-2">
-                            <button
-                              className="text-blue-500 hover:text-blue-700"
-                              onClick={() => handleUpdateItemClick(item)}
-                            >
-                              <PencilSquareIcon className="h-6 w-6" />
-                            </button>
-                            <button
-                              className="text-red-500 hover:text-red-700"
-                              onClick={() =>
-                                handleDeleteItemClick(item.Item_id)
-                              }
-                            >
-                              <TrashIcon className="h-6 w-6" />
-                            </button>
-                          </div>
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <p className="text-gray-600">No items in the menu.</p>
-                  )}
-                </div>
-              </div>
-            </div>
+             <div className="fixed inset-0 bg-black/50 overflow-y-auto h-full w-full z-50 flex items-center justify-center">
+             <div className="relative w-11/12 max-w-2xl mx-auto bg-white rounded-xl shadow-2xl overflow-hidden">
+               {/* Header */}
+               <div className="bg-purple-600 text-white px-6 py-4 flex justify-between items-center">
+                 <h2 className="text-xl font-semibold">Update Menu</h2>
+                 <button 
+                   onClick={() => setUpdateMenuPopupOpen(false)}
+                   className="hover:bg-purple-700 rounded-full p-1 transition"
+                 >
+                   <XMarkIcon className="h-6 w-6" />
+                 </button>
+               </div>
+       
+               {/* Content */}
+               <div className="p-6">
+                 {menuItems.length > 0 ? (
+                   <div className="space-y-4">
+                     {menuItems.map((item) => (
+                       <div 
+                         key={item.id} 
+                         className="flex items-center justify-between bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition"
+                       >
+                         <div>
+                           <h3 className="text-lg font-bold text-gray-800">{item.Dish_Name}</h3>
+                           <p className="text-gray-600">Rs. {item.Item_Price}</p>
+                         </div>
+                         
+                         <div className="flex items-center space-x-3">
+                           <button 
+                             onClick={() =>{ 
+                              setUpdateMenuPopupOpen(false)
+                              handleUpdateItemClick(item)}}
+                             className="text-blue-500 hover:text-blue-700 bg-blue-50 p-2 rounded-full transition"
+                           >
+                             <PencilSquareIcon className="h-5 w-5" />
+                           </button>
+                           <button 
+                             onClick={() => handleDeleteItemClick(item.Item_id)}
+                             className="text-red-500 hover:text-red-700 bg-red-50 p-2 rounded-full transition"
+                           >
+                             <TrashIcon className="h-5 w-5" />
+                           </button>
+                         </div>
+                       </div>
+                     ))}
+                   </div>
+                 ) : (
+                   <p className="text-center text-gray-500 py-4">No items in the menu.</p>
+                 )}
+               </div>
+             </div>
+           </div>
           )}
 
           {updateItemPopup && (
@@ -710,7 +712,7 @@ const ManageRestaurant = ({
             </div>
           )}
 
-          {/* Delete Menu button */}
+          {/* Delete Menu button
           {menuId !== null && (
             <button
               className="w-full bg-purple-600 text-white py-3 px-4 rounded-lg shadow hover:bg-purple-700 transition"
@@ -732,7 +734,7 @@ const ManageRestaurant = ({
             >
               Delete Menu
             </button>
-          )}
+          )} */}
 
           {/* Add Menu Items Button */}
           {menuId !== null && (

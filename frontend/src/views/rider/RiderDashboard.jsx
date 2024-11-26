@@ -5,7 +5,7 @@ import axios from "axios";
 import { FaBiking, FaBox, FaCheckCircle, FaDollarSign, FaUtensils, FaMapMarkerAlt } from 'react-icons/fa';
 
 const RiderDashboard = () => {
-  const { userData, loggedIn, bikeDetails, setBikeDetails } = useUserContext();
+  const { userData, loggedIn, bikeDetails, setBikeDetails,setUserData } = useUserContext();
   const [bikePopup, setBikePopup] = useState(false);
   const [orderDetailPopup, setOrderDetailsPopup] = useState(false);
   const [analyzingOrder, analyzeOrder] = useState({});
@@ -13,7 +13,7 @@ const RiderDashboard = () => {
   const [pendingOrders, setPending] = useState([]);
   const [restaurantInfo, setRestaurantInfo] = useState([]);
   const navigate = useNavigate();
-
+  
   const getRestaurantInfo = async () => {
     try {
       const response = await axios.get(`/api/getRestaurantInfo/${userData.User_id}`);
@@ -22,24 +22,7 @@ const RiderDashboard = () => {
       console.log('Error getting restaurant info');
     }
   }
-
-  useEffect(() => {
-    if (!loggedIn) {
-      navigate("/");
-    }
-    if (userData?.User_id) {
-      getRestaurantInfo();
-    }
-  }, [loggedIn, navigate, userData]);
-
-  useEffect(() => {
-    if (!loggedIn) {
-      navigate("/");
-    } else if (!bikeDetails.BikeNo) {
-      setBikePopup(true);
-    }
-  }, [loggedIn, navigate, bikeDetails]);
-
+   
   const fetchHistory = async () => {
     try {
       const response = await axios.get(`/api/getRiderHistory/${userData.User_id}`);
@@ -48,6 +31,29 @@ const RiderDashboard = () => {
       console.error("Error fetching rider history", err);
     }
   };
+  
+  useEffect(() => {
+
+  },[userData.status]);
+
+  useEffect(() => {
+    if (!loggedIn) {
+      navigate("/");
+    }
+    if (userData?.User_id) {
+      getRestaurantInfo();
+      fetchHistory();
+    }
+  }, [loggedIn, userData]);
+
+  useEffect(() => {
+    if (!loggedIn) {
+      navigate("/");
+    } else if (!bikeDetails.BikeNo) {
+      setBikePopup(true);
+    }
+  }, [loggedIn, bikeDetails]);
+
 
   const fetchPending = async () => {
     try {
@@ -60,9 +66,12 @@ const RiderDashboard = () => {
   };
 
   useEffect(() => {
-    fetchHistory();
     fetchPending();
-  }, []);
+    const interval = setInterval(() => {
+      fetchPending();
+    }, 40000); 
+    return () => clearInterval(interval); 
+  },[]);
 
   const handleBikeRegistration = async (e) => {
     e.preventDefault();
@@ -97,11 +106,45 @@ const RiderDashboard = () => {
       alert('cannot mark order as delivered !');
     })
   }
+  
+  const updateAvailabilityStatus = async () => {
+    const updated_status = userData.status ? false : true;
+    try {
+      const response = await axios.post(`/api/updateMyStatus/${userData.User_id}`, { status: updated_status });
+  
+      if (response.status === 200) {
+        setUserData((prevData) => ({
+          ...prevData,
+          status: updated_status,
+        }));
+        console.log('marked status',userData);
+        const message = updated_status
+          ? "You are now available for deliveries!"
+          : "You are now unavailable for future deliveries until you mark yourself as available again!";
+        window.alert(message);
+      }
+    } catch (err) {
+      console.error("Error updating status:", err);
+      window.alert("Failed to update your availability status. Please try again later.");
+    }
+  };
+  
+  
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold text-indigo-800 mb-8">Rider Dashboard</h1>
+    <div className="min-h-screen bg-purple-100">
+  <div className="container mx-auto px-4 py-8">
+    <div className="flex items-center justify-between mb-8">
+      <h1 className="text-3xl font-bold text-indigo-800">Rider Dashboard</h1>
+      <button 
+       className={`px-4 py-2 rounded text-white
+         ${userData.status ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'}`}
+       onClick={updateAvailabilityStatus} 
+      >
+       {userData.status ? 'Mark Yourself Unavailable' : 'Mark Yourself Available'}
+      </button>
+
+    </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           <div className="bg-white rounded-2xl shadow-lg p-6 flex items-center space-x-4">
@@ -272,7 +315,7 @@ const RiderDashboard = () => {
                 />
               </div>
               <button
-                className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition duration-300"
+                className="w-full bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition duration-300"
                 onClick={e => { e.preventDefault(); analyzeOrder({}); setOrderDetailsPopup(false);}}
               >
                 done

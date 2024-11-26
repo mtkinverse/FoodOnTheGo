@@ -1,48 +1,73 @@
-import React from 'react';
-import { FaFacebook, FaTwitter, FaInstagram, FaUtensils, FaStar, FaClock } from 'react-icons/fa';
-import TopRestaurants from '../Components/TopRestaurants';
-import { useUserContext } from '../contexts/userContext';
+import React, { useEffect, useState } from 'react';
+import { FaUtensils, FaStar, FaClock } from 'react-icons/fa';
+import TopRestaurants from './TopRestaurants';
 import Cart from './Cart';
+import { useUserContext } from '../contexts/userContext';
+import axios from 'axios';
+import RatingPopup from './RateOrder';
 
 const HomePage = () => {
-  const {loggedIn} = useUserContext();
+  const { loggedIn, userData } = useUserContext();
+  const [lastOrder, setLastOrder] = useState(null);
+  const [showRatePopup, setShowRatePopup] = useState(false);
+
+  const fetchLastOrder = async () => {
+    try {
+      const response = await axios.get(`/api/getLastOrder/${userData.User_id}`);
+      if (response.data && response.data.Review_id === null) { 
+        setLastOrder(response.data);
+        setShowRatePopup(true); 
+      } else {
+        setLastOrder(null);  
+        setShowRatePopup(false); 
+      }
+    } catch (err) {
+      console.error('Error fetching last order:', err);
+    }
+  };
+  
+
+  useEffect(() => {
+    if (loggedIn && userData?.role === 'Customer' ) {
+      fetchLastOrder();
+    }
+  }, [loggedIn]);
+
+  // Close the pop-up after rating
+  const handleRateOrderClose = () => {
+    setShowRatePopup(false);
+  };
+
   return (
     <>
-      {/* Header Section with purple-White Gradient */}
-      <header className="bg-gradient-to-r from-purple-700 to-purple-900 text-white py-32 overflow-hidden w-full mx-0">
-        <div className="container mx-auto px-6 flex flex-col md:flex-row items-center justify-between w-full text-center md:text-left">
-          <div className="w-full md:w-1/2 mb-10 md:mb-0">
-            <h1 className="text-6xl font-extrabold mb-6 animate-fade-in-up">
-              Savor the <span className="text-yellow-300">Moment</span>
-            </h1>
-            <p className="text-xl mb-10 animate-fade-in-up animation-delay-200">
-  Discover, order, and enjoy culinary excellence at your doorstep. {!loggedIn && <p>Login now to place an order! </p>}
-</p>
-
-            <button className="bg-white text-purple-600 rounded-full px-10 py-4 font-semibold shadow-lg hover:shadow-xl transition duration-300 transform hover:scale-105 animate-fade-in-up animation-delay-400">
-              Explore Flavors
-            </button>
-          </div>
-       
+      {/* Hero Section */}
+      <section className="bg-purple-100 py-20">
+        <div className="container mx-auto px-6 text-center">
+          <h1 className="text-5xl font-bold text-purple-800 mb-4">Delicious Food, Delivered to You</h1>
+          <p className="text-xl text-purple-600 mb-8">Order from your favorite restaurants with just a few clicks!</p>
+          <button className="bg-purple-600 text-white font-bold py-3 px-8 rounded-full hover:bg-purple-700 transition duration-300">
+            Order Now
+          </button>
         </div>
-      </header>
+      </section>
 
-      <section className="py-24 bg-white w-full mx-0">
+      {/* Features Section */}
+      <section className="py-20 bg-white">
         <div className="container mx-auto px-6">
-          <h2 className="text-5xl font-semibold text-center text-gray-800 mb-12">Why Choose Us</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
+          <h2 className="text-4xl font-semibold text-center text-purple-800 mb-12">Why Choose Us</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
             <FeatureCard
-              icon={<FaUtensils className="text-purple-600" />}
+              icon={<FaUtensils className="text-purple-600 text-4xl" />}
               title="Curated Restaurants"
               description="Handpicked top-quality dining options for your pleasure"
             />
             <FeatureCard
-              icon={<FaStar className="text-yellow-500" />}
+              icon={<FaStar className="text-purple-600 text-4xl" />}
               title="Exclusive Offers"
               description="Enjoy special deals and discounts on your favorite meals"
             />
             <FeatureCard
-              icon={<FaClock className="text-green-500" />}
+              icon={<FaClock className="text-purple-600 text-4xl" />}
               title="On-Time Delivery"
               description="Your food arrives hot and fresh, right when you need it"
             />
@@ -51,24 +76,30 @@ const HomePage = () => {
       </section>
 
       {/* Top Restaurants Section */}
-      <section className="py-24 bg-purple-50 w-full mx-0">
+      <section className="py-20 bg-purple-100">
         <div className="container mx-auto px-6">
-          <h2 className="text-5xl font-semibold text-center text-gray-800 mb-16">Top Restaurants</h2>
+          <h2 className="text-4xl font-semibold text-center text-purple-800 mb-12">Top Restaurants</h2>
           <TopRestaurants />
         </div>
       </section>
-      
-      {loggedIn && <Cart/>}
+
+      {loggedIn && <Cart />}
+
+      {showRatePopup && lastOrder !== null && (
+        <RatingPopup 
+          order={lastOrder} 
+          onClose={handleRateOrderClose} 
+        />
+      )}
     </>
   );
 };
 
-// Feature Card Component
 const FeatureCard = ({ icon, title, description }) => (
-  <div className="bg-white rounded-xl p-8 text-center hover:shadow-2xl transition duration-300 transform hover:-translate-y-4 border border-gray-200">
-    <div className="text-5xl mb-6 flex justify-center">{icon}</div>
-    <h3 className="text-2xl font-semibold text-gray-800 mb-4">{title}</h3>
-    <p className="text-gray-600 text-lg">{description}</p>
+  <div className="flex flex-col items-center text-center">
+    <div className="mb-4">{icon}</div>
+    <h3 className="text-2xl font-semibold text-purple-800 mb-2">{title}</h3>
+    <p className="text-purple-600">{description}</p>
   </div>
 );
 

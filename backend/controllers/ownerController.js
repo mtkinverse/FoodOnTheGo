@@ -4,6 +4,26 @@ const fs = require('fs');
 const bcrypt = require('bcrypt');
 const e = require('express');
 
+module.exports.getRestaurant = (req,res) => {
+    const restaurant_id = req.params.id;
+    console.log('get restaurant hit ', restaurant_id);
+    q = `
+       SELECT * from restaurant r
+       join locations l
+       on r.location_id = l.location_id
+       where r.restaurant_id = ?
+    `
+    db.query(q,[restaurant_id],(err,result)=>{
+        if(err){
+            console.log('error fetching specific restaurant');
+            res.status(500).json({error : err.message});
+        }
+        console.log('result : ',result);
+        res.status(200).json(result);
+    } )
+}
+
+
 module.exports.addAdmin = (req, res) => {
     const restaurant_id = req.params.id;
     const { adminData, Location_id } = req.body;
@@ -74,7 +94,7 @@ module.exports.AddRestaurant = (req, res) => {
         console.log(Restaurant_Image);
         db.query(query, [Restaurant_name, OpensAt, ClosesAt, Restaurant_Image, Owner_id, Location_id], (err2, result2) => {
             if (err2) {
-                console.log('err');
+                console.log('err ',err2.message);
                 return res.status(500).json({ error: "Database query failed", details: err2.message });
             }
             console.log(result2);
@@ -83,48 +103,6 @@ module.exports.AddRestaurant = (req, res) => {
     })
 };
 
-module.exports.addMenu = (req, res) => {
-    console.log('Add menu hit');
-    const restaurant_id = req.params.id;
-
-    const checkQuery = 'SELECT menu_id FROM restaurant WHERE restaurant_id = ?';
-
-    db.query(checkQuery, [restaurant_id], (err, results) => {
-        if (err) {
-            console.log('error here');
-            return res.status(500).json({ error: 'Database query failed', details: err.message });
-        }
-
-        if (results.length > 0 && results[0].menu_id) {
-            console.log('Restaurant already has a menu assigned');
-            return res.status(400).json({ message: 'Restaurant already has a menu assigned' });
-        }
-
-        const insertMenuQuery = 'INSERT INTO menu () VALUES ()';
-
-        db.query(insertMenuQuery, (err, menuResult) => {
-            if (err) {
-                return res.status(500).json({ error: 'Failed to create menu', details: err.message });
-            }
-
-            console.log('Menu created successfully with ID:', menuResult.insertId);
-
-            const updateRestaurantMenuQuery = 'UPDATE restaurant SET menu_id = ? WHERE restaurant_id = ?';
-            db.query(updateRestaurantMenuQuery, [menuResult.insertId, restaurant_id], (err, updateResult) => {
-                if (err) {
-                    console.log('Error updating restaurant menu:', err);
-                    return res.status(500).json({ error: 'Failed to update restaurant menu', details: err.message });
-                }
-
-                console.log('Restaurant menu updated successfully');
-                return res.status(200).json({
-                    message: 'Menu created and assigned to restaurant successfully',
-                    menu_id: menuResult.insertId
-                });
-            });
-        });
-    });
-};
 
 
 //insertId is used for auto increments ids
@@ -132,7 +110,7 @@ module.exports.addMenu = (req, res) => {
 module.exports.addMenuItem = (req, res) => {
     console.log('hit add item');
     const restaurant_id = req.params.id;
-
+    console.log(req.body);
     const { name, price, cuisine, menu_id } = req.body;
     const Item_image = req.file ? `http://localhost:8800/images/${restaurant_id}/${req.file.filename}` : null; // Handle file upload
 
@@ -398,8 +376,6 @@ module.exports.updateAdmin = (req, res) => {
     
     console.log('what', req.body.adminData)
     
-
-
     const { Admin_Name, Email_address, Phone_no, Account_Password, newPassword, Location_id } = req.body.adminData;
 console.log(Admin_Name,Email_address,Phone_no,Account_Password,newPassword,Location_id);
 

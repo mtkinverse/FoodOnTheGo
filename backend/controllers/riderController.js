@@ -1,5 +1,20 @@
 const db = require('../db');
 
+module.exports.updateStatus =(req,res) => {
+    const q = 'UPDATE delivery_rider set available = ? where rider_id = ?';
+    db.query(q,[req.params.id,req.body.status],(err,result) => {
+        if(err){
+            console.log('error ',err.message);
+            res.status(500).json({error : err.message});
+        }
+        console.log(
+            "marked" + req.body.status
+        )
+        res.status(200).json({message : "marked" + req.body.status});
+    })
+
+}
+
 module.exports.setVehicle = (req,res) => {
     console.log('Hit add/update Vehicle');
     const rider_id = req.params.id;
@@ -34,9 +49,7 @@ module.exports.getRestaurantInfo = (req,res) => {
     })
 }
 
-module.exports.getPendingOrders = (req,res) =>{
-    console.log('received1 : ',req.params.id);
-    
+module.exports.getPendingOrders = (req,res) =>{    
     const q = 'SELECT o.*,d.*,c.Customer_Name FROM Orders o NATURAL JOIN Customer c NATURAL JOIN DeliveryAddress d WHERE Delivered_by_id = ? AND Order_status = \'Out for delivery\'';
     db.query(q,[req.params.id], (err,result) => {
         if (err) console.log(err);
@@ -48,10 +61,11 @@ module.exports.getPendingOrders = (req,res) =>{
 
 module.exports.getHistory = (req,res) => {
     console.log('received2 : ',req.params.id);
-    const q = 'SELECT * FROM Orders WHERE Delivered_by_id = ? and Order_Status = \'Delivered\'';
-    db.query(q,[req.params.id], (err,result) => {
+    const q = 'SELECT * FROM Orders WHERE Delivered_by_id = ? and Order_Status = ? ';
+    db.query(q,[req.params.id,'Delivered'], (err,result) => {
         if(err) res.status(500).json({message : 'Cannot get History'})
-        else res.status(200).json({orders : result})
+        console.log(result);        
+        res.status(200).json({orders : result})
     })
 }
 

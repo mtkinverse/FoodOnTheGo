@@ -78,18 +78,9 @@ module.exports.updateOrderStatus = (req,res) => {
     })
 }
 
-module.exports.updateRiderStatus = (req, res) => {
-    const rider_id = req.params.id;
-    const { status, order_id } = req.body; // Correctly destructure the body
-  
-    console.log(rider_id, status, "rider update hit");
-    const q = "UPDATE delivery_rider SET available = ? WHERE rider_id = ?";
-  
-    db.query(q, [status, rider_id], (err, result) => {
-      if (err) {
-        console.log("Error updating rider status:", err);
-        return res.status(500).json({ error: err.message });
-      }
+module.exports.dispatchOrder = (req, res) => {
+    const order_id = req.params.id;
+    const { rider_id } = req.body; 
   
       const qq = "UPDATE Orders SET delivered_by_id = ? WHERE order_id = ?";
       db.query(qq, [rider_id, order_id], (error, result2) => {
@@ -97,9 +88,25 @@ module.exports.updateRiderStatus = (req, res) => {
           console.log("Error updating order status:", error);
           return res.status(500).json({ error: error.message }); 
         }
-  
-        return res.status(200).json({ message: "Rider and order status updated" });
+        return res.status(200).json({ message: "order delivered by id set" });
       });
-    });
   };
-  
+
+module.exports.getDeliveryDetails = (req,res) => {
+    const order_id = req.params.id;
+    console.log('Delivery details hitt ',order_id);
+
+    const q = `SELECT r.rider_id,r.rider_name,d.address
+               from orders o join deliveryaddress d
+               on o.address_id = d.address_id
+               join delivery_rider r on r.rider_id = o.delivered_by_id
+               where order_id = ?
+               `;
+    db.query(q,[order_id],(err,result) =>{
+        if(err){
+            res.status(500).json({error : err.message});
+        }
+        console.log(result);
+        return res.status(200).json(result);
+    })
+}
