@@ -39,14 +39,9 @@ const Restaurants = () => {
         setRestaurantData(response.data);
         setFilteredRestaurants(response.data); // Initialize filtered restaurants
       } else {
-        console.error("Expected an array but got:", response.data);
         setRestaurantData([]);
       }
     } catch (error) {
-      console.error("Error fetching restaurants:", error);
-      if (error.response?.data?.message === "Access Denied") {
-        alert("Kindly login to view the restaurants");
-      }
       setRestaurantData([]);
     } finally {
       setIsLoading(false);

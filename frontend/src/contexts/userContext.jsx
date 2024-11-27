@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { createContext, useContext,useEffect } from "react";
+import { useAlertContext } from "./alertContext";
 const UserContext = createContext();
 
 const UserContextProvider = ({ children }) => {
@@ -14,13 +15,15 @@ const UserContextProvider = ({ children }) => {
     role: "",
   });
 
+  const {setAlert} = useAlertContext();
+  
   //for rider
   const [bikeDetails,setBikeDetails] = useState({
      BikeNo : ""
   })
   
 
-  const [errors, setErrors] = useState({ email: "", password: "" });
+  // const [errors, setErrors] = useState({ email: "", password: "" });
   const [orders,setOrders] = useState([]);
   const [currentOrders, setCurrentOrders] = useState([]); // ye customer ke hain
   const [pastOrders, setPastOrders] = useState([]);// ye bhi
@@ -143,19 +146,22 @@ useEffect(() => {
         setUserData(tempUserData);
         setLoggedIn(true);
         setBikeDetails(bikeData);
-          
-        console.log("User data set for:", tempUserData);
-        setErrors({
-          email: "",
-          password:""
+        setAlert({
+          message : 'Login successful',
+          type: 'success'
         })
+        console.log("User data set for:", tempUserData);
       } else {
         throw new Error(res.message || "Unexpected error occurred");
       }
     } catch (err) {
       console.error("Login error:", err.message);
-      setErrors(err);
-      console.log(errors);
+      const serverError = err.response?.data?.message || "An error occurred";
+      setAlert({
+        message: serverError,
+        type: "failure",
+      });
+      
     }
   };
 
@@ -170,15 +176,10 @@ useEffect(() => {
               User_id: 0, User_name: "", Email_address: "",phone_no: "",role: "",
            })
           ]);
-
-          console.log("uC: signedout");
-          // alert("user logout successful");
-          // navigate('/');
         }
       })
       .catch((err) => {
         console.log("failed signout");
-        alert("signout fail");
       });
   };
 
@@ -205,8 +206,6 @@ useEffect(() => {
         setUserData,
         bikeDetails,
         setBikeDetails,
-        errors,
-        setErrors,
         currentOrders,
         setCurrentOrders,
         pastOrders,

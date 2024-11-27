@@ -1,8 +1,9 @@
 const db = require('../db');
 
 module.exports.updateStatus =(req,res) => {
+    console.log('updating rider status ',req.body.status);
     const q = 'UPDATE delivery_rider set available = ? where rider_id = ?';
-    db.query(q,[req.params.id,req.body.status],(err,result) => {
+    db.query(q,[req.body.status,req.params.id,],(err,result) => {
         if(err){
             console.log('error ',err.message);
             res.status(500).json({error : err.message});

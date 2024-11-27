@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useUserContext } from "./userContext";
 import axios from "axios";
+import { useAlertContext } from "./alertContext";
 
 const CartContext = createContext();
 
@@ -8,7 +9,8 @@ const CartContextProvider = ({ children }) => {
   const { loggedIn, userData,fetchOrders } = useUserContext();
   const [cart, setCart] = useState([]);
   const [cartCount, setCartCount] = useState(0);
-  
+  const {setAlert}  = useAlertContext();
+
   useEffect(() => {
     if (loggedIn && userData?.User_id) {
       const storage_name = `${userData.User_id}_cart`;
@@ -54,14 +56,21 @@ const CartContextProvider = ({ children }) => {
     })    
     .then(res => {
       if(res.status === 200){
-        alert(res.data.message);
+
+        setAlert( {
+          message : res.data.message,
+          type : "success"
+        });
         setCart([]);
         fetchOrders();
       }
     })
     .catch(err => {
-     // alert('Cannot place order !');
-    //  console.log(err);
+
+       setAlert({
+        message : 'Cannot place order',
+        type : 'failure'
+       });
     })
   }
 

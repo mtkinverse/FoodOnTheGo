@@ -1,5 +1,19 @@
 const db = require('../db');
 
+module.exports.getPromos = (req,res) => {
+    const restaurant_id = req.params.id;
+
+    const q = 'SELECT * from promos where restaurant_id = ? and status = ? ';
+
+    db.query(q,[restaurant_id,'active'],(err,result) => {
+        if(err){
+            return res.status(500).json({message : 'No promos found'});
+        }
+        console.log(result);
+        return res.status(200).json(result);
+    })
+}
+
 module.exports.reviewOrder = (req,res) => {
     console.log('i am here to review order');
    const order_id = req.params.id;
@@ -122,8 +136,8 @@ module.exports.getAllOrders = (req,res) => {
       from orders o 
       join deliveryaddress d on o.address_id = d.address_id
       join restaurant r on o.restaurant_id = r.restaurant_id
-      join menu_items i on i.menu_id = r.menu_id
-      join ordered_items oo on i.item_id = oo.item_id
+      join ordered_items oo on o.order_id = oo.order_id  
+      join menu_items i on oo.item_id = i.item_id        
       where o.customer_id = ?
       order by order_date DESC;
     `;

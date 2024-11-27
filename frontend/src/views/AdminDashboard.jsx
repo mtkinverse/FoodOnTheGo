@@ -3,6 +3,7 @@ import { useUserContext } from "../contexts/userContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { FaClipboardList, FaUtensils, FaTruck, FaEye, FaCog, FaMotorcycle ,FaBiking } from 'react-icons/fa';
+import { useAlertContext } from "../contexts/alertContext";
 
 const AdminDashboard = () => {
   const { getRestaurantOrders, restaurantOrders, loggedIn, setRestaurantOrders, userData } = useUserContext();
@@ -16,19 +17,49 @@ const AdminDashboard = () => {
   const [viewdeliveryDetails,setDeliveryDetailsPopup] = useState(false);
   const [deliveryDetails,setDeliveryDetails] = useState(null);
   
+  const {setAlert} = useAlertContext();
+  
   //ye karna hai
-  const [newPromo,setNewpromo] = useState({
+  const [newpromo,setNewPromo] = useState({
     promo_code : '',
     promo_value : '',
     start_date : '',
     end_date : '',
     status : 'active',
     limit : 0,
-    restaurant_id : ''
   })
 
-  const [promoPopup,setpromopopup] = useState(false);
+  const [NewPromoPopup,setNewPromoPopup] = useState(false);
 
+  const handlePromoSubmit = async (e) =>{
+       e.preventDefault();
+       try{
+          const response = await axios.post(`/api/addPromo/${userData.Location_id}`,newpromo);
+          if(response.status === 200){
+            setAlert({
+              message : 'New promo added',
+              type : 'success'
+            });
+            setNewPromoPopup(false);
+            setNewPromo({
+              promo_code : '',
+              promo_value : '',
+              start_date : '',
+              end_date : '',
+              status : 'active',
+              limit : 0,
+            });
+          }
+       }
+       catch(err){
+
+        setAlert({
+          message : 'Error adding promo',
+          type : 'failure'
+        });
+       }
+
+  }
 
   useEffect(() => {
     if (!loggedIn) navigate("/");
@@ -38,19 +69,29 @@ const AdminDashboard = () => {
 
   },[restaurantOrders]);
 
+  const getRiders = async () => {
+    try {
+      const res = await axios.get(`/api/getAvaliableRiders/${userData.Location_id}`);
+      if (JSON.stringify(res.data) !== JSON.stringify(riders)) {
+        console.log("Updating riders data");
+        setRiders(res.data);
+      }
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+  
   useEffect(() => {
     if (dispatchPopup) {
-      axios
-        .get(`/api/getAvaliableRiders/${userData.Location_id}`)
-        .then((res) => {
-          console.log("setting riders ", res.data);
-          setRiders(res.data);
-        })
-        .catch((err) => {
-          console.log(err.message);
-        });
+      getRiders();
+      const interval = setInterval(() => {
+        getRiders();
+      }, 100000);
+  
+      return () => clearInterval(interval);
     }
-  }, [dispatchPopup,userData.Location_id]);
+  }, [dispatchPopup]);
+  
 
   useEffect(() => {
     if(viewdeliveryDetails) {
@@ -76,9 +117,17 @@ const AdminDashboard = () => {
         );
         setRestaurantOrders(updatedOrders);
         toggleManagePopup(false);
+        setAlert({
+          message : 'Preparing the order..',
+          type : 'success'
+        });
       }
     } catch (err) {
-      console.error('Error updating order status:', err);
+
+      setAlert( {
+        message : 'Error updating Order status',
+        type : 'failure'
+      });
     }
   };
 
@@ -98,9 +147,18 @@ const AdminDashboard = () => {
         toggleDispatchPopup(false);
         setSelectedRider(null);
         setSelectedOrder(null);
+
+        setAlert( {
+          message : 'Order dispatched',
+          type : 'success'
+        });
       }
     } catch (err) {
-      console.error('Error dispatching order or updating rider status:', err);
+
+      setAlert({
+        message : 'Error dispatching order',
+        type : 'failure'
+      });
     }
   };
 
@@ -110,7 +168,7 @@ const AdminDashboard = () => {
       getRestaurantOrders();
     }, 30000); 
     return () => clearInterval(interval); 
-  }, [managePopup,dispatchPopup]); // Em
+  }, [managePopup,dispatchPopup]); 
 
   useEffect(() => {
     if (!dispatchPopup) {
@@ -119,54 +177,72 @@ const AdminDashboard = () => {
   }, [dispatchPopup]);
   
   return (
-    <div className="min-h-screen bg-gray-100 py-8">
-      <div className="container mx-auto px-4">
-        <header className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">Restaurant Admin Dashboard</h1>
-          <p className="text-gray-600">Manage orders efficiently</p>
-        </header>
+    <div className="min-h-screen bg-purple-100 py-8">
+    <div className="container mx-auto px-4">
+      <header className="mb-8 text-center">
+        <h1 className="text-3xl font-bold text-gray-800 mb-2">Restaurant Admin Dashboard</h1>
+        <p className="text-gray-600">Manage orders efficiently</p>
+      </header>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <section>
-            <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
-              <FaClipboardList className="mr-2 text-yellow-500" /> Orders Placed
-            </h2>
-            {restaurantOrders.filter((order) => order.status === "Placed").length > 0 ? (
-              restaurantOrders
-                .filter((order) => order.status === "Placed")
-                .map((order) => (
-                  <div className="bg-white rounded-lg shadow-md p-4 mb-4">
-      <div className="flex justify-between items-center mb-2">
-        <span className="text-lg font-semibold text-gray-800">Order #{order.order_id}</span>
-        <span className={`px-2 py-1 rounded-full text-sm ${
-          order.status === "Placed" ? "bg-yellow-200 text-yellow-800" :
-          order.status === "Preparing" ? "bg-blue-200 text-blue-800" :
-          "bg-green-200 text-green-800"
-        }`}>
-          {order.status}
-        </span>
+      {/* Buttons for Promo Actions */}
+      <div className="mb-8 flex justify-center space-x-4">
+        <button
+          onClick={() => {setNewPromoPopup(true)}}
+          className="bg-purple-500 text-white px-6 py-2 rounded-md font-medium hover:bg-purple-700 transition duration-200"
+        >
+          New Promo
+        </button>
+        <button
+          onClick={() => {}}
+          className="bg-purple-500 text-white px-6 py-2 rounded-md font-medium hover:bg-purple-700 transition duration-200"
+        >
+          View Promos
+        </button>
       </div>
-      <p className="text-gray-600 mb-4">{order.address}</p>
-      <div className="flex justify-end space-x-2">
-          <button
-            onClick={() => {setDetailsPopup(true); setSelectedOrder(order)}}
-            className="bg-indigo-100 text-indigo-600 px-3 py-1 rounded-md hover:bg-indigo-200 transition duration-300 flex items-center"
-          >
-            <FaEye className="mr-2" /> View Details
-          </button>
-          <button
-            onClick={() => {toggleManagePopup(true);setSelectedOrder(order)}}
-            className="bg-purple-100 text-purple-600 px-3 py-1 rounded-md hover:bg-purple-200 transition duration-300 flex items-center"
-          >
-            <FaCog className="mr-2" /> Manage
-          </button>
-      </div>
-    </div>
-                ))
-            ) : (
-              <p className="text-gray-500 italic">No orders placed yet!</p>
-            )}
-          </section>
+
+      {/* Grid Section for Orders */}
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <section>
+          <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+            <FaClipboardList className="mr-2 text-yellow-500" /> Orders Placed
+          </h2>
+          {restaurantOrders.filter((order) => order.status === "Placed").length > 0 ? (
+            restaurantOrders
+              .filter((order) => order.status === "Placed")
+              .map((order) => (
+                <div className="bg-white rounded-lg shadow-md p-4 mb-4">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-lg font-semibold text-gray-800">Order #{order.order_id}</span>
+                    <span className={`px-2 py-1 rounded-full text-sm ${
+                      order.status === "Placed" ? "bg-yellow-200 text-yellow-800" :
+                      order.status === "Preparing" ? "bg-blue-200 text-blue-800" :
+                      "bg-green-200 text-green-800"
+                    }`}>
+                      {order.status}
+                    </span>
+                  </div>
+                  <p className="text-gray-600 mb-4">{order.address}</p>
+                  <div className="flex justify-end space-x-2">
+                    <button
+                      onClick={() => { setDetailsPopup(true); setSelectedOrder(order); }}
+                      className="bg-indigo-100 text-indigo-600 px-3 py-1 rounded-md hover:bg-indigo-200 transition duration-300 flex items-center"
+                    >
+                      <FaEye className="mr-2" /> View Details
+                    </button>
+                    <button
+                      onClick={() => { toggleManagePopup(true); setSelectedOrder(order); }}
+                      className="bg-purple-100 text-purple-600 px-3 py-1 rounded-md hover:bg-purple-200 transition duration-300 flex items-center"
+                    >
+                      <FaCog className="mr-2" /> Manage
+                    </button>
+                  </div>
+                </div>
+              ))
+          ) : (
+            <p className="text-gray-500 italic">No orders placed yet!</p>
+          )}
+        </section>
+
 
           <section>
             <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
@@ -249,6 +325,126 @@ const AdminDashboard = () => {
           </section>
         </div>
         
+        {
+  NewPromoPopup && (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
+        <h2 className="text-2xl font-bold text-gray-800 mb-4">Create New Promo</h2>
+        <form onSubmit={handlePromoSubmit}>
+          <div className="mb-4">
+            <label
+              htmlFor="promo_code"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Promo Code
+            </label>
+            <input
+              type="text"
+              id="promo_code"
+              value={newpromo.promo_code}
+              onChange={(e) =>
+                setNewPromo((prev) => ({ ...prev, promo_code: e.target.value }))
+              }
+              className="w-full p-2 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              placeholder="CXY6728"
+            />
+          </div>
+
+          <div className="mb-4">
+            <label
+              htmlFor="promo_value"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Promo Value (%)
+            </label>
+            <input
+              type="number"
+              id="promo_value"
+              value={newpromo.promo_value}
+              onChange={(e) =>
+                setNewPromo((prev) => ({ ...prev, promo_value: e.target.value }))
+              }
+              className="w-full p-2 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              placeholder="10"
+            />
+          </div>
+
+          <div className="mb-4">
+            <label
+              htmlFor="start_date"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Start Date
+            </label>
+            <input
+              type="date"
+              id="start_date"
+              value={newpromo.start_date}
+              onChange={(e) =>
+                setNewPromo((prev) => ({ ...prev, start_date: e.target.value }))
+              }
+              className="w-full p-2 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+          </div>
+
+          <div className="mb-4">
+            <label
+              htmlFor="end_date"
+              className="block text-sm font-medium text-gray-700"
+            >
+              End Date
+            </label>
+            <input
+              type="date"
+              id="end_date"
+              value={newpromo.end_date}
+              onChange={(e) =>
+                setNewPromo((prev) => ({ ...prev, end_date: e.target.value }))
+              }
+              className="w-full p-2 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+          </div>
+
+          <div className="mb-4">
+            <label
+              htmlFor="limit"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Usage Limit
+            </label>
+            <input
+              type="number"
+              id="limit"
+              value={newpromo.limit}
+              onChange={(e) =>
+                setNewPromo((prev) => ({ ...prev, limit: e.target.value }))
+              }
+              className="w-full p-2 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              placeholder="Enter usage limit"
+            />
+          </div>
+
+          <div className="flex justify-end space-x-3">
+            <button
+              type="button"
+              className="bg-gray-300 text-gray-800 py-2 px-4 rounded-lg hover:bg-gray-400 transition duration-300"
+              onClick={() => setNewPromoPopup(false)} 
+            >
+              Close
+            </button>
+            <button
+              type="submit"
+              className="bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition duration-300"
+            >
+              Submit
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  )
+}
+
         {
   deliveryDetails && viewdeliveryDetails  &&  (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">

@@ -4,6 +4,31 @@ const fs = require('fs');
 const bcrypt = require('bcrypt');
 const e = require('express');
 
+module.exports.deleteRestaurant = (req,res) => {
+     const restaurant_id = req.params.id;
+     const {Restaurant_Image} = req.body;
+    console.log('hit delete restaurant ',restaurant_id,Restaurant_Image);
+     const oldImagePath = Restaurant_Image.split('/images/')[1];
+     const oldImageFullPath = path.join(__dirname, '../images', oldImagePath);
+     
+     if (fs.existsSync(oldImageFullPath)) {
+        fs.unlink(oldImageFullPath, (unlinkErr) => {
+            if (unlinkErr) {
+                console.error('Error deleting old image:', unlinkErr);
+                return res.status(500).send('Error deleting old image.');
+            }
+        })
+     }
+         const q = 'DELETE from restaurant where restaurant_id = ? ';
+         db.query(q,[restaurant_id],(err,result) => {
+            if(err){
+                console.log('err' ,err.message);
+                return res.status(500).json({message : 'Error occured'});
+            }
+            return res.status(200).json({message : 'Restaurant deleted'});
+         });
+}
+
 module.exports.getRestaurant = (req,res) => {
     const restaurant_id = req.params.id;
     console.log('get restaurant hit ', restaurant_id);
@@ -215,27 +240,30 @@ module.exports.ChangeImage = (req, res) => {
         const oldImagePath = result[0].Restaurant_Image.split('/images/')[1];
 
         const oldImageFullPath = path.join(__dirname, '../images', oldImagePath);
-
-        fs.unlink(oldImageFullPath, (unlinkErr) => {
-            if (unlinkErr) {
-                console.error('Error deleting old image:', unlinkErr);
-                return res.status(500).send('Error deleting old image.');
-            }
-
-            console.log('Old image deleted successfully.');
-
-            const updateQuery = 'UPDATE Restaurant SET Restaurant_Image = ? WHERE Restaurant_Id = ?';
-
-            db.query(updateQuery, [Restaurant_Image, restaurant_id], (updateErr, updateResult) => {
-                if (updateErr) {
-                    console.error('Error updating restaurant image:', updateErr);
-                    return res.status(500).send('Error updating restaurant image.');
+        
+        if(fs.existsSync(oldImageFullPath)){
+            fs.unlink(oldImageFullPath, (unlinkErr) => {
+                if (unlinkErr) {
+                    console.error('Error deleting old image:', unlinkErr);
+                    return res.status(500).send('Error deleting old image.');
                 }
-                console.log('Restaurant image updated successfully');
-                return res.status(200).send('Restaurant image updated successfully!');
+            });
+        }
+
+
+        console.log('Old image deleted successfully.');
+
+        const updateQuery = 'UPDATE Restaurant SET Restaurant_Image = ? WHERE Restaurant_Id = ?';
+
+        db.query(updateQuery, [Restaurant_Image, restaurant_id], (updateErr, updateResult) => {
+            if (updateErr) {
+                console.error('Error updating restaurant image:', updateErr);
+                return res.status(500).send('Error updating restaurant image.');
+            }
+            console.log('Restaurant image updated successfully');
+            return res.status(200).send('Restaurant image updated successfully!');
             });
         });
-    });
 };
 
 module.exports.addLocation = (req, res) => {

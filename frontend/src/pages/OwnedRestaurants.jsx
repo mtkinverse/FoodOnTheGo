@@ -13,8 +13,11 @@ import { useUserContext } from "../contexts/userContext";
 import { useNavigate } from "react-router-dom";
 import AddRestaurantPopup from "../components/AddRestaurant";
 import ManageRestaurant from "../components/ManageRestaurant"; // Import ManageRestaurant
+import { useAlertContext } from "../contexts/alertContext";
 
 const OwnedRestaurants = () => {
+  const { setAlert } = useAlertContext();
+
   const [restaurants, setRestaurants] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -36,6 +39,31 @@ const OwnedRestaurants = () => {
       setError(err.response?.data?.message || "Failed to fetch restaurants");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const [deleteRestaurantpop, setDeleteRestaurantPop] = useState(false);
+  const [restaurantToDelete, setToDelete] = useState(null);
+
+  const handleDeleteRestaurant = async () => {
+       const name = restaurantToDelete.Restaurant_Name;
+       const id = restaurantToDelete.Restaurant_id;
+       try {
+        console.log('Sending delete request for:', name, id, restaurantToDelete);
+        const response = await axios.post(`/api/deleteRestaurant/${restaurantToDelete.Restaurant_id}`, {
+            Restaurant_Image: restaurantToDelete.Restaurant_Image,
+        });
+        console.log('Backend response:', response);
+    
+        if (response.status === 200) {
+            setAlert({ message: `Your restaurant ${name} has been deleted`, type: 'success' });
+            setRestaurants((temp) => temp.filter((ele) => ele.Restaurant_id !== id));
+            setDeleteRestaurantPop(false);
+            setToDelete(null);
+        }
+    } catch (err) {
+        console.error('Error occurred:', err);
+        setAlert({ message: 'An error occurred', type: 'failure' });
     }
   };
 
@@ -130,9 +158,7 @@ const OwnedRestaurants = () => {
                 <div className="space-y-3">
                   <div className="flex items-center text-gray-600">
                     <MapPin className="h-5 w-5 text-indigo-500 mr-2" />
-                    <span className="text-sm">
-                          {restaurant.Address}
-                    </span>
+                    <span className="text-sm">{restaurant.Address}</span>
                   </div>
 
                   {restaurant.phone && (
@@ -165,11 +191,12 @@ const OwnedRestaurants = () => {
                   </button>
                   <button
                     onClick={() => {
-                      /* View logic */
+                      setToDelete(restaurant);
+                      setDeleteRestaurantPop(true);
                     }}
                     className="flex-1 inline-flex items-center justify-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200"
                   >
-                    View Details
+                    Delete
                     <ChevronRight className="w-4 h-4 ml-2" />
                   </button>
                 </div>
@@ -177,6 +204,50 @@ const OwnedRestaurants = () => {
             </div>
           ))}
         </div>
+
+        {deleteRestaurantpop && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+            <div className="bg-white w-96 p-6 rounded-lg shadow-lg relative text-center">
+              <button
+                className="absolute top-2 right-2 text-red-600 hover:text-red-800 text-xl"
+                onClick={() => {setToDelete(null) ; setDeleteRestaurantPop(false)}} 
+              >
+                &times;
+              </button>
+
+              <h2 className="text-2xl font-bold text-black-600 mb-4">
+                Delete Restaurant
+              </h2>
+
+              <p className="text-gray-800 mb-6">
+                You are about to delete the restaurant{" "}
+                <span className="font-semibold text-purple-600">
+                  {restaurantToDelete.Restaurant_Name}
+                </span>{" "}
+                located at{" "}
+                <span className="font-semibold text-purple-600">
+                  {restaurantToDelete.Address}
+                </span>
+                .
+              </p>
+
+              <div className="flex justify-center space-x-4">
+                <button
+                  className="py-2 px-4 bg-red-600 text-white rounded-md hover:bg-red-700 transition duration-200"
+                  onClick={handleDeleteRestaurant} 
+                >
+                  Confirm
+                </button>
+                <button
+                  className="py-2 px-4 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition duration-200"
+                  onClick={() => setDeleteRestaurantPop(false)} 
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* AddRestaurant Popup */}
         {isPopupOpen && (

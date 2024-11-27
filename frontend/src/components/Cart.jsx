@@ -1,37 +1,40 @@
 import React, { useState } from "react";
 import { useCartContext } from "../contexts/cartContext";
 import { FaShoppingCart, FaPlus, FaMinus, FaTrash } from "react-icons/fa";
-import {Banknote} from "lucide-react";
+import { Banknote } from "lucide-react";
 
 const Cart = () => {
   const { cart, cartCount, handleIncrement, handleDecrement, handleRemove, placeOrder } = useCartContext();
-  const [location,setLocation] = useState({
-    Address : "", NearbyPoint : ""
+  const [location, setLocation] = useState({
+    Address: "",
+    NearbyPoint: "",
   });
-  const [orderPopUp,setOrderPopUp] = useState(false);
+  const [orderPopUp, setOrderPopUp] = useState(false);
   const [cartPopup, setCartPopup] = useState(false);
 
-  const getTotalAmount = () =>
+  const DELIVERY_CHARGES = 150;
+
+  const getSubTotal = () =>
     cart.reduce((total, item) => total + item.Item_Price * item.quantity, 0);
 
-  const handleOrderPlacment = e => {
+  const getTotalAmount = () => getSubTotal() + DELIVERY_CHARGES;
+
+  const handleOrderPlacment = (e) => {
     e.preventDefault();
-    placeOrder(location.Address,location.NearbyPoint);
+    placeOrder(location.Address, location.NearbyPoint);
     setOrderPopUp(false);
     setLocation({
-      Address : "",
-      NearbyPoint:""
-    })
-  }
+      Address: "",
+      NearbyPoint: "",
+    });
+  };
 
-  const changeLocation = e => {
-    setLocation(prev => (
-      {
+  const changeLocation = (e) => {
+    setLocation((prev) => ({
       ...prev,
-      [e.target.name] : e.target.value
-      }
-    ))
-  }
+      [e.target.name]: e.target.value,
+    }));
+  };
 
   return (
     <>
@@ -105,25 +108,46 @@ const Cart = () => {
             </div>
           )}
 
-          <div className="p-6 border-t flex justify-between items-center">
-            <span className="text-xl font-bold text-purple-900">
-              Total: Rs.{getTotalAmount()}
-            </span>
-            {cartCount > 0 && <button
-              onClick={e =>{e.preventDefault(); setCartPopup(false); setOrderPopUp(true);}}
-              className="w-full bg-purple-600 text-white py-3 
+          <div className="p-6 border-t space-y-4">
+            <div className="flex justify-between">
+              <span className="text-lg font-medium text-purple-900">Subtotal:</span>
+              <span className="text-lg font-bold text-purple-900">
+                Rs.{getSubTotal()}
+              </span>
+            </div>
+            <hr />
+            <div className="flex justify-between">
+              <span className="text-lg font-medium text-purple-900">Delivery:</span>
+              <span className="text-lg font-bold text-purple-900">
+                Rs.{DELIVERY_CHARGES}
+              </span>
+            </div>
+            <hr />
+            <div className="flex justify-between">
+              <span className="text-xl font-bold text-purple-900">Total:</span>
+              <span className="text-xl font-bold text-purple-900">
+                Rs.{getTotalAmount()}
+              </span>
+            </div>
+            {cartCount > 0 && (
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  setCartPopup(false);
+                  setOrderPopUp(true);
+                }}
+                className="w-full bg-purple-600 text-white py-3 
                          rounded-lg hover:bg-purple-700 
                          transition duration-300"
-            >
-              Place Order
-            </button>
-            }
+              >
+                Place Order
+              </button>
+            )}
           </div>
         </div>
       </div>
-      {orderPopUp && 
-        (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      {orderPopUp && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
             <h2 className="text-2xl font-bold text-purple-600 mb-4">
               Confirm Order
@@ -131,14 +155,14 @@ const Cart = () => {
             <form onSubmit={handleOrderPlacment}>
               <div className="mb-4">
                 <label
-                  htmlFor="name"
+                  htmlFor="address"
                   className="block text-gray-700 font-bold mb-2"
                 >
-                  Address 
+                  Address
                 </label>
                 <input
                   type="text"
-                  id="name"
+                  id="address"
                   name="Address"
                   className="w-full border rounded-lg py-2 px-3 text-gray-700"
                   value={location.Address}
@@ -146,17 +170,17 @@ const Cart = () => {
                   required
                 />
               </div>
-    
+
               <div className="mb-4">
                 <label
-                  htmlFor="price"
+                  htmlFor="nearby"
                   className="block text-gray-700 font-bold mb-2"
                 >
-                  Near by point
+                  Nearby Point
                 </label>
                 <input
                   type="text"
-                  id="price"
+                  id="nearby"
                   name="NearbyPoint"
                   className="w-full border rounded-lg py-2 px-3 text-gray-700"
                   value={location.NearbyPoint}
@@ -164,7 +188,7 @@ const Cart = () => {
                   required
                 />
               </div>
-    
+
               <div className="mb-6">
                 <label className="block text-gray-700 font-bold mb-2">
                   Payment Method
@@ -187,12 +211,15 @@ const Cart = () => {
                   </label>
                 </div>
               </div>
-    
+
               <div className="flex flex-col sm:flex-row justify-end gap-3">
                 <button
                   type="button"
                   className="bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400 w-full sm:w-auto"
-                  onClick={() => {setOrderPopUp(false); setCartPopup(true);}}
+                  onClick={() => {
+                    setOrderPopUp(false);
+                    setCartPopup(true);
+                  }}
                 >
                   Cancel
                 </button>
@@ -206,8 +233,7 @@ const Cart = () => {
             </form>
           </div>
         </div>
-        )
-      }
+      )}
     </>
   );
 };

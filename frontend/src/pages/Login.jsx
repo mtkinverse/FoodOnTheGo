@@ -8,15 +8,17 @@ const Login = () => {
   const [values, setValues] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { userData, login, loggedIn,errors,setErrors } = useUserContext();
+  const { userData, login, loggedIn} = useUserContext();
   const [role, changeRole] = useState("Customer");
 
   const setNavigation = () => {
     console.log('In navigation',userData.role);
     if (loggedIn && userData?.User_name) {
-      if(userData.role === "Customer" || userData.role === "Restaurant_Owner") {
-        console.log('navigating ',userData.role,' to homepage');
+      if(userData.role === "Customer" ) {
         navigate("/");
+      }
+      else if(userData.role === "Restaurant_Owner"){
+        navigate('/ownedRestaurants');
       }
       else if(userData.role === "Delivery_Rider"){ 
         navigate("/RiderDashboard");
@@ -47,7 +49,6 @@ useEffect(() => {
 
   const handleChange = (e) => {
     setValues((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-    setErrors((prev) => ({ ...prev, [e.target.name]: "" }));
   };
 
   const handleSubmit = async (event) => {
@@ -99,9 +100,6 @@ useEffect(() => {
                 />
                 <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
               </div>
-              {errors.email && (
-                <p className="mt-1 text-sm text-red-600">{errors.email}</p>
-              )}
             </div>
             {/* Password Field */}
             <div>
@@ -128,9 +126,7 @@ useEffect(() => {
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
-              {errors.password && (
-                <p className="mt-1 text-sm text-red-600">{errors.password}</p>
-              )}
+
             </div>
 
             {/* Role Selection */}

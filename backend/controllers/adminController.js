@@ -1,6 +1,32 @@
 const db = require('../db');
 
 
+module.exports.AddPromo = (req,res) => {
+    const location_id = req.params.id;
+    const {  promo_code ,promo_value ,start_date ,end_date ,status,limit} = req.body;
+
+    const q = 'SELECT restaurant_id from restaurant where location_id = ? ';
+
+    db.query(q,[location_id],(err,result) => {
+        if(err){
+            return res.status(500).json({message : 'No such location id found'});
+        }
+
+        const restaurant_id = result[0].restaurant_id;
+
+        const qq = `
+            INSERT INTO Promos (restaurant_id,promo_code,
+            promo_value,start_date,end_date,status,usage_limit) VALUES (?,?,?,?,?,?,?); 
+        `
+        db.query(qq,[restaurant_id,promo_code ,promo_value ,start_date ,end_date ,status,limit],(err1,result1) => {
+            if(err1){
+                return res.status(500).json({message : 'Error adding promo'});
+            }
+            return res.status(200).json({message : 'Promo added'});
+        })
+    })
+}
+
 module.exports.getRiders = (req,res) => {
     const location_id = req.params.id;
     const q = `

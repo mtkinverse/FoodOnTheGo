@@ -3,6 +3,7 @@ import { useUserContext } from "../../contexts/userContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FaBiking, FaBox, FaCheckCircle, FaDollarSign, FaUtensils, FaMapMarkerAlt } from 'react-icons/fa';
+import { useAlertContext } from "../../contexts/alertContext";
 
 const RiderDashboard = () => {
   const { userData, loggedIn, bikeDetails, setBikeDetails,setUserData } = useUserContext();
@@ -13,7 +14,8 @@ const RiderDashboard = () => {
   const [pendingOrders, setPending] = useState([]);
   const [restaurantInfo, setRestaurantInfo] = useState([]);
   const navigate = useNavigate();
-  
+  const {setAlert} = useAlertContext();
+
   const getRestaurantInfo = async () => {
     try {
       const response = await axios.get(`/api/getRestaurantInfo/${userData.User_id}`);
@@ -96,14 +98,21 @@ const RiderDashboard = () => {
     setOrderDetailsPopup(false);
     axios.post('/api/markDelivered/',JSON.stringify({Order_id : analyzingOrder.Order_id, Rider_id : userData.User_id}),{headers: {"Content-Type":"application/json"}})
     .then(res => {
-      alert('Order marked as delivered !');
+      setAlert({
+        message : 'Order marked as delivered',
+        type : 'success'
+      });
+
       setPending(pendingOrders.filter(ele => ele.Order_id !== analyzingOrder.Order_id))
       setHistory(riderHistory.concat(analyzingOrder));
       analyzeOrder({});
     })
     .catch(err => {
       console.log(err);
-      alert('cannot mark order as delivered !');
+      setAlert({
+        message : 'cannot mark ordered as delivered',
+        type : 'failure'
+      });
     })
   }
   
@@ -121,11 +130,17 @@ const RiderDashboard = () => {
         const message = updated_status
           ? "You are now available for deliveries!"
           : "You are now unavailable for future deliveries until you mark yourself as available again!";
-        window.alert(message);
+        setAlert( {
+          message : message,
+          type : 'success'
+        });
       }
     } catch (err) {
       console.error("Error updating status:", err);
-      window.alert("Failed to update your availability status. Please try again later.");
+      setAlert({
+        message : "Failed to update your availability status. Please try again later.",
+        type : 'failure'
+      });
     }
   };
   

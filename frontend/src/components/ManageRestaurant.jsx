@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { TrashIcon, PencilSquareIcon,XMarkIcon  } from "@heroicons/react/24/outline";
+import { useAlertContext } from "../contexts/alertContext";
 
 const ManageRestaurant = ({
   isOpen,
@@ -9,6 +10,10 @@ const ManageRestaurant = ({
   restaurant,
   fetchRestaurants,
 }) => {
+
+
+  const {setAlert} = useAlertContext();
+
   const { id } = useParams();
   const [menuId, setMenuId] = useState(restaurant.Menu_id); // Local state to track menu_id
 
@@ -179,7 +184,10 @@ const ManageRestaurant = ({
           },
         }
       );
-      alert("Location added successfully!");
+      setAlert( {
+        message : 'Location added successfully',
+        type: 'success'
+      });
       setAddLocationPopupOpen(false);
       setLocationData({
         address: "",
@@ -189,7 +197,10 @@ const ManageRestaurant = ({
       fetchRestaurants();
     } catch (error) {
       console.error("Error adding location:", error.response?.data || error);
-      alert("Failed to add location.");
+      setAlert({
+        message : 'Failed to add location',
+        type: 'failure'
+      });
     }
   };
 
@@ -211,8 +222,10 @@ const ManageRestaurant = ({
           ClosesAt: timing.closesAt,
         }
       );
-
-      alert("Timings updated successfully!");
+      setAlert( {
+        message : 'Timings updated successfully!',
+        type: 'success'
+      });
       console.log("Response:", response.data);
       setTimingPopupOpen(false); // Close the popup after submission
       fetchRestaurants();
@@ -222,7 +235,10 @@ const ManageRestaurant = ({
       });
     } catch (error) {
       console.error("Error updating timings:", error.response?.data || error);
-      alert("Failed to update timings.");
+      setAlert({
+        message : 'Failed to update timings ',
+        type: 'failure'
+      });
     }
   };
 
@@ -293,19 +309,31 @@ const ManageRestaurant = ({
           `/api/addAdmin/${restaurant.Restaurant_id}`,
           { adminData, Location_id: restaurant.Location_id }
         );
+        if(response.status === 200){
+          setAlert({
+            message : 'Admin added',
+            type: 'success'
+          });
+        }
       } 
       else{
         console.log('heres : ', adminData)
         axios.post('/api/updateAdmin',JSON.stringify({adminData}), {withCredentials: true, headers:{"Content-Type":"application/json"}})
-        .then(res => alert('Admin updated successfully'))
+        .then(res => {
+          setAlert({
+            message : 'Admin updated successfully',
+            type: 'success'
+          });
+        })
         .catch(err => console.log(err.message))
-      }
-      console.log("Admin updated successfully");
-      setAdminPopup(false);
+      }      setAdminPopup(false);
       
     } catch (err) {
       console.log("Error adding admin" + err.message);
-      window.alert("Error adding admin");
+      setAlert({
+        message : 'Error adding admin',
+        type: 'failure'
+      });
     }
   };
 
@@ -328,7 +356,10 @@ const ManageRestaurant = ({
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
-      alert("Menu item added successfully!");
+      setAlert({
+        message : 'Menu item added successfully!',
+        type: 'success'
+      });
       console.log("Response:", response.data);
       setAddItemPopupOpen(false); // Close the popup after submission
       fetchRestaurants(); // Refresh the menu
@@ -340,7 +371,10 @@ const ManageRestaurant = ({
       });
     } catch (error) {
       console.error("Error adding menu item:", error.response?.data || error);
-      alert("Failed to add menu item.");
+      setAlert( {
+        message : 'Failed to add menu item',
+        type: 'failure'
+      });
     }
   };
 
@@ -354,7 +388,10 @@ const ManageRestaurant = ({
   const handleImageSubmit = async (e) => {
     e.preventDefault();
     if (!newImage) {
-      alert("Please select an image.");
+      setAlert({
+        message : 'Please select an image',
+        type: 'failure'
+      });
       return;
     }
 
@@ -372,14 +409,18 @@ const ManageRestaurant = ({
           },
         }
       );
-
-      alert("Image updated successfully!");
-      console.log("Response:", response.data);
+      setAlert({
+        message : 'Image updated successfully',
+        type:'success'
+      });
       setPicturePopupOpen(false); // Close the picture upload popup
       fetchRestaurants(); // Refresh the restaurant data
     } catch (error) {
       console.error("Error changing image:", error.response?.data || error);
-      alert("Failed to update image.");
+      setAlert( {
+        message : 'Failed to update image.',
+        type:'failure'
+      });
     }
   };
 
@@ -403,31 +444,6 @@ const ManageRestaurant = ({
 
         {/* Buttons Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {/* Add Menu button
-          {menuId === null && (
-            <button
-              className="w-full bg-purple-600 text-white py-3 px-4 rounded-lg shadow hover:bg-purple-700 transition"
-              onClick={async () => {
-                try {
-                  const response = await axios.post(
-                    `/api/addMenu/${restaurant.Restaurant_id}`
-                  );
-                  alert("Menu created successfully!");
-                  console.log("Response:", response.data.menu_id);
-                  setMenuId(response.data.menu_id); // Update local state
-                } catch (error) {
-                  console.error(
-                    "Error creating menu:",
-                    error.response?.data || error
-                  );
-                  alert("Failed to create menu.");
-                }
-              }}
-            >
-              Add Menu
-            </button>
-          )} */}
-
           {menuId !== null && (
             <button
               className="w-full bg-purple-600 text-white py-3 px-4 rounded-lg shadow hover:bg-purple-700 transition"

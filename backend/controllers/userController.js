@@ -6,6 +6,40 @@ const jwt = require('jsonwebtoken');
 // const phoneNumberPattern = /^\+92 \d{3} \d{7}$/;
 // const isValidPhoneNumber = (phone) => phoneNumberPattern.test(phone);
 
+module.exports.deleteAccount = (req, res) => {
+    const user_id = req.params.id;
+    const { role } = req.body;
+
+    if (!['Customer', 'Delivery_Rider'].includes(role)) {
+        return res.status(400).json({ message: 'Invalid role provided' });
+    }
+   console.log('delete hit for ',user_id,role);
+    let q;
+    switch (role) {
+        case 'Customer':
+            q = 'DELETE FROM Customer WHERE customer_id = ?';
+            break;
+        case 'Delivery_Rider':
+            q = 'DELETE FROM Delivery_rider WHERE rider_id = ?';
+            break;
+        default:
+            return res.status(400).json({ message: 'Role not supported' });
+    }
+
+    db.query(q, [user_id], (err, result) => {
+        if (err) {
+            console.error('Error deleting account:', err); 
+            return res.status(500).json({ message: 'Error deleting account' });
+        }
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'Account not found' });
+        }
+        console.log('account deleted');
+        return res.status(200).json({ message: 'Account deleted successfully' });
+    });
+};
+
 function registerCustomer(req,res) {
     console.log("Customer registration endpoint hit");
     const q = 'SELECT * FROM Customer WHERE email_address = ? or phone_no = ?';
@@ -109,9 +143,7 @@ module.exports.loginUser = (req, res) => {
         if (data.length == 0) {
             // Return an error for invalid email
             console.log("email error set");
-            return res.status(400).json({
-                errors: { email: "Invalid email address",password : "" }
-            });
+            return res.status(400).json({message : 'Invalid email address'});
         }
          
         const user = data[0];
@@ -120,9 +152,7 @@ module.exports.loginUser = (req, res) => {
         if (!isPasswordValid) {
             // Return an error for invalid password
             console.log("password error set");
-            return res.status(401).json({
-                errors: { email: "" ,password: "Incorrect password" }
-            });
+            return res.status(400).json({message : 'Incorrect Password,Try again'});
         }
 
         const { Account_Password, ...other } = user;
@@ -146,7 +176,7 @@ module.exports.loginUser = (req, res) => {
 
 module.exports.logoutUser = (req,res) =>{
 
-        res.cookie('access_token', token, { 
+        res.cookie('access_token',{ 
           httpOnly: true, 
           secure: true,
           sameSite: 'strict', 

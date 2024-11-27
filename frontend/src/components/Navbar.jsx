@@ -12,6 +12,8 @@ import {
 import { NavLink } from "react-router-dom";
 import { useUserContext } from "../contexts/userContext";
 import { useCartContext } from "../contexts/cartContext";
+import { useAlertContext } from "../contexts/alertContext";
+
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -28,6 +30,8 @@ const Navbar = () => {
     setCurrentOrders,
     pastOrders,
   } = useUserContext();
+
+  const {setAlert} = useAlertContext();
   const { cartCount } = useCartContext();
   const [viewProfile, setViewProfile] = useState(false);
   const [editMode, setEditMode] = useState(false);
@@ -54,7 +58,6 @@ const Navbar = () => {
   };
 
   const [currentPopup, CurrentOrdersPopup] = useState(false);
-  
 
 
   const cancelOrder = (order_id) => {
@@ -104,8 +107,7 @@ const Navbar = () => {
     }
     setIsProfileMenuOpen(false);
   }, [userData]);
-  
-  
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -138,6 +140,26 @@ const Navbar = () => {
     }
   };
 
+  const [deletePop, deleteAccountpop] = useState(false);
+
+  const deleteAccount = async () => {
+      const User_id = updatedDetails.User_id;
+      const role = updatedDetails.role;  
+      try{
+          signout();
+          console.log('sending delete request for ,', User_id,role);
+          const response = await axios.post(`/api/deleteAccount/${User_id}`,{role});
+          if(response.status === 200){
+              setAlert({message : 'Account deleted, Goodbye!',type : 'success'});
+              deleteAccountpop(false);
+          }
+      }
+      catch(err){
+        setAlert({message : 'Error deleting account, Try Again!',type : 'success'});
+      }
+
+  };
+
   const navItems = [
     { label: "Home", path: "/" },
     { label: "Restaurants", path: "/restaurants" },
@@ -155,7 +177,9 @@ const Navbar = () => {
       navItems.splice(index, 1);
     }
   }
+
   if (loggedIn && userData?.role === "Restaurant_Owner") {
+    while (navItems.length > 0) navItems.pop();
     navItems.push({ label: "Owned", path: "/ownedRestaurants" });
   }
 
@@ -163,11 +187,9 @@ const Navbar = () => {
     navItems.push({ label: "DashBoard", path: "/RiderDashboard" });
   }
   if (loggedIn && userData?.role === "Restaurant_Admin") {
-    while(navItems.length > 0) navItems.pop();
+    while (navItems.length > 0) navItems.pop();
     navItems.push({ label: "DashBoard", path: "/AdminDashboard" });
   }
-  
-
 
   const handlePasswordChange = (e) => {
     const { name, value } = e.target;
@@ -276,6 +298,17 @@ const Navbar = () => {
                     >
                       View Profile
                     </button>
+
+                    {(userData.role === "Customer" ||
+                      userData.role === "Delivery_Rider") && (
+                      <button
+                        className="block px-4 py-2 text-sm text-white hover:bg-purple-800"
+                        onClick={() => deleteAccountpop(true)}
+                      >
+                        Delete Account
+                      </button>
+                    )}
+
                     {userData.role === "Customer" && (
                       <button
                         className="block px-4 py-2 text-sm text-white hover:bg-purple-800"
@@ -306,8 +339,7 @@ const Navbar = () => {
                         Change Vehicle Details
                       </button>
                     )}
-                    
-                  
+
                     <button
                       onClick={signItOut}
                       className="w-full text-left block px-4 py-2 text-sm text-white hover:bg-purple-800"
@@ -343,7 +375,7 @@ const Navbar = () => {
 
           {/* Mobile Menu */}
           {isMenuOpen && (
-            <div className="sm:hidden absolute top-16 left-0 right-0 bg-white shadow-lg">
+            <div className="sm:hidden absolute top-16 left-0 right-0 bg-white shadow-lg z-20">
               <div className="px-2 pt-2 pb-3 space-y-1">
                 {navItems.map((item, index) => (
                   <NavLink
@@ -386,17 +418,16 @@ const Navbar = () => {
                       >
                         View Profile
                       </button>
-                      
-                      
-                      {userData.role === "Restaurant_Admin" && (
+
+                      {(userData.role === "Customer" ||
+                        userData.role === "Delivery_Rider") && (
                         <button
-                          // onClick={() => {}}
-                            className="block w-full text-left px-3 py-2 text-base font-medium text-purple-600 hover:bg-purple-100 hover:text-purple-700"
-                            >
-                          Start a new promo
+                          onClick={() => deleteAccountpop(true)}
+                          className="block w-full text-left px-3 py-2 text-base font-medium text-purple-600 hover:bg-purple-100 hover:text-purple-700"
+                        >
+                          Delete Account
                         </button>
                       )}
-
 
                       {userData.role === "Customer" &&
                         currentOrders.length > 0 && (
@@ -452,7 +483,7 @@ const Navbar = () => {
                           Change Vehicle Details
                         </button>
                       )}
-  
+
                       <button
                         onClick={(e) => {
                           signItOut(e);
@@ -469,93 +500,118 @@ const Navbar = () => {
             </div>
           )}
 
-{currentPopup && (
-  <div className="fixed inset-0 bg-opacity-60 flex items-center justify-center z-50">
-    <div className="bg-white w-full max-w-3xl p-6 rounded-lg shadow-lg overflow-auto max-h-[90vh]">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold text-purple-700">
-          Current Orders
-        </h2>
-        <button
-          className="text-purple-700 hover:text-purple-900 text-2xl font-bold"
-          onClick={() => CurrentOrdersPopup(false)}
-        >
-          &times;
-        </button>
-      </div>
+          {currentPopup && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 backdrop-blur-sm">
+              <div className="bg-white w-full max-w-2xl p-8 rounded-2xl shadow-2xl border-2 border-purple-100 overflow-auto max-h-[90vh] transform transition-all duration-300 ease-in-out">
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-3xl font-extrabold text-purple-600 tracking-tight">
+                    Current Orders
+                  </h2>
+                  <button
+                    className="text-purple-500 hover:bg-purple-100 rounded-full p-2 transition-colors"
+                    onClick={() => CurrentOrdersPopup(false)}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-6 w-6"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
+                </div>
 
-      <p className="text-gray-700 text-sm text-center mb-6">
-        You have {currentOrders.length} orders in process.
-      </p>
+                <p className="text-gray-500 text-sm text-center mb-6">
+                  You have {currentOrders.length} orders in process.
+                </p>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {currentOrders.map((order, index) => (
-          <div
-            key={index}
-            className="relative border border-purple-300 p-4 rounded-md shadow-sm bg-purple-50"
-          >
-            <h3 className="font-semibold text-purple-700 flex justify-between items-center">
-              Order #{order.order_id}
-              {order.status === 'Out for delivery' && (
-                <span className="ml-2 px-2 py-1 text-xs font-bold text-green-700 bg-green-200 rounded-full">
-                  {order.status}
-                </span>
-              )}
-               {order.status === 'Placed' && (
-                <span className="ml-2 px-2 py-1 text-xs font-bold text-yellow-700 bg-yellow-200 rounded-full">
-                  {order.status}
-                </span>
-              )}
-               {order.status === 'Preparing' && (
-                <span className="ml-2 px-2 py-1 text-xs font-bold text-red-700 bg-red-200 rounded-full">
-                  {order.status}
-                </span>
-              )}
-            </h3>
-            <p className="text-xs text-gray-600">
-              <span className="font-medium">Restaurant:</span>{" "}
-              {order.restaurant_name}
-            </p>
-            <p className="text-xs text-gray-600 mt-1">
-              Total: Rs {order.total_amount}
-            </p>
-            <p className="text-xs text-gray-600 mt-1">
-              To be delivered at: <strong>{order.address}</strong>
-            </p>
-            {(order.status === "Placed" || order.status === "Preparing") && (
-              <button
-                className="absolute top-2 right-2 text-purple-600 hover:text-purple-800"
-                onClick={() => cancelOrder(order.order_id)}
-                title="Cancel Order"
-              >
-                <FaTrashAlt className="h-5 w-5" />
-              </button>
-            )}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  {currentOrders.map((order, index) => (
+                    <div
+                      key={index}
+                      className="relative border-l-4 border-purple-500 p-5 rounded-lg shadow-md bg-white hover:shadow-lg transition-shadow"
+                    >
+                      <h3 className="font-bold text-purple-700 flex justify-between items-center mb-2">
+                        Order #{order.order_id}
+                        {order.status === "Out for delivery" && (
+                          <span className="ml-2 px-3 py-1 text-xs font-semibold text-green-700 bg-green-100 rounded-full">
+                            {order.status}
+                          </span>
+                        )}
+                        {order.status === "Placed" && (
+                          <span className="ml-2 px-3 py-1 text-xs font-semibold text-yellow-700 bg-yellow-100 rounded-full">
+                            {order.status}
+                          </span>
+                        )}
+                        {order.status === "Preparing" && (
+                          <span className="ml-2 px-3 py-1 text-xs font-semibold text-red-700 bg-red-100 rounded-full">
+                            {order.status}
+                          </span>
+                        )}
+                      </h3>
+                      <div className="space-y-1 text-sm text-gray-600">
+                        <p>
+                          <span className="font-medium text-purple-600">
+                            Restaurant:
+                          </span>{" "}
+                          {order.restaurant_name}
+                        </p>
+                        <p>
+                          Total:{" "}
+                          <span className="font-semibold text-purple-700">
+                            Rs {order.total_amount + 150}
+                          </span>
+                        </p>
+                        <p>
+                          Delivery Address: <strong>{order.address}</strong>
+                        </p>
+                      </div>
+                      {(order.status === "Placed" ||
+                        order.status === "Preparing") && (
+                        <button
+                          className="absolute top-4 right-4 text-red-500 hover:bg-red-50 rounded-full p-2 transition-colors"
+                          onClick={() => cancelOrder(order.order_id)}
+                          title="Cancel Order"
+                        >
+                          <FaTrashAlt className="h-5 w-5" />
+                        </button>
+                      )}
 
-            {/* Items List */}
-            <div className="mt-2">
-              <p className="font-medium text-xs text-gray-700">
-                Items:
-              </p>
-              <ul className="list-none space-y-1 text-xs text-gray-600">
-                {order.items.slice(0, 3).map((item, idx) => (
-                  <li key={idx}>
-                    {item.dish_name} ({item.quantity}x) --- sub-total:
-                    Rs{item.sub_total}
-                  </li>
-                ))}
-                {order.items.length > 3 && (
-                  <li>+ {order.items.length - 3} more</li>
-                )}
-              </ul>
+                      <div className="mt-4 pt-3 border-t border-gray-100">
+                        <p className="font-semibold text-sm text-purple-600 mb-2">
+                          Items:
+                        </p>
+                        <ul className="space-y-1 text-xs text-gray-600">
+                          {order.items.slice(0, 3).map((item, idx) => (
+                            <li key={idx} className="flex justify-between">
+                              <span>
+                                {item.dish_name} ({item.quantity}x)
+                              </span>
+                              <span className="font-semibold">
+                                Rs {item.sub_total}
+                              </span>
+                            </li>
+                          ))}
+                          {order.items.length > 3 && (
+                            <li className="text-purple-500 font-medium">
+                              + {order.items.length - 3} more items
+                            </li>
+                          )}
+                        </ul>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  </div>
-)}
-
+          )}
           {pastPopup && (
             <div className="fixed inset-0 bg-opacity-60 flex items-center justify-center z-50">
               <div className="bg-white w-full max-w-3xl p-6 rounded-lg shadow-lg overflow-auto max-h-[90vh]">
@@ -571,12 +627,15 @@ const Navbar = () => {
                   </button>
                 </div>
 
-                {pastOrders.length >0 ? <p className="text-gray-700 text-sm text-center mb-6">
-                  Your order history
-                </p> : <p className="text-gray-700 text-sm text-center mb-6">
-                  You have not placed any orders, Order now!
-                </p>
-                }
+                {pastOrders.length > 0 ? (
+                  <p className="text-gray-700 text-sm text-center mb-6">
+                    Your order history
+                  </p>
+                ) : (
+                  <p className="text-gray-700 text-sm text-center mb-6">
+                    You have not placed any orders, Order now!
+                  </p>
+                )}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {pastOrders.map((order, index) => (
                     <div
@@ -593,9 +652,11 @@ const Navbar = () => {
                       <p className="text-xs text-gray-600 mt-1">
                         Total: Rs {order.total_amount}
                       </p>
-                   
-                      <p className="text-xs text-gray-600 mt-1"> Delivered at: <strong>{order.address} </strong></p>
 
+                      <p className="text-xs text-gray-600 mt-1">
+                        {" "}
+                        Delivered at: <strong>{order.address} </strong>
+                      </p>
 
                       {/* Items List */}
                       <div className="mt-2">
@@ -784,12 +845,6 @@ const Navbar = () => {
                           className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-600"
                         />
                       </div>
-                      {/* Error Message */}
-                      {passwordError && (
-                        <div className="mb-4 text-red-500 text-sm text-center">
-                          {passwordError}
-                        </div>
-                      )}
 
                       {/* Save Button */}
                       <div className="mb-4">
@@ -818,6 +873,46 @@ const Navbar = () => {
               </div>
             </div>
           )}
+
+{deletePop && (
+                  <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+                    <div className="bg-white w-96 p-6 rounded-lg shadow-lg relative max-w-full">
+                      {/* Close Button */}
+                      <button
+                        className="absolute top-2 right-2 text-purple-600 hover:text-purple-800 text-2xl"
+                        onClick={() => deleteAccountpop(false)}
+                      >
+                        <FaTimes />
+                      </button>
+
+                      {/* Title */}
+                      <h2 className="text-2xl font-bold text-purple-600 mb-6 text-center">
+                        Are you sure you want to delete your account?
+                      </h2>
+
+                      {/* Buttons */}
+                      <div className="flex justify-between items-center space-x-4">
+                        {/* Cancel Button */}
+                        <button
+                          onClick={() => deleteAccountpop(false)}
+                          className="w-1/2 py-2 text-gray-600 bg-gray-200 rounded-md hover:bg-gray-300 transition duration-200"
+                        >
+                          Cancel
+                        </button>
+
+                        {/* Delete Button */}
+                        <button
+                          onClick={deleteAccount}
+                          className="w-1/2 py-2 text-white bg-red-600 rounded-md hover:bg-red-700 transition duration-200"
+                        >
+                          Delete Account
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+
         </div>
       </div>
     </nav>

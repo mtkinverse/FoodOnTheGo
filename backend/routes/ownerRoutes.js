@@ -4,7 +4,8 @@ const {addMenuItem,getOwnedRestaurants,AddRestaurant,deleteMenu,
       updateTimings,ChangeImage, addLocation, getLocations,
       deleteItem, updateItem, addAdmin,
       getAdmin,
-      updateAdmin,getRestaurant} = require('../controllers/ownerController');
+      updateAdmin,getRestaurant,
+      deleteRestaurant} = require('../controllers/ownerController');
 const upload = require("../multerConfig");
 
 router.post('/addMenuItem/:id',upload.single('image'),addMenuItem);
@@ -21,4 +22,6 @@ router.post('/addAdmin/:id',addAdmin);
 router.get('/getAdmin/:id',getAdmin);
 router.post('/updateAdmin',updateAdmin);
 router.get('/getRestaurant/:id',getRestaurant);
+router.post('/deleteRestaurant/:id',deleteRestaurant);
+
 module.exports = router;

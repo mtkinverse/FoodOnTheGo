@@ -132,14 +132,15 @@ CREATE TABLE Promos (
     promo_id INT PRIMARY KEY AUTO_INCREMENT,
     restaurant_id INT,
     promo_code VARCHAR(100),
-    promo_value INT, ---kitna discount hai
+    promo_value FLOAT, 
     start_date DATE,
     end_date DATE,
     status VARCHAR(20) check(status IN ('active', 'expired')),
     usage_limit INT,
-    FOREIGN KEY (restaurant_id) REFERENCES Restaurants(restaurant_id)
 );
 
+ALTER TABLE Promos ADD CONSTRAINT r_fk foreign key(restaurant_id) REFERENCES Restaurant(restaurant_id) ON DELETE CASCADE;
+ALTER TABLE Promos AUTO_INCREMENT = 8829292;
 ------------------------------------------------ triggers & procedures -----------------------
 CREATE TRIGGER delete_order_address
 AFTER DELETE ON orders
@@ -168,6 +169,14 @@ BEGIN
     VALUES ();
 
    SET NEW.Menu_id = LAST_INSERT_ID();
+END
+/
+
+CREATE TRIGGER delete_restaurant_menu 
+BEFORE DELETE ON Restaurant
+FOR EACH ROW
+BEGIN
+      DELETE from Menu where menu_id = OLD.menu_id;
 END
 /
 
@@ -305,7 +314,7 @@ from orders o join restaurant r
 on o.restaurant_id = r.restaurant_id
 join menu_items i on i.menu_id = r.menu_id
 join ordered_items oo on i.item_id = oo.item_id
-where o.customer_id = 99195
+where o.customer_id = 99191
 order by order_date DESC;
       
 SELECT d.rider_id,d.rider_name,d.available from delivery_rider d
@@ -368,3 +377,4 @@ delete from deliveryaddress;
 
 delete from restaurant;
 
+select * from Promos;
