@@ -10,6 +10,7 @@ const ownerRoutes = require('./routes/ownerRoutes');
 const riderRoutes = require('./routes/riderRoutes');
 const customerRoutes = require('./routes/customerRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const userAuthentication = require('./middlewares/userAuthentication');
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use(cors({
 
 app.use(express.json());
 app.use(cookieParser());
+app.use(userAuthentication)
 
 // Use routes
 app.use('/', userRoutes);
@@ -29,8 +31,8 @@ app.use('/', ownerRoutes);
 app.use('/',riderRoutes);
 app.use('/',customerRoutes);
 app.use('/',adminRoutes);
-const imagesPath = path.join(__dirname, 'images')
 
+const imagesPath = path.join(__dirname, 'images')
 app.use('/images', express.static(imagesPath))
 
 // Start server

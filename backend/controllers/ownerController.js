@@ -320,10 +320,6 @@ module.exports.deleteItem = (req, res) => {
 module.exports.updateItem = (req, res) => {
     console.log('Received request to update ', req.body);
 
-    const token = req.cookies.access_token;
-    if(!token){
-        return res.status(401).json({message : 'unauthorized access'});
-    }
     const { Item_id, Dish_Name, Item_Price, Cuisine } = req.body;
     const new_path = `http://localhost:8800/images/${req.params.id}/${req.file.filename}`;
 

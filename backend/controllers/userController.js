@@ -145,9 +145,6 @@ module.exports.loginUser = (req, res) => {
 
 
 module.exports.logoutUser = (req,res) =>{
-    
-        const token = req.cookies.access_token; // Get the token from cookies
-        if (!token) return res.status(401).send({message : "No user session"});
 
         res.cookie('access_token', token, { 
           httpOnly: true, 
