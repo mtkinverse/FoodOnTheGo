@@ -14,7 +14,7 @@ const HomePage = () => {
   const fetchLastOrder = async () => {
     try {
       const response = await axios.get(`/api/getLastOrder/${userData.User_id}`);
-      if (response.data && response.data.Review_id === null) { 
+      if (response.data && !response.data.review_id) { 
         setLastOrder(response.data);
         setShowRatePopup(true); 
       } else {

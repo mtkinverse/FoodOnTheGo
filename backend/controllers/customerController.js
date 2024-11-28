@@ -3,7 +3,7 @@ const db = require('../db');
 module.exports.getPromos = (req,res) => {
     const restaurant_id = req.params.id;
 
-    const q = 'SELECT * from promos where restaurant_id = ? and status = ? ';
+    const q = 'SELECT * from promos where restaurant_id = ? and start_date <= CURRENT_TIMESTAMP and end_date >= CURRENT_TIMESTAMP ';
 
     db.query(q,[restaurant_id,'active'],(err,result) => {
         if(err){
@@ -43,7 +43,7 @@ module.exports.getLastOrder  = (req,res) =>{
     const customer_id = req.params.id;
     console.log('HEre to fetch last order : ',customer_id);
     const q = ` 
-       SELECT o.order_id,r.restaurant_name,r.restaurant_id
+       SELECT o.order_id,r.restaurant_name,r.restaurant_id,o.review_id
        from orders o join customer c on o.customer_id = c.customer_id
        join restaurant r on o.restaurant_id = r.restaurant_id
        where c.customer_id = ? and o.Review_id IS NULL
