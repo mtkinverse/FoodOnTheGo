@@ -109,7 +109,7 @@ module.exports.AddRestaurant = (req, res) => {
     db.query(loc_q, [Address, Loc_Contact_No], (err1, result1) => {
         if (err1) {
             console.log('err1', err1.message);
-            return res.status(500).json({ error: "Database query failed", details: err1.message });
+            return res.status(500).json({ message : 'Please enter a unique phone number' });
         }
         const Location_id = result1.insertId;
         const query = `

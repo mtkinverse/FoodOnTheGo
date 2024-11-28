@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useUserContext } from "../../contexts/userContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { FaBiking, FaBox, FaCheckCircle, FaDollarSign, FaUtensils, FaMapMarkerAlt } from 'react-icons/fa';
+import { FaBiking, FaBox, FaCheckCircle, FaDollarSign, FaUtensils, FaMapMarkerAlt, FaTimesCircle } from 'react-icons/fa';
 import { useAlertContext } from "../../contexts/alertContext";
 
 const RiderDashboard = () => {
@@ -152,13 +152,18 @@ const RiderDashboard = () => {
     <div className="flex items-center justify-between mb-8">
       <h1 className="text-3xl font-bold text-indigo-800">Rider Dashboard</h1>
       <button 
-       className={`px-4 py-2 rounded text-white
-         ${userData.status ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'}`}
-       onClick={updateAvailabilityStatus} 
+        className={`flex items-center px-4 py-2 rounded text-white text-base 
+          ${userData.status ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'}
+          transition duration-300 ease-in-out`}
+        onClick={updateAvailabilityStatus}
       >
-       {userData.status ? 'Mark Yourself Unavailable' : 'Mark Yourself Available'}
+        {/* Show icon based on availability status */}
+        {userData.status ? (
+          <><FaTimesCircle className="mr-2 text-xl" /> Mark Yourself Unavailable</>
+        ) : (
+          <><FaCheckCircle className="mr-2 text-xl" /> Mark Yourself Available</>
+        )}
       </button>
-
     </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">

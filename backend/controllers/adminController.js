@@ -1,27 +1,70 @@
 const db = require('../db');
 
+module.exports.AddDiscount = (req, res) => {
+    console.log('Here to add discount');
+    const location_id = req.params.id;
+    const { discount_value, start_date, end_date } = req.body;
+    console.log(discount_value, start_date, end_date);
+
+    const q = 'SELECT restaurant_id from restaurant where location_id = ?';
+    db.query(q, [location_id], (err, result) => {
+        if (err) {
+            return res.status(500).json({ message: 'No such location id found' });
+        }
+
+        if (result.length === 0) {
+            return res.status(404).json({ message: 'No restaurant found for the given location id' });
+        }
+
+        const restaurant_id = result[0].restaurant_id;
+        const qqq = 'SELECT * from discount where restaurant_id = ? and end_date >= CURRENT_TIMESTAMP';
+        db.query(qqq, [restaurant_id], (err2, result2) => {
+            if (err2) {
+                return res.status(500).json({ message: err2.message });
+            }
+
+            if (result2.length > 0) {
+                return res.status(200).json({ message: 'Only one flat active discount is allowed' });
+            }
+
+            console.log(restaurant_id);
+            const qq = `
+                INSERT INTO discount (restaurant_id, discount_value, start_date, end_date)
+                VALUES (?, ?, ?, ?); 
+            `;
+            db.query(qq, [restaurant_id, discount_value, start_date, end_date], (err1, result1) => {
+                if (err1) {
+                    return res.status(500).json({ message: 'Error adding discount' });
+                }
+                console.log('Discount added');
+                return res.status(200).json({ success: true, message: 'Discount added successfully' });
+            });
+        });
+    });
+};
 
 module.exports.AddPromo = (req,res) => {
     const location_id = req.params.id;
-    const {  promo_code ,promo_value ,start_date ,end_date ,status,limit} = req.body;
-
+    const {  promo_code ,promo_value ,start_date ,end_date ,limit,Min_Total} = req.body;
+console.log(req.body);
     const q = 'SELECT restaurant_id from restaurant where location_id = ? ';
-
+    
     db.query(q,[location_id],(err,result) => {
         if(err){
             return res.status(500).json({message : 'No such location id found'});
         }
 
         const restaurant_id = result[0].restaurant_id;
-
+        console.log(restaurant_id);
         const qq = `
             INSERT INTO Promos (restaurant_id,promo_code,
-            promo_value,start_date,end_date,status,usage_limit) VALUES (?,?,?,?,?,?,?); 
+            promo_value,start_date,end_date,usage_limit,Min_Total) VALUES (?,?,?,?,?,?,?); 
         `
-        db.query(qq,[restaurant_id,promo_code ,promo_value ,start_date ,end_date ,status,limit],(err1,result1) => {
+        db.query(qq,[restaurant_id,promo_code ,promo_value ,start_date ,end_date ,limit,Min_Total],(err1,result1) => {
             if(err1){
                 return res.status(500).json({message : 'Error adding promo'});
             }
+            console.log('prmote added');
             return res.status(200).json({message : 'Promo added'});
         })
     })

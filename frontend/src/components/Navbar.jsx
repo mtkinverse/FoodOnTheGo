@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
-
+import { ChevronLeft, ChevronRight, X, Trash2 } from 'lucide-react'
 import {
   FaBars,
   FaChevronDown,
@@ -13,6 +13,201 @@ import { NavLink } from "react-router-dom";
 import { useUserContext } from "../contexts/userContext";
 import { useCartContext } from "../contexts/cartContext";
 import { useAlertContext } from "../contexts/alertContext";
+
+function ShowCurrentOrders({
+  currentOrders,
+  cancelOrder,
+  currentPopup,
+  CurrentOrdersPopup,
+}) {
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  if (currentPopup) {
+    document.body.style.overflow = 'hidden';
+  } else {
+    document.body.style.overflow = 'unset';
+  }
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) =>
+      prev === currentOrders.length - 1 ? prev : prev + 1
+    );
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev === 0 ? prev : prev - 1));
+  };
+
+  const shouldBlink = (stage, currentStatus) => {
+    const stages = ['Placed', 'Preparing', 'Out for delivery', 'Delivered'];
+    const currentIdx = stages.indexOf(currentStatus);
+    const stageIdx = stages.indexOf(stage);
+    return stageIdx <= currentIdx;
+  };
+
+  return (
+    <>
+      {currentPopup && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 backdrop-blur-md p-6">
+          <div className="bg-white w-full max-w-3xl rounded-2xl shadow-xl border-2 border-purple-200 overflow-hidden">
+            {/* Header */}
+            <div className="p-6 border-b border-gray-100">
+              <div className="flex justify-between items-center">
+                <div>
+                  <h2 className="text-2xl font-bold text-purple-700">Current Orders</h2>
+                  <p className="text-sm text-gray-600 mt-1">You have {currentOrders.length} orders in process</p>
+                </div>
+                <button
+                  onClick={() => {CurrentOrdersPopup(false) ;     document.body.style.overflow = 'unset';
+                  }}
+                  className="text-gray-500 hover:text-gray-700 transition-colors"
+                  aria-label="Close orders view"
+                >
+                  <X className="h-6 w-6" />
+                </button>
+              </div>
+            </div>
+
+            {/* Carousel */}
+            <div className="relative p-6">
+              <div className="overflow-hidden">
+                <div
+                  className="flex transition-transform duration-500 ease-in-out"
+                  style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+                  role="region"
+                  aria-label="Order carousel"
+                >
+                  {currentOrders.map((order, index) => (
+                    <div key={order.order_id} className="w-full flex-shrink-0 px-4">
+                      <div className="bg-white rounded-xl border border-purple-100 p-6 shadow-md space-y-6">
+                        {/* Order Header */}
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <h3 className="text-lg font-semibold text-purple-700">Order #{order.order_id}</h3>
+                            <p className="text-base text-purple-600 font-medium">{order.restaurant_name}</p>
+                          </div>
+                          {(order.status === 'Placed' || order.status === 'Preparing') && (
+                            <button
+                              onClick={() => cancelOrder(order.order_id)}
+                              className="text-red-500 hover:text-red-600 transition-colors"
+                              aria-label={`Cancel order #${order.order_id}`}
+                            >
+                              <Trash2 className="h-5 w-5" />
+                            </button>
+                          )}
+                        </div>
+
+                        {/* Progress Bar */}
+                        <div className="space-y-2">
+                          <div className="flex justify-between text-xs text-gray-500">
+                            {['Placed', 'Preparing', 'Out for delivery', 'Delivered'].map((stage, idx) => (
+                              <span
+                                key={stage}
+                                className={`${
+                                  idx <= ['Placed', 'Preparing', 'Out for delivery', 'Delivered'].indexOf(order.status)
+                                    ? 'text-purple-600 font-medium'
+                                    : ''
+                                }`}
+                              >
+                                {stage}
+                              </span>
+                            ))}
+                          </div>
+                          <div className="flex gap-2">
+                            {['Placed', 'Preparing', 'Out for delivery', 'Delivered'].map((stage, idx) => (
+                              <div
+                                key={idx}
+                                className={`h-1.5 flex-1 rounded-full transition-opacity duration-200 ${
+                                  idx <= ['Placed', 'Preparing', 'Out for delivery', 'Delivered'].indexOf(order.status)
+                                    ? 'bg-purple-600'
+                                    : 'bg-gray-300'
+                                } ${
+                                  shouldBlink(stage, order.status)
+                                    ? 'animate-pulse animate-[pulse_2s_ease-in-out_infinite]'
+                                    : ''
+                                }`}
+                              />
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Order Details */}
+                        <div className="space-y-4">
+                          <div>
+                            <p className="text-sm font-medium text-gray-500">Delivery Address</p>
+                            <p className="text-sm text-gray-700 mt-1">{order.address}</p>
+                          </div>
+
+                          <div>
+                            <p className="text-sm font-medium text-gray-500 mb-2">Order Items</p>
+                            <div className="space-y-2">
+                              {order.items.map((item, idx) => (
+                                <div key={idx} className="flex justify-between text-sm">
+                                  <span className="text-gray-700">
+                                    {item.dish_name}{' '}
+                                    <span className="text-gray-500">x{item.quantity}</span>
+                                  </span>
+                                  <span className="font-medium text-gray-900">Rs {item.sub_total}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          <div className="pt-4 border-t border-gray-100">
+                            <div className="flex justify-between items-center">
+                              <span className="font-medium text-gray-900">Total</span>
+                              <span className="text-lg font-bold text-purple-600">Rs {order.total_amount}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Navigation Buttons */}
+              {currentSlide > 0 && (
+                <button
+                  onClick={prevSlide}
+                  className="absolute left-0 top-1/2 -translate-y-1/2 bg-white rounded-full p-2 shadow-lg hover:bg-gray-50 transition-colors"
+                  aria-label="Previous order"
+                >
+                  <ChevronLeft className="w-6 h-6 text-purple-600" />
+                </button>
+              )}
+
+              {currentSlide < currentOrders.length - 1 && (
+                <button
+                  onClick={nextSlide}
+                  className="absolute right-0 top-1/2 -translate-y-1/2 bg-white rounded-full p-2 shadow-lg hover:bg-gray-50 transition-colors"
+                  aria-label="Next order"
+                >
+                  <ChevronRight className="w-6 h-6 text-purple-600" />
+                </button>
+              )}
+
+              {/* Dots */}
+              <div className="flex justify-center gap-2 mt-4">
+                {currentOrders.map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setCurrentSlide(idx)}
+                    className={`w-2 h-2 rounded-full transition-colors ${
+                      idx === currentSlide ? 'bg-purple-600' : 'bg-gray-300'
+                    }`}
+                    aria-label={`Go to order ${idx + 1}`}
+                    aria-current={idx === currentSlide ? 'true' : 'false'}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
 
 
 const Navbar = () => {
@@ -58,8 +253,7 @@ const Navbar = () => {
   };
 
   const [currentPopup, CurrentOrdersPopup] = useState(false);
-
-
+ 
   const cancelOrder = (order_id) => {
     axios
       .post(`/api/cancelOrder/${order_id}`)
@@ -359,8 +553,8 @@ const Navbar = () => {
             )}
           </div>
 
-          {/* Mobile Menu Toggle */}
-          <div className="sm:hidden flex items-center">
+                 {/* Mobile Menu Toggle */}
+                 <div className="sm:hidden flex items-center">
             <button
               onClick={toggleMenu}
               className="text-purple-600 hover:text-purple-700 focus:outline-none"
@@ -500,118 +694,15 @@ const Navbar = () => {
             </div>
           )}
 
+
           {currentPopup && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 backdrop-blur-sm">
-              <div className="bg-white w-full max-w-2xl p-8 rounded-2xl shadow-2xl border-2 border-purple-100 overflow-auto max-h-[90vh] transform transition-all duration-300 ease-in-out">
-                <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-3xl font-extrabold text-purple-600 tracking-tight">
-                    Current Orders
-                  </h2>
-                  <button
-                    className="text-purple-500 hover:bg-purple-100 rounded-full p-2 transition-colors"
-                    onClick={() => CurrentOrdersPopup(false)}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-6 w-6"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
-                  </button>
-                </div>
-
-                <p className="text-gray-500 text-sm text-center mb-6">
-                  You have {currentOrders.length} orders in process.
-                </p>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                  {currentOrders.map((order, index) => (
-                    <div
-                      key={index}
-                      className="relative border-l-4 border-purple-500 p-5 rounded-lg shadow-md bg-white hover:shadow-lg transition-shadow"
-                    >
-                      <h3 className="font-bold text-purple-700 flex justify-between items-center mb-2">
-                        Order #{order.order_id}
-                        {order.status === "Out for delivery" && (
-                          <span className="ml-2 px-3 py-1 text-xs font-semibold text-green-700 bg-green-100 rounded-full">
-                            {order.status}
-                          </span>
-                        )}
-                        {order.status === "Placed" && (
-                          <span className="ml-2 px-3 py-1 text-xs font-semibold text-yellow-700 bg-yellow-100 rounded-full">
-                            {order.status}
-                          </span>
-                        )}
-                        {order.status === "Preparing" && (
-                          <span className="ml-2 px-3 py-1 text-xs font-semibold text-red-700 bg-red-100 rounded-full">
-                            {order.status}
-                          </span>
-                        )}
-                      </h3>
-                      <div className="space-y-1 text-sm text-gray-600">
-                        <p>
-                          <span className="font-medium text-purple-600">
-                            Restaurant:
-                          </span>{" "}
-                          {order.restaurant_name}
-                        </p>
-                        <p>
-                          Total:{" "}
-                          <span className="font-semibold text-purple-700">
-                            Rs {order.total_amount + 150}
-                          </span>
-                        </p>
-                        <p>
-                          Delivery Address: <strong>{order.address}</strong>
-                        </p>
-                      </div>
-                      {(order.status === "Placed" ||
-                        order.status === "Preparing") && (
-                        <button
-                          className="absolute top-4 right-4 text-red-500 hover:bg-red-50 rounded-full p-2 transition-colors"
-                          onClick={() => cancelOrder(order.order_id)}
-                          title="Cancel Order"
-                        >
-                          <FaTrashAlt className="h-5 w-5" />
-                        </button>
-                      )}
-
-                      <div className="mt-4 pt-3 border-t border-gray-100">
-                        <p className="font-semibold text-sm text-purple-600 mb-2">
-                          Items:
-                        </p>
-                        <ul className="space-y-1 text-xs text-gray-600">
-                          {order.items.slice(0, 3).map((item, idx) => (
-                            <li key={idx} className="flex justify-between">
-                              <span>
-                                {item.dish_name} ({item.quantity}x)
-                              </span>
-                              <span className="font-semibold">
-                                Rs {item.sub_total}
-                              </span>
-                            </li>
-                          ))}
-                          {order.items.length > 3 && (
-                            <li className="text-purple-500 font-medium">
-                              + {order.items.length - 3} more items
-                            </li>
-                          )}
-                        </ul>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
+             <ShowCurrentOrders 
+             currentOrders={ currentOrders}
+             cancelOrder = {cancelOrder}
+             currentPopup = {currentPopup}
+             CurrentOrdersPopup = {CurrentOrdersPopup}/>
           )}
+
           {pastPopup && (
             <div className="fixed inset-0 bg-opacity-60 flex items-center justify-center z-50">
               <div className="bg-white w-full max-w-3xl p-6 rounded-lg shadow-lg overflow-auto max-h-[90vh]">

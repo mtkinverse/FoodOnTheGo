@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import axios from "axios";  
 import { useUserContext } from "../contexts/userContext";
+import { useAlertContext } from "../contexts/alertContext";
 
 const AddRestaurantPopup = ({ isOpen, onClose,fetchRestaurants}) => {
   const { userData } = useUserContext();
+  const {setAlert} = useAlertContext();
 
   const [formValues, setFormValues] = useState({
     Restaurant_name: "",
@@ -55,10 +57,12 @@ const AddRestaurantPopup = ({ isOpen, onClose,fetchRestaurants}) => {
           Restaurant_image: null,
         });
         // Close the popup
+        setAlert({message: 'Congratulations, on starting a new restaurant!',type : 'success'});
         onClose();
         fetchRestaurants();
       })
       .catch((error) => {
+        setAlert({message: error.response.data.message ,type:'failure'});
         console.error("Error adding restaurant:", error);
       });
   };

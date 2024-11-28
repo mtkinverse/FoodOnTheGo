@@ -18,9 +18,10 @@ CREATE TABLE Restaurant_Owner (
    Owner_Name VARCHAR(100) NOT NULL,
    Email_address VARCHAR(100) NOT NULL UNIQUE,
    Account_Password VARCHAR(100) NOT NULL,
-   Phone_no VARCHAR(20) NOT NULL
+   Phone_no VARCHAR(20) NOT NULL 
 );
 ALTER TABLE Restaurant_Owner AUTO_INCREMENT = 1500; -- id starts from 1500
+ALTER TABLE Restaurant_Owner MODIFY Phone_no VARCHAR(20) UNIQUE;
 
 
 CREATE TABLE Restaurant (
@@ -46,6 +47,7 @@ CREATE TABLE Locations (
     Address VARCHAR(100) NOT NULL,
     Contact_No VARCHAR(20) NOT NULL
 );
+ALTER TABLE Locations MODIFY Contact_No VARCHAR(20) UNIQUE;
 ALTER TABLE Locations AUTO_INCREMENT = 10100 ; -- ids start from 10100
 
 CREATE TABLE Restaurant_Admin (
@@ -57,6 +59,7 @@ CREATE TABLE Restaurant_Admin (
    Phone_no VARCHAR(20) NOT NULL
 );
 ALTER TABLE Restaurant_Admin AUTO_INCREMENT = 9150;
+ALTER TABLE Restaurant_Admin MODIFY Phone_no VARCHAR(20) UNIQUE;
 
 
 CREATE TABLE Menu 
@@ -75,6 +78,8 @@ CREATE TABLE Menu_Items (
     Menu_id INT NOT NULL
 );
 ALTER TABLE Menu_Items AUTO_INCREMENT = 18029;
+
+
 
 CREATE TABLE DeliveryAddress(
     Address_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -98,6 +103,9 @@ CREATE TABLE Delivery_Rider(
 ALTER TABLE Delivery_Rider AUTO_INCREMENT = 102922;
 ALTER TABLE Delivery_Rider ADD COLUMN Restaurant_id INT DEFAULT NULL;
 ALTER TABLE Delivery_Rider ADD CONSTRAINT Restaurant_fk Foreign key (Restaurant_id) REFERENCES Restaurant(Restaurant_id);
+ALTER TABLE Delivery_Rider MODIFY Phone_no VARCHAR(20) UNIQUE;
+ALTER TABLE Delivery_Rider MODIFY BikeNo VARCHAR(20) UNIQUE;
+
 
 
 CREATE TABLE Orders (
@@ -114,6 +122,9 @@ ALTER TABLE Orders AUTO_INCREMENT = 75638;
 
 -- isse status update ka time ajayega display user ko hoga
 ALTER TABLE Orders ADD COLUMN status_updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+ALTER TABLE Orders ADD COLUMN promo_id INT DEFAULT NULL;
+ALTER TABLE Orders ADD CONSTRAINT promo_fk foreign key(promo_id) REFERENCES promos(promo_id) ON DELETE SET NULL;
+ALTER TABLE Orders ADD COLUMN total_amount FLOAT DEFAULT 0;
 
 CREATE TABLE Ordered_Items (
     Order_id INT default NULL,
@@ -128,6 +139,7 @@ CREATE TABLE Order_Review(
 );
 ALTER TABLE Order_Review AUTO_INCREMENT = 73638;
 
+drop table promos;
 CREATE TABLE Promos (
     promo_id INT PRIMARY KEY AUTO_INCREMENT,
     restaurant_id INT,
@@ -135,13 +147,27 @@ CREATE TABLE Promos (
     promo_value FLOAT, 
     start_date DATE,
     end_date DATE,
-    status VARCHAR(20) check(status IN ('active', 'expired')),
-    usage_limit INT,
+    usage_limit INT
 );
 
 ALTER TABLE Promos ADD CONSTRAINT r_fk foreign key(restaurant_id) REFERENCES Restaurant(restaurant_id) ON DELETE CASCADE;
 ALTER TABLE Promos AUTO_INCREMENT = 8829292;
+ALTER TABLE Promos ADD COLUMN Min_Total FLOAT ;
+
+drop table Discount;
+CREATE TABLE Discount(
+   discount_id INT PRIMARY KEY AUTO_INCREMENT,
+   discount_value FLOAT,
+   restaurant_id INT,
+   start_date DATE,
+   end_date DATE
+);
+
+ALTER TABLE Discount AUTO_INCREMENT =3733378;
+ALTER TABLE Discount ADD CONSTRAINT res_fk FOREIGN KEY(restaurant_id) REFERENCES Restaurant(restaurant_id) ON DELETE CASCADE;
+
 ------------------------------------------------ triggers & procedures -----------------------
+
 CREATE TRIGGER delete_order_address
 AFTER DELETE ON orders
 FOR EACH ROW
@@ -303,9 +329,6 @@ ALTER TABLE Ordered_Items ADD CONSTRAINT Item_FK FOREIGN KEY(Item_id) REFERENCES
 ALTER TABLE Ordered_Items ADD CONSTRAINT comp_PK PRIMARY KEY(Order_id,Item_id);
 
 
-
-
-
 ----------------------------- testing queries
 
 select o.order_id,o.order_status,r.restaurant_name,o.customer_id,DATE(o.order_time) AS order_date, 
@@ -355,7 +378,6 @@ select * from delivery_rider;
 select * from restaurant_owner;
 delete from customer;
 Select * from restaurant;
-select * from locations;
 select * from menu_items;
 select * from menu;
 delete from menu_items where Item_id= 18032;
@@ -372,9 +394,18 @@ select * from orders;
 select * from ordered_items;
 delete from orders;
 delete from ordered_items;
-select * from deliveryaddress;
 delete from deliveryaddress;
-
+select *  from deliveryaddress;
+delete from restaurant_owner;
+delete from restaurant_admin;
+select * from deliveryaddress;
+delete from orders;
+delete from customer;
+delete from delivery_rider;
+select * from promos;
+delete from promos;
+select * from locations;
+select * from restaurant;
 delete from restaurant;
 
 select * from Promos;

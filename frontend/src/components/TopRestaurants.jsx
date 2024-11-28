@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import RestaurantCard from "./RestaurantCard";
 
 const TopRestaurants = () => {
@@ -18,9 +18,14 @@ const TopRestaurants = () => {
   };
 
   const [itemsToShow, setItemsToShow] = useState(getItemsToShow());
+  const [isMobile, setIsMobile] = useState(
+    typeof window !== 'undefined' ? window.innerWidth < 640 : false
+  );
 
   useEffect(() => {
     const handleResize = () => {
+      const mobile = window.innerWidth < 640;
+      setIsMobile(mobile);
       setItemsToShow(getItemsToShow());
       // Adjust currentIndex if needed when screen size changes
       setCurrentIndex(prev => 
@@ -52,19 +57,40 @@ const TopRestaurants = () => {
   }, []);
 
   const handleNext = () => {
-    setCurrentIndex((prevIndex) =>
-      Math.min(prevIndex + 1, restaurantData.length - itemsToShow)
-    );
+    if (isMobile) {
+      // On mobile, move one item at a time
+      setCurrentIndex((prevIndex) =>
+        Math.min(prevIndex + 1, restaurantData.length - 1)
+      );
+    } else {
+      // On desktop/tablet, move by itemsToShow
+      setCurrentIndex((prevIndex) =>
+        Math.min(prevIndex + itemsToShow, restaurantData.length - itemsToShow)
+      );
+    }
   };
 
   const handlePrev = () => {
-    setCurrentIndex((prevIndex) => Math.max(prevIndex - 1, 0));
+    if (isMobile) {
+      // On mobile, move one item at a time
+      setCurrentIndex((prevIndex) => Math.max(prevIndex - 1, 0));
+    } else {
+      // On desktop/tablet, move by itemsToShow
+      setCurrentIndex((prevIndex) => 
+        Math.max(prevIndex - itemsToShow, 0)
+      );
+    }
   };
 
   const visibleRestaurants = restaurantData.slice(
     currentIndex,
     currentIndex + itemsToShow
   );
+
+  // Calculate total slides based on screen size
+  const totalSlides = isMobile 
+    ? restaurantData.length 
+    : Math.ceil(restaurantData.length / itemsToShow);
 
   return (
     <div className="relative w-full max-w-7xl mx-auto px-4 py-8">
@@ -74,12 +100,12 @@ const TopRestaurants = () => {
         <div className="flex items-center space-x-2">
           {/* Navigation Dots */}
           <div className="hidden md:flex items-center space-x-1 mr-4">
-            {Array.from({ length: Math.ceil(restaurantData.length / itemsToShow) }).map((_, idx) => (
+            {Array.from({ length: totalSlides }).map((_, idx) => (
               <button
                 key={idx}
-                onClick={() => setCurrentIndex(idx * itemsToShow)}
+                onClick={() => setCurrentIndex(isMobile ? idx : idx * itemsToShow)}
                 className={`w-2 h-2 rounded-full transition-all duration-300 
-                  ${currentIndex / itemsToShow === idx 
+                  ${(isMobile ? currentIndex : Math.floor(currentIndex / itemsToShow)) === idx 
                     ? 'w-6 bg-indigo-600' 
                     : 'bg-gray-300 hover:bg-gray-400'}`}
                 aria-label={`Go to slide ${idx + 1}`}
@@ -103,9 +129,13 @@ const TopRestaurants = () => {
             </button>
             <button
               onClick={handleNext}
-              disabled={currentIndex >= restaurantData.length - itemsToShow}
+              disabled={isMobile 
+                ? currentIndex >= restaurantData.length - 1 
+                : currentIndex >= restaurantData.length - itemsToShow}
               className={`p-2 rounded-full border transition-all duration-300
-                ${currentIndex >= restaurantData.length - itemsToShow
+                ${(isMobile 
+                  ? currentIndex >= restaurantData.length - 1 
+                  : currentIndex >= restaurantData.length - itemsToShow)
                   ? 'border-gray-200 text-gray-300 cursor-not-allowed'
                   : 'border-gray-300 text-gray-600 hover:border-indigo-600 hover:text-indigo-600'
                 }`}
@@ -122,15 +152,15 @@ const TopRestaurants = () => {
         <div 
           className="flex transition-transform duration-500 ease-out"
           style={{ 
-            transform: `translateX(-${currentIndex * (100 / itemsToShow)}%)`,
-            width: `${(restaurantData.length / itemsToShow) * 100}%`
+            transform: `translateX(-${currentIndex * (100 / (isMobile ? restaurantData.length : itemsToShow))}%)`,
+            width: `${(restaurantData.length / (isMobile ? 1 : itemsToShow)) * 100}%`
           }}
         >
           {restaurantData.map((restaurant) => (
             <div
               key={restaurant.Restaurant_id}
               className="px-2"
-              style={{ width: `${100 / restaurantData.length}%` }}
+              style={{ width: `${100 / (isMobile ? restaurantData.length : restaurantData.length)}%` }}
             >
               <RestaurantCard restaurant={restaurant} />
             </div>
@@ -140,12 +170,12 @@ const TopRestaurants = () => {
 
       {/* Mobile Navigation Dots */}
       <div className="mt-6 flex md:hidden justify-center space-x-1">
-        {Array.from({ length: Math.ceil(restaurantData.length / itemsToShow) }).map((_, idx) => (
+        {Array.from({ length: totalSlides }).map((_, idx) => (
           <button
             key={idx}
-            onClick={() => setCurrentIndex(idx * itemsToShow)}
+            onClick={() => setCurrentIndex(isMobile ? idx : idx * itemsToShow)}
             className={`w-2 h-2 rounded-full transition-all duration-300 
-              ${currentIndex / itemsToShow === idx 
+              ${(isMobile ? currentIndex : Math.floor(currentIndex / itemsToShow)) === idx 
                 ? 'w-6 bg-indigo-600' 
                 : 'bg-gray-300 hover:bg-gray-400'}`}
             aria-label={`Go to slide ${idx + 1}`}
@@ -157,3 +187,4 @@ const TopRestaurants = () => {
 };
 
 export default TopRestaurants;
+

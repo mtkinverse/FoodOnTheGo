@@ -5,6 +5,340 @@ import { useNavigate } from "react-router-dom";
 import { FaClipboardList, FaUtensils, FaTruck, FaEye, FaCog, FaMotorcycle, FaBiking } from 'react-icons/fa';
 import { useAlertContext } from "../contexts/alertContext";
 
+const DealsPopup = ({ setDealPopup }) => {
+  const [dealType, setDealType] = useState(null); 
+  const {setAlert} = useAlertContext();
+  const {userData} = useUserContext();
+  const handlePromoSelection = () => setDealType('promo');
+  const handleDiscountSelection = () => setDealType('discount');
+  const resetPopup = () => setDealType(null);
+  
+  const [newDiscount,setNewDiscount] = useState({
+    discount_value: '',
+    start_date: '',
+    end_date:'',
+  });
+
+  const [newpromo, setNewPromo] = useState({
+    promo_code: '',
+    promo_value: '',
+    start_date: '',
+    end_date: '',
+    limit: 0,
+    Min_Total: 0
+  })
+
+  // const [NewPromoPopup, setNewPromoPopup] = useState(false);
+
+  const handlePromoSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(`/api/addPromo/${userData.Location_id}`, newpromo);
+      if (response.status === 200) {
+        setAlert({
+          message: 'New promo added',
+          type: 'success'
+        });
+        setDealPopup(false);
+        setNewPromo({
+          promo_code: '',
+          promo_value: '',
+          start_date: '',
+          end_date: '',
+          limit: 0,
+          Min_Total: 0
+        });
+      }
+    }
+    catch (err) {
+       console.log(err.response)
+      setAlert({
+        message: 'Error adding promo',
+        type: 'failure'
+      });
+    }
+
+  }
+  
+  const handleDiscountSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      console.log('sending request for ',newDiscount);
+      const response = await axios.post(`/api/addDiscount/${userData.Location_id}`, newDiscount);
+      if (response.status === 200) {
+        if(response.data){
+          setAlert({
+            message: 'New discount added',
+            type: 'success'
+          });
+        }
+        else{
+          setAlert({
+            message: 'You can only have one active flat discount',
+            type: 'success'
+          });
+        }
+        setDealPopup(false);
+        setNewDiscount({
+          discount_value: '',
+          start_date: '',
+          end_date:'',
+        });
+      }
+    }
+    catch (err) {
+       console.log(err.response)
+      setAlert({
+        message: 'Error adding discount',
+        type: 'failure'
+      });
+    }
+
+  }
+
+  return (
+    <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-50">
+      <div className="bg-white w-full max-w-md p-3 rounded-lg shadow-lg">
+        {!dealType ? (
+          <div>
+            <h2 className="text-xl font-bold text-purple-900 mb-4">Select Deal Type</h2>
+            <div className="flex justify-around">
+              <button
+                onClick={handlePromoSelection}
+                className="py-2 px-4 rounded-md bg-purple-600 hover:bg-purple-700 text-white"
+              >
+                Promo
+              </button>
+              <button
+                onClick={handleDiscountSelection}
+                className="py-2 px-4 rounded-md bg-purple-600 hover:bg-purple-700 text-white"
+              >
+                Discount
+              </button>
+            </div>
+          </div>
+        ) : dealType === 'promo' ? (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">Create New Promo</h2>
+            <form onSubmit={handlePromoSubmit}>
+              <div className="mb-4">
+                <label
+                  htmlFor="promo_code"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Promo Code
+                </label>
+                <input
+                  type="text"
+                  id="promo_code"
+                  value={newpromo.promo_code}
+                  onChange={(e) =>
+                    setNewPromo((prev) => ({ ...prev, promo_code: e.target.value }))
+                  }
+                  className="w-full p-2 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  placeholder="CXY6728"
+                />
+              </div>
+
+              <div className="mb-4">
+                <label
+                  htmlFor="promo_value"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Promo Value (%)
+                </label>
+                <input
+                  type="number"
+                  id="promo_value"
+                  value={newpromo.promo_value}
+                  onChange={(e) =>
+                    setNewPromo((prev) => ({ ...prev, promo_value: e.target.value }))
+                  }
+                  className="w-full p-2 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  placeholder="10"
+                />
+              </div>
+              
+              <div className="mb-4">
+                <label
+                  htmlFor="min_spend"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Minimum Spend
+                </label>
+                <input
+                  type="number"
+                  id="min_spend"
+                  value={newpromo.Min_Total}
+                  onChange={(e) =>
+                    setNewPromo((prev) => ({ ...prev, Min_Total: e.target.value }))
+                  }
+                  className="w-full p-2 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  placeholder="250"
+                />
+              </div>
+
+              <div className="mb-4">
+                <label
+                  htmlFor="start_date"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Start Date
+                </label>
+                <input
+                  type="date"
+                  id="start_date"
+                  value={newpromo.start_date}
+                  onChange={(e) =>
+                    setNewPromo((prev) => ({ ...prev, start_date: e.target.value }))
+                  }
+                  className="w-full p-2 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+
+              <div className="mb-4">
+                <label
+                  htmlFor="end_date"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  End Date
+                </label>
+                <input
+                  type="date"
+                  id="end_date"
+                  value={newpromo.end_date}
+                  onChange={(e) =>
+                    setNewPromo((prev) => ({ ...prev, end_date: e.target.value }))
+                  }
+                  className="w-full p-2 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+
+              <div className="mb-4">
+                <label
+                  htmlFor="limit"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Usage Limit
+                </label>
+                <input
+                  type="number"
+                  id="limit"
+                  value={newpromo.limit}
+                  onChange={(e) =>
+                    setNewPromo((prev) => ({ ...prev, limit: e.target.value }))
+                  }
+                  className="w-full p-2 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  placeholder="Enter usage limit"
+                />
+              </div>
+
+              <div className="flex justify-end space-x-3">
+                <button
+                  type="button"
+                  className="bg-gray-300 text-gray-800 py-2 px-4 rounded-lg hover:bg-gray-400 transition duration-300"
+                  onClick={() => setDealPopup(false)}
+                >
+                  Close
+                </button>
+                <button
+                  type="submit"
+                  className="bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition duration-300"
+                >
+                  Submit
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+        ) : (
+          // Step 2b: Discount-specific popup
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">Start a new flat discount</h2>
+            <form onSubmit={handleDiscountSubmit}>
+              <div className="mb-4">
+                <label
+                  htmlFor="discount_value"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Promo Value (%)
+                </label>
+                <input
+                  type="number"
+                  id="discount_value"
+                  value={newDiscount.discount_value}
+                  onChange={(e) =>
+                    setNewDiscount((prev) => ({ ...prev, discount_value: e.target.value }))
+                  }
+                  className="w-full p-2 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  placeholder="10"
+                />
+              </div>
+              
+
+              <div className="mb-4">
+                <label
+                  htmlFor="start_date"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Start Date
+                </label>
+                <input
+                  type="date"
+                  id="start_date"
+                  value={newDiscount.start_date}
+                  onChange={(e) =>
+                    setNewDiscount((prev) => ({ ...prev, start_date: e.target.value }))
+                  }
+                  className="w-full p-2 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+
+              <div className="mb-4">
+                <label
+                  htmlFor="end_date"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  End Date
+                </label>
+                <input
+                  type="date"
+                  id="end_date"
+                  value={newDiscount.end_date}
+                  onChange={(e) =>
+                    setNewDiscount((prev) => ({ ...prev, end_date: e.target.value }))
+                  }
+                  className="w-full p-2 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+
+              <div className="flex justify-end space-x-3">
+                <button
+                  type="button"
+                  className="bg-gray-300 text-gray-800 py-2 px-4 rounded-lg hover:bg-gray-400 transition duration-300"
+                  onClick={() => setDealPopup(false)}
+                >
+                  Close
+                </button>
+                <button
+                  type="submit"
+                  className="bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition duration-300"
+                >
+                  Submit
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+
 const AdminDashboard = () => {
   const { getRestaurantOrders, restaurantOrders, loggedIn, setRestaurantOrders, userData } = useUserContext();
   const navigate = useNavigate();
@@ -20,47 +354,8 @@ const AdminDashboard = () => {
   const { setAlert } = useAlertContext();
 
   //ye karna hai
-  const [newpromo, setNewPromo] = useState({
-    promo_code: '',
-    promo_value: '',
-    start_date: '',
-    end_date: '',
-    status: 'active',
-    limit: 0,
-  })
-
-  const [NewPromoPopup, setNewPromoPopup] = useState(false);
-
-  const handlePromoSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post(`/api/addPromo/${userData.Location_id}`, newpromo);
-      if (response.status === 200) {
-        setAlert({
-          message: 'New promo added',
-          type: 'success'
-        });
-        setNewPromoPopup(false);
-        setNewPromo({
-          promo_code: '',
-          promo_value: '',
-          start_date: '',
-          end_date: '',
-          status: 'active',
-          limit: 0,
-        });
-      }
-    }
-    catch (err) {
-
-      setAlert({
-        message: 'Error adding promo',
-        type: 'failure'
-      });
-    }
-
-  }
-
+ 
+  
   const [availablePromos, setAvailablePromos] = useState([]);
   const [PromosPopup, setPromosPopup] = useState([]);
 
@@ -73,6 +368,8 @@ const AdminDashboard = () => {
         })
         .catch(err => setAlert({ message: err.message, type: 'failure' }))
   }
+  
+  const [dealPopup,setDealPopup] = useState(false);
 
   useEffect(() => {
     if (!loggedIn) navigate("/");
@@ -188,7 +485,8 @@ const AdminDashboard = () => {
       setSelectedRider(null);
     }
   }, [dispatchPopup]);
-
+  
+ 
   return (
     <div className="min-h-screen bg-purple-100 py-8">
       <div className="container mx-auto px-4">
@@ -200,18 +498,22 @@ const AdminDashboard = () => {
         {/* Buttons for Promo Actions */}
         <div className="mb-8 flex justify-center space-x-4">
           <button
-            onClick={() => { setNewPromoPopup(true) }}
+            onClick={() => { setDealPopup(true) }}
             className="bg-purple-500 text-white px-6 py-2 rounded-md font-medium hover:bg-purple-700 transition duration-200"
           >
-            New Promo
+            New Deal
           </button>
           <button
             onClick={showPromo}
             className="bg-purple-500 text-white px-6 py-2 rounded-md font-medium hover:bg-purple-700 transition duration-200"
           >
-            View Promos
+            View Deals
           </button>
         </div>
+
+        {
+          dealPopup && <DealsPopup setDealPopup={setDealPopup}/>
+        }
 
         {/* Grid Section for Orders */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -335,125 +637,7 @@ const AdminDashboard = () => {
           </section>
         </div>
 
-        {
-          NewPromoPopup && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-              <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
-                <h2 className="text-2xl font-bold text-gray-800 mb-4">Create New Promo</h2>
-                <form onSubmit={handlePromoSubmit}>
-                  <div className="mb-4">
-                    <label
-                      htmlFor="promo_code"
-                      className="block text-sm font-medium text-gray-700"
-                    >
-                      Promo Code
-                    </label>
-                    <input
-                      type="text"
-                      id="promo_code"
-                      value={newpromo.promo_code}
-                      onChange={(e) =>
-                        setNewPromo((prev) => ({ ...prev, promo_code: e.target.value }))
-                      }
-                      className="w-full p-2 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                      placeholder="CXY6728"
-                    />
-                  </div>
-
-                  <div className="mb-4">
-                    <label
-                      htmlFor="promo_value"
-                      className="block text-sm font-medium text-gray-700"
-                    >
-                      Promo Value (%)
-                    </label>
-                    <input
-                      type="number"
-                      id="promo_value"
-                      value={newpromo.promo_value}
-                      onChange={(e) =>
-                        setNewPromo((prev) => ({ ...prev, promo_value: e.target.value }))
-                      }
-                      className="w-full p-2 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                      placeholder="10"
-                    />
-                  </div>
-
-                  <div className="mb-4">
-                    <label
-                      htmlFor="start_date"
-                      className="block text-sm font-medium text-gray-700"
-                    >
-                      Start Date
-                    </label>
-                    <input
-                      type="date"
-                      id="start_date"
-                      value={newpromo.start_date}
-                      onChange={(e) =>
-                        setNewPromo((prev) => ({ ...prev, start_date: e.target.value }))
-                      }
-                      className="w-full p-2 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    />
-                  </div>
-
-                  <div className="mb-4">
-                    <label
-                      htmlFor="end_date"
-                      className="block text-sm font-medium text-gray-700"
-                    >
-                      End Date
-                    </label>
-                    <input
-                      type="date"
-                      id="end_date"
-                      value={newpromo.end_date}
-                      onChange={(e) =>
-                        setNewPromo((prev) => ({ ...prev, end_date: e.target.value }))
-                      }
-                      className="w-full p-2 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    />
-                  </div>
-
-                  <div className="mb-4">
-                    <label
-                      htmlFor="limit"
-                      className="block text-sm font-medium text-gray-700"
-                    >
-                      Usage Limit
-                    </label>
-                    <input
-                      type="number"
-                      id="limit"
-                      value={newpromo.limit}
-                      onChange={(e) =>
-                        setNewPromo((prev) => ({ ...prev, limit: e.target.value }))
-                      }
-                      className="w-full p-2 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                      placeholder="Enter usage limit"
-                    />
-                  </div>
-
-                  <div className="flex justify-end space-x-3">
-                    <button
-                      type="button"
-                      className="bg-gray-300 text-gray-800 py-2 px-4 rounded-lg hover:bg-gray-400 transition duration-300"
-                      onClick={() => setNewPromoPopup(false)}
-                    >
-                      Close
-                    </button>
-                    <button
-                      type="submit"
-                      className="bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition duration-300"
-                    >
-                      Submit
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          )
-        }
+   
 
         {
           deliveryDetails && viewdeliveryDetails && (

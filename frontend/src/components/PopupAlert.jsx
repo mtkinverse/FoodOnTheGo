@@ -1,42 +1,84 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { FaCheckCircle, FaTimesCircle, FaTimes } from 'react-icons/fa';
 
 const PopupAlert = ({ message, type, handleClose }) => {
-  const bgColor = type === 'success' ? 'bg-green-200' : 'bg-red-200';
-  const textColor = type === 'success' ? 'text-green-800' : 'text-red-800';
-  const borderColor = type === 'success' ? 'border-green-400' : 'border-red-400';
-  const iconColor = type === 'success' ? 'text-green-400' : 'text-red-400';
+  const [progress, setProgress] = useState(100);
 
-  const iconPath = type === 'success'
-    ? 'M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z'
-    : 'M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z';
-  
-    useEffect(() => {
-      const timer = setTimeout(() => {
-        handleClose();
-      }, 5000);
-  
-      return () => clearTimeout(timer);
-    }, [handleClose]);
-  
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      handleClose();
+    }, 5000);
+
+    const interval = setInterval(() => {
+      setProgress((prev) => Math.max(prev - 2, 0));
+    }, 100);
+
+    return () => {
+      clearTimeout(timer);
+      clearInterval(interval);
+    };
+  }, [handleClose]);
+
+  const styles = {
+    success: {
+      background: 'bg-gradient-to-r from-emerald-50 to-teal-50',
+      border: 'border-l-emerald-500',
+      icon: 'text-emerald-500',
+      progress: 'bg-emerald-500/20',
+      progressFill: 'bg-emerald-500',
+      ring: 'focus:ring-emerald-500',
+    },
+    error: {
+      background: 'bg-gradient-to-r from-rose-50 to-pink-50',
+      border: 'border-l-rose-500',
+      icon: 'text-rose-500',
+      progress: 'bg-rose-500/20',
+      progressFill: 'bg-rose-500',
+      ring: 'focus:ring-rose-500',
+    }
+  };
+
+  const currentStyle = type === 'success' ? styles.success : styles.error;
+
   return (
-    <div className={`fixed bottom-4 left-4 ${bgColor} ${textColor} p-4 rounded-lg shadow-lg flex items-start space-x-3 z-50 animate-fade-in-up border-l-4 ${borderColor} max-w-md`}>
-      <div className="flex-shrink-0">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className={`w-6 h-6 ${iconColor}`}>
-          <path strokeLinecap="round" strokeLinejoin="round" d={iconPath} />
-        </svg>
-      </div>
-      <div className="flex-grow">
-        <p className="font-medium">{message}</p>
-      </div>
-      <button
-        onClick={handleClose}
-        className="flex-shrink-0 ml-auto -mr-1 -mt-1 text-gray-400 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-green-50 focus:ring-green-600"
-        aria-label="Close"
+    <div className="fixed bottom-4 left-4 z-50 max-w-md animate-fade-in-up">
+      <div
+        className={`relative overflow-hidden ${currentStyle.background} backdrop-blur-sm border-l-4 ${currentStyle.border} 
+        rounded-lg shadow-lg shadow-black/5 ring-1 ring-black/5`}
       >
-        <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      </button>
+        {/* Main content */}
+        <div className="flex items-start space-x-3 p-4">
+          <div className="flex-shrink-0">
+            {type === 'success' ? (
+              <FaCheckCircle className={`w-5 h-5 ${currentStyle.icon}`} />
+            ) : (
+              <FaTimesCircle className={`w-5 h-5 ${currentStyle.icon}`} />
+            )}
+          </div>
+          <div className="flex-grow min-w-0">
+            <p className="font-medium text-sm text-gray-900 leading-5 break-words">
+              {message}
+            </p>
+          </div>
+          <button
+            onClick={handleClose}
+            className={`flex-shrink-0 -mr-2 -mt-2 p-2 rounded-full text-gray-400 
+            hover:text-gray-900 focus:outline-none focus:ring-2 ${currentStyle.ring} 
+            transition-colors duration-200`}
+            aria-label="Close"
+          >
+            <FaTimes className="w-4 h-4" />
+          </button>
+        </div>
+
+        {/* Progress track */}
+        <div className={`absolute bottom-0 left-0 right-0 h-1 ${currentStyle.progress}`}>
+          <div
+            className={`h-full transition-all ease-linear ${currentStyle.progressFill}`}
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+      </div>
     </div>
   );
 };

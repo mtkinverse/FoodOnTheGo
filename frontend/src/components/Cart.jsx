@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useCartContext } from "../contexts/cartContext";
 import { FaShoppingCart, FaPlus, FaMinus, FaTrash } from "react-icons/fa";
 import { Banknote } from "lucide-react";
 
 const Cart = () => {
-  const { cart, cartCount, handleIncrement, handleDecrement, handleRemove, placeOrder } = useCartContext();
+  const { cart, cartCount, handleIncrement, handleDecrement, handleRemove, 
+          placeOrder, promo, setPromo,getSubTotal,getTotalAmount } = useCartContext();
   const [location, setLocation] = useState({
     Address: "",
     NearbyPoint: "",
@@ -12,12 +13,7 @@ const Cart = () => {
   const [orderPopUp, setOrderPopUp] = useState(false);
   const [cartPopup, setCartPopup] = useState(false);
 
-  const DELIVERY_CHARGES = 150;
 
-  const getSubTotal = () =>
-    cart.reduce((total, item) => total + item.Item_Price * item.quantity, 0);
-
-  const getTotalAmount = () => getSubTotal() + DELIVERY_CHARGES;
 
   const handleOrderPlacment = (e) => {
     e.preventDefault();
@@ -115,11 +111,12 @@ const Cart = () => {
                 Rs.{getSubTotal()}
               </span>
             </div>
+
             <hr />
             <div className="flex justify-between">
               <span className="text-lg font-medium text-purple-900">Delivery:</span>
               <span className="text-lg font-bold text-purple-900">
-                Rs.{DELIVERY_CHARGES}
+                Rs.150
               </span>
             </div>
             <hr />
@@ -129,6 +126,7 @@ const Cart = () => {
                 Rs.{getTotalAmount()}
               </span>
             </div>
+
             {cartCount > 0 && (
               <button
                 onClick={(e) => {
@@ -146,6 +144,7 @@ const Cart = () => {
           </div>
         </div>
       </div>
+
       {orderPopUp && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
@@ -186,6 +185,26 @@ const Cart = () => {
                   value={location.NearbyPoint}
                   onChange={changeLocation}
                   required
+                />
+              </div>
+
+              <div className="mb-4">
+                <label
+                  htmlFor="code"
+                  className="block text-gray-700 font-bold mb-2"
+                >
+                  Enter promo code (if any)
+                </label>
+                <input
+                  type="text"
+                  id="code"
+                  name="promo_code"
+                  className="w-full border rounded-lg py-2 px-3 text-gray-700"
+                  onChange={(e) => setPromo(prev => ({
+                    ...prev,
+                    promo_code: e.target.value, // Correctly update the promo_code field
+                  }))}
+                  placeholder="CXY898"
                 />
               </div>
 

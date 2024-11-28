@@ -1,30 +1,81 @@
 const db = require('../db');
 
 module.exports.getRestaurants = (req, res) => {
-    const query = 'SELECT * FROM restaurant';
-    db.query(query, (err, data) => {
-        if (err) {
-            return res.status(500).json({ error: 'Database query failed', details: err.message });
-        }
-        return res.status(200).json(data);
+  const q = `
+   SELECT * 
+   FROM restaurant r
+   JOIN locations loc ON r.location_id = loc.location_id
+   LEFT JOIN Discount d ON d.restaurant_id = r.restaurant_id AND d.end_date > CURRENT_TIMESTAMP;
+`;
+
+db.query(q, [4], (err, data) => {
+  if (err) {
+    return res.status(500).json({ error: 'Database query failed', details: err.message });
+  }
+
+  const restaurantsWithReviewCount = [];
+
+  let processedCount = 0;
+  data.forEach((restaurant, index) => {
+    const reviewCountQuery = `
+      SELECT COUNT(o.review_id) AS review_count
+      FROM orders o
+      WHERE o.restaurant_id = ? AND o.review_id IS NOT NULL
+    `;
+    
+    db.query(reviewCountQuery, [restaurant.restaurant_id], (err, reviewData) => {
+      if (err) {
+        return res.status(500).json({ error: 'Failed to fetch review count', details: err.message });
+      }
+
+      restaurant.review_count = reviewData[0]?.review_count || 0;
+      restaurantsWithReviewCount.push(restaurant);
+      processedCount++;
+      if (processedCount === data.length) {
+        console.log(restaurantsWithReviewCount);
+        return res.status(200).json(restaurantsWithReviewCount);
+      }
     });
+  });
+});
 };
 
 
 module.exports.getSpecificRestaurant = (req, res) => {
-    const restaurantId = req.params.id;  
-    console.log(`Fetching details for restaurant with ID: ${restaurantId}`);
+  const restaurantId = req.params.id;
+  console.log(`Fetching details for restaurant with ID: ${restaurantId}`);
 
-    const query = 'SELECT * FROM restaurant WHERE Restaurant_id = ?';
-    db.query(query, [restaurantId], (err, data) => {
-        if (err) {
-            return res.status(500).json({ error: 'Database query failed', details: err.message });
-        }      
-        if (data.length === 0) {
-            return res.status(404).json({ message: 'Restaurant not found' });
-        }
-        return res.status(200).json(data[0]);  
-    });
+  const query = `
+    SELECT 
+        r.*, 
+        l.*, 
+        d.*, 
+        (SELECT COUNT(o.review_id) 
+         FROM orders o 
+         WHERE o.restaurant_id = r.Restaurant_id 
+         AND o.review_id IS NOT NULL) AS review_count 
+    FROM restaurant r
+    JOIN locations l ON r.location_id = l.location_id
+    LEFT JOIN Discount d ON d.restaurant_id = r.restaurant_id AND d.end_date > CURRENT_TIMESTAMP
+    WHERE r.Restaurant_id = ?;
+`;
+
+
+
+  db.query(query, [restaurantId], (err, data) => {
+      if (err) {
+          console.error(`Database query failed: ${err.message}`);
+          return res.status(500).json({ error: 'Database query failed', details: err.message });
+      }
+
+      if (data.length === 0) {
+          console.log(`No restaurant found with ID: ${restaurantId}`);
+          return res.status(404).json({ message: 'Restaurant not found' });
+      }
+
+      console.log(`Fetched details:`, data[0]);
+      return res.status(200).json(data[0]);
+  });
 };
 
 module.exports.getRestaurantMenu = (req, res) => {

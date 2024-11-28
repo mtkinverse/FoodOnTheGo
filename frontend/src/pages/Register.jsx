@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Mail, Lock, User, Phone, ChevronRight } from 'lucide-react';
+import { useAlertContext } from '../contexts/alertContext';
 
 const Register = () => {
-  const host = 'http://localhost:8800';
+  
+  const {setAlert} = useAlertContext();
   const navigate = useNavigate();
   const [values, setValues] = useState({
     firstname: "",
@@ -41,6 +43,7 @@ const Register = () => {
         }
       });
       console.log(res.data);
+      setAlert({message: 'Account created,login now!',type: 'success'});
       navigate('/login');
     } catch (err) {
       console.error(err.response?.data || err.message);
