@@ -84,7 +84,7 @@ module.exports.getPromos = (req,res) => {
 }
 
 module.exports.reviewOrder = (req,res) => {
-    console.log('i am here to review order');
+    console.log('i am here to review order',req.body,req.params.id);
    const order_id = req.params.id;
    const {rating,description} = req.body;
    const q = 'INSERT INTO order_review (rating,Review_Description) VALUES(?,?)';
@@ -101,7 +101,8 @@ module.exports.reviewOrder = (req,res) => {
             console.log('err1',err1.message);
             return res.status(400).json({error : err1.message});
         }
-        res.status(200).json({message : 'Order rated successfully'});
+        console.log('order was rated..');
+        res.status(200).json({review_id : result1.insertId});
       })
    });
 
@@ -132,7 +133,7 @@ module.exports.getLastOrder  = (req,res) =>{
 module.exports.PlaceOrder = async (req, res) => {
     console.log('Received order request:', req.body);
 
-    const { Customer_id, Menu_Id, Address, NearbyPoint, items, total_amount, promo_id } = req.body;
+    const { Customer_id, Menu_Id, Address, NearbyPoint, items, total_amount, promo_id,riderTip } = req.body;
     try {
         const q1 = 'SELECT Restaurant_id FROM restaurant WHERE menu_id = ?';
         const [restaurantResult] = await db.promise().query(q1, [Menu_Id]);
@@ -160,9 +161,9 @@ module.exports.PlaceOrder = async (req, res) => {
             await db.promise().query(itemInsertQuery, [Order_id, item.Item_id, item.quantity, priceToUse]);
         }
 
-        const updateOrderQuery = 'UPDATE orders SET promo_id = ?, total_amount = ? WHERE order_id = ?';
+        const updateOrderQuery = 'UPDATE orders SET promo_id = ?, total_amount = ? ,rider_tip = ? WHERE order_id = ?';
         console.log('Updating order ', Order_id, promo_id, total_amount);
-        await db.promise().query(updateOrderQuery, [promo_id, total_amount, Order_id]);
+        await db.promise().query(updateOrderQuery, [promo_id, total_amount, riderTip,Order_id]);
 
         return res.status(200).json({ success: true, message: 'Order placed successfully' });
     } catch (error) {
@@ -199,6 +200,7 @@ module.exports.getAllOrders = (req, res) => {
         d.address,
         r.restaurant_name,
         o.customer_id,
+        o.review_id,
         DATE(o.order_time) AS order_date, 
         o.total_amount,
         TIME(o.order_time) AS order_time,
@@ -234,6 +236,7 @@ module.exports.getAllOrders = (req, res) => {
                         customer_id: curr.customer_id,
                         restaurant_name: curr.restaurant_name,
                         total_amount: curr.total_amount,
+                        review_id: curr.review_id,
                         items: []
                     };
                 }

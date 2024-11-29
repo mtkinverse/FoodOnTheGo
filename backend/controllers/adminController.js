@@ -1,5 +1,20 @@
 const db = require('../db');
 
+module.exports.deleteDeal = (req,res) => {
+    const deal_id = req.params.id;
+    const {Type,location_id} = req.body;
+    let q ;
+    if(Type === 'promo') q = `Delete from promos where promo_id =? `;
+    else q = 'Delete from discount where discount_id = ?';
+
+    db.query(q,[deal_id],(err,result) =>{
+        if(err){
+            return res.status(400).json({message : 'error deleting deal'});
+        }
+        return res.status(200).json({message : 'deal deleted'});
+    })
+}
+
 module.exports.getDeals = (req, res) => {
     const location_id = req.params.id;
 
@@ -213,17 +228,61 @@ module.exports.updateOrderStatus = (req,res) => {
 
 module.exports.dispatchOrder = (req, res) => {
     const order_id = req.params.id;
-    const { rider_id } = req.body; 
+    const { rider_id } = req.body;
   
-      const qq = "UPDATE Orders SET delivered_by_id = ? WHERE order_id = ?";
-      db.query(qq, [rider_id, order_id], (error, result2) => {
-        if (error) {
-          console.log("Error updating order status:", error);
-          return res.status(500).json({ error: error.message }); 
+    // Step 1: Update the order with the rider's id
+    const updateOrderQuery = "UPDATE Orders SET delivered_by_id = ? WHERE order_id = ?";
+    db.query(updateOrderQuery, [rider_id, order_id], (error, result2) => {
+      if (error) {
+        console.log("Error updating order status:", error);
+        return res.status(500).json({ error: error.message });
+      }
+  
+      // Step 2: Fetch the rider's tip for the specific order
+      const getTipQuery = 'SELECT rider_tip FROM Orders WHERE order_id = ?';
+      db.query(getTipQuery, [order_id], (err1, res1) => {
+        if (err1) {
+          console.log("Error fetching rider tip:", err1);
+          return res.status(500).json({ error: err1.message });
         }
-        return res.status(200).json({ message: "order delivered by id set" });
+  
+        const rider_tip = res1[0] ? res1[0].rider_tip : 0;  // Default to 0 if no tip is provided
+  
+        if (rider_tip > 0) {
+          const checkExistingTipQuery = 'SELECT * FROM Rider_Tips WHERE rider_id = ? AND tip_date = CURRENT_DATE';
+          db.query(checkExistingTipQuery, [rider_id], (err2, res2) => {
+            if (err2) {
+              console.log("Error checking existing rider tip:", err2);
+              return res.status(500).json({ error: err2.message });
+            }
+  
+            if (res2.length > 0) {
+              const updateTipQuery = 'UPDATE Rider_Tips SET tips = tips + ? WHERE rider_id = ? AND tip_date = CURRENT_DATE';
+              db.query(updateTipQuery, [rider_tip, rider_id], (err3) => {
+                if (err3) {
+                  console.log("Error updating rider's tips:", err3);
+                  return res.status(500).json({ error: err3.message });
+                }
+                return res.status(200).json({ message: 'Order dispatched and tip updated successfully.' });
+              });
+            } else {
+              const insertTipQuery = 'INSERT INTO Rider_Tips (rider_id, tips, tip_date) VALUES (?, ?, CURRENT_DATE)';
+              db.query(insertTipQuery, [rider_id, rider_tip], (err4) => {
+                if (err4) {
+                  console.log("Error inserting rider's tip:", err4);
+                  return res.status(500).json({ error: err4.message });
+                }
+                return res.status(200).json({ message: 'Order dispatched and tip inserted successfully.' });
+              });
+            }
+          });
+        } else {
+          return res.status(200).json({ message: 'Order dispatched with no tip for the rider.' });
+        }
       });
+    });
   };
+  
 
 module.exports.getDeliveryDetails = (req,res) => {
     const order_id = req.params.id;

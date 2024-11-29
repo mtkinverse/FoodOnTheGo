@@ -30,43 +30,49 @@ const UserContextProvider = ({ children }) => {
   
 
   const [restaurantOrders,setRestaurantOrders] = useState([]);
-  
-  //this is for customer ;
+
   const fetchOrders = async () => {
-  try {
-    const response = await axios.get(`/api/getAllOrders/${userData.User_id}`);
-    console.log(response.data);
-
-    const current = [];
-    const past = [];
-
-    response.data.forEach(order => {
-      console.log("Here in looping");
-      if (order.status === 'Placed' || order.status === 'Preparing' ||order.status === 'Out for delivery') {
-        console.log("Pushing into current");
-        current.push(order);
-      } else if (order.Order_Status === 'Delivered') {
-        console.log("pushing into past");
-        past.push(order);
-      }
-    });
-    setOrders(response.data);
-    setCurrentOrders(current);
-    setPastOrders(past);
-  } catch (err) {
-    console.log('Error fetching customer orders');
-  }
-};
-
-useEffect(() => {
-  if (userData.User_id !== 0 && userData.role === "Customer") {
-    fetchOrders();
-    const interval = setInterval(() => {
+    try {
+      const response = await axios.get(`/api/getAllOrders/${userData.User_id}`);
+  
+      const current = [];
+      const past = [];
+  
+      response.data.forEach(order => {
+        // Check order status
+        if (
+          order.status === 'Placed' ||
+          order.status === 'Preparing' ||
+          order.status === 'Out for delivery'
+        ) {
+          current.push(order);
+        } else if (order.status === 'Delivered') {
+          past.push(order);
+        }
+      });
+  
+      current.sort((a, b) => new Date(b.order_date) - new Date(a.order_date)); // Sort in descending order (most recent first)
+      past.sort((a, b) => new Date(b.order_date) - new Date(a.order_date)); // Sort in descending order (most recent first)
+  
+      setOrders(response.data);
+      setCurrentOrders(current);
+      setPastOrders(past);
+  
+    } catch (err) {
+      console.log('Error fetching customer orders');
+    }
+  };
+  
+  
+  useEffect(() => {
+    if (userData.User_id !== 0 && userData.role === "Customer") {
       fetchOrders();
-    }, 30000); //30 seconds 
-    return () => clearInterval(interval); 
-  }
-}, [userData.User_id]);
+      const interval = setInterval(() => {
+        fetchOrders();
+      }, 30000); // Refresh orders every 30 seconds
+      return () => clearInterval(interval); 
+    }
+  }, [userData.User_id]);
   
   useEffect(() => {
     console.log("Current orders updated ",currentOrders);
@@ -212,7 +218,8 @@ useEffect(() => {
         fetchOrders,
         getRestaurantOrders,
         restaurantOrders,
-        setRestaurantOrders
+        setRestaurantOrders,
+        setPastOrders
       }}
     >
       {children}

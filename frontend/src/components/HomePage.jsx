@@ -3,35 +3,9 @@ import { FaUtensils, FaStar, FaClock } from 'react-icons/fa';
 import TopRestaurants from './TopRestaurants';
 import Cart from './Cart';
 import { useUserContext } from '../contexts/userContext';
-import axios from 'axios';
-import RatingPopup from './RateOrder';
 
 const HomePage = () => {
   const { loggedIn, userData } = useUserContext();
-  const [lastOrder, setLastOrder] = useState(null);
-  const [showRatePopup, setShowRatePopup] = useState(false);
-
-  const fetchLastOrder = async () => {
-    try {
-      const response = await axios.get(`/api/getLastOrder/${userData.User_id}`);
-      if (response.data && response.data.review_id === null) { 
-        setLastOrder(response.data);
-        setShowRatePopup(true); 
-      } else {
-        setLastOrder(null);  
-        setShowRatePopup(false); 
-      }
-    } catch (err) {
-      console.error('Error fetching last order:', err);
-    }
-  };
-  
-
-  useEffect(() => {
-    if (loggedIn && userData?.role === 'Customer' ) {
-      fetchLastOrder();
-    }
-  }, [loggedIn]);
 
   // Close the pop-up after rating
   const handleRateOrderClose = () => {
@@ -85,12 +59,6 @@ const HomePage = () => {
 
       {loggedIn && <Cart />}
 
-      {showRatePopup && lastOrder !== null && (
-        <RatingPopup 
-          order={lastOrder} 
-          onClose={handleRateOrderClose} 
-        />
-      )}
 
     </>
   );

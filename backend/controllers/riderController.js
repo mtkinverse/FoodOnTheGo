@@ -1,5 +1,25 @@
 const db = require('../db');
 
+
+module.exports.getMyTips = (req, res) => {
+    const rider_id = req.params.id;
+      const q = 'SELECT tips FROM rider_tips WHERE rider_id = ? AND DATE(tip_date) = CURRENT_DATE';
+  
+    db.query(q, [rider_id], (err, result) => {
+      if (err) {
+        console.log('Error fetching tips:', err); 
+        return res.status(400).json({ message: 'Error fetching tips' });
+      }
+  
+      if (result.length === 0) {
+        return res.status(200).json({ tips: 0 });
+      }
+  
+      console.log('Result of rider tips:', result);
+      return res.status(200).json({ tips: result[0].tips });
+    });
+  };
+  
 module.exports.updateStatus =(req,res) => {
     console.log('updating rider status ',req.body.status);
     const q = 'UPDATE delivery_rider set available = ? where rider_id = ?';

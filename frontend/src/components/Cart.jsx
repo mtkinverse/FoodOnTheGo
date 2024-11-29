@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useCartContext } from "../contexts/cartContext";
-import { FaShoppingCart, FaPlus, FaMinus, FaTrash } from "react-icons/fa";
+import { FaShoppingCart, FaPlus, FaMinus, FaTrash, FaBiking} from "react-icons/fa";
 import { Banknote } from "lucide-react";
 
 const Cart = () => {
   const { cart, cartCount, handleIncrement, handleDecrement, handleRemove, 
           placeOrder, promo, setPromo,getSubTotal,getTotalAmount,applyPromoCode } = useCartContext();
+  
   const [location, setLocation] = useState({
     Address: "",
     NearbyPoint: "",
@@ -13,13 +14,14 @@ const Cart = () => {
   const [orderPopUp, setOrderPopUp] = useState(false);
   const [cartPopup, setCartPopup] = useState(false);
   
+  const [tipAmount,setTipAmount] = useState(0);
   const handleApplyPromoCode = () =>{
       applyPromoCode();
   }
 
   const handleOrderPlacment = (e) => {
     e.preventDefault();
-    placeOrder(location.Address, location.NearbyPoint);
+    placeOrder(location.Address, location.NearbyPoint,tipAmount);
     setOrderPopUp(false);
     setLocation({
       Address: "",
@@ -182,6 +184,7 @@ const Cart = () => {
             <span className="text-lg font-bold text-purple-900">Rs.150</span>
           </div>
           <hr />
+
           <div className="flex justify-between">
             <span className="text-xl font-bold text-purple-900">Total:</span>
             <span className="text-xl font-bold text-purple-900">
@@ -250,6 +253,50 @@ const Cart = () => {
                 />
               </div>
 
+               {/* Tip Options */}
+        <div className="mb-6">
+          <label className="block text-gray-700 font-bold mb-2">
+            Add a Tip for Your Rider
+          </label>
+          <div className="flex gap-4 items-center justify-between">
+            {/* Tip Option 50 */}
+            <button
+              type="button"
+              onClick={() => setTipAmount(50)}
+              className="flex items-center gap-2 bg-purple-100 hover:bg-purple-200 rounded-lg py-2 px-4 text-purple-600"
+            >
+              <FaBiking className="text-purple-600" />
+              Rs.50
+            </button>
+            {/* Tip Option 100 */}
+            <button
+              type="button"
+              onClick={() => setTipAmount(100)}
+              className="flex items-center gap-2 bg-purple-100 hover:bg-purple-200 rounded-lg py-2 px-4 text-purple-600"
+            >
+              <FaBiking className="text-purple-600" />
+              Rs.100
+            </button>
+            {/* Tip Option 150 */}
+            <button
+              type="button"
+              onClick={() => setTipAmount(150)}
+              className="flex items-center gap-2 bg-purple-100 hover:bg-purple-200 rounded-lg py-2 px-4 text-purple-600"
+            >
+              <FaBiking className="text-purple-600" />
+              Rs.150
+            </button>
+          </div>
+          {/* Custom Tip Input */}
+          <input
+            type="number"
+            placeholder="Custom Tip Amount"
+            className="mt-3 w-full border rounded-lg py-2 px-3 text-gray-700"
+            onChange={(e) => setTipAmount(e.target.value)}
+            value={tipAmount || ''}
+          />
+          <p className="text-sm text-gray-500 mt-2">Your rider will receive this tip by us, in hand.</p>
+        </div>
 
               <div className="mb-6">
                 <label className="block text-gray-700 font-bold mb-2">

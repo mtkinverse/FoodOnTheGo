@@ -20,7 +20,7 @@ const RestaurantMenu = () => {
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("Popular");
   const [searchTerm, setSearchTerm] = useState("");
-  
+
   useEffect(() => {
     const fetchRestaurantData = async () => {
       try {
@@ -28,15 +28,15 @@ const RestaurantMenu = () => {
           `/api/getRestaurant/${restaurant_id}`
         );
         setRestaurant(restaurantResponse.data);
-  
+
         const menuResponse = await axios.get(`/api/menu/${restaurant_id}`);
         setMenuItems(menuResponse.data);
-  
+
         const dealsResponse = await axios.get(
           `/api/getPromos/${restaurant_id}`
         );
         setDeals(dealsResponse.data);
-  
+
         const uniqueCategories = [
           "Popular",
           ...new Set(menuResponse.data.map((item) => item.Cuisine)),
@@ -46,9 +46,9 @@ const RestaurantMenu = () => {
         console.error("Error fetching data:", error);
       }
     };
-  
+
     fetchRestaurantData();
-  
+
     const menuInterval = setInterval(async () => {
       try {
         const menuResponse = await axios.get(`/api/menu/${restaurant_id}`);
@@ -57,7 +57,7 @@ const RestaurantMenu = () => {
         console.error("Error refetching menu items:", error);
       }
     }, 30000);
-  
+
     const promosInterval = setInterval(async () => {
       try {
         const dealsResponse = await axios.get(
@@ -68,20 +68,20 @@ const RestaurantMenu = () => {
         console.error("Error refetching promos:", error);
       }
     }, 180000);
-  
+
     return () => {
       clearInterval(menuInterval);
       clearInterval(promosInterval);
     };
   }, [restaurant_id]);
-  
+
   const filteredItems = menuItems.filter(
     (item) =>
       (selectedCategory === "Popular" || item.Cuisine === selectedCategory) &&
       (searchTerm.trim() === "" ||
         item.Dish_Name.toLowerCase().includes(searchTerm.toLowerCase()))
   );
-  
+
   const groupedCategories = Object.fromEntries(
     Object.entries(
       filteredItems.reduce((acc, item) => {
@@ -92,8 +92,7 @@ const RestaurantMenu = () => {
         acc[category].push(item);
         return acc;
       }, {})
-    )
-    .sort(([a], [b]) => {
+    ).sort(([a], [b]) => {
       if (a === "Other") return 1;
       if (b === "Other") return -1;
       return a.localeCompare(b);
@@ -120,7 +119,9 @@ const RestaurantMenu = () => {
           <h1 className="text-lg sm:text-xl font-bold mb-1 truncate">
             {restaurant.Restaurant_Name}
           </h1>
-          <div className="text-xs sm:text-sm text-purple-500 mb-1 truncate">{restaurant.Address}</div>
+          <div className="text-xs sm:text-sm text-purple-500 mb-1 truncate">
+            {restaurant.Address}
+          </div>
           <div className="flex items-center gap-2 text-xs sm:text-sm">
             <div className="flex items-center">
               <FaStar className="text-yellow-400 w-3 h-3 mr-1" />
@@ -173,7 +174,9 @@ const RestaurantMenu = () => {
       {/* Available Deals */}
       {Array.isArray(deals) && deals.length > 0 && (
         <div className="mb-6">
-          <h2 className="text-lg font-bold mb-3 text-gray-800">Available Deals</h2>
+          <h2 className="text-lg font-bold mb-3 text-gray-800">
+            Available Deals
+          </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {deals.map((deal, index) => (
               <div
@@ -189,7 +192,8 @@ const RestaurantMenu = () => {
                     Code: <span className="font-bold">{deal.promo_code}</span>
                   </div>
                   <div className="text-xs text-gray-700">
-                    Min. Order: <span className="font-medium">Rs. {deal.Min_Total}</span>
+                    Min. Order:{" "}
+                    <span className="font-medium">Rs. {deal.Min_Total}</span>
                   </div>
                 </div>
               </div>
@@ -209,16 +213,30 @@ const RestaurantMenu = () => {
                 className="flex justify-between items-start bg-white p-3 rounded-lg border border-gray-100 hover:border-purple-100 transition-colors"
               >
                 <div className="flex-1 min-w-0 pr-2">
-                  <h3 className="font-semibold text-sm mb-1 truncate">{item.Dish_Name}</h3>
+                  <h3 className="font-semibold text-sm mb-1 truncate">
+                    {item.Dish_Name}
+                  </h3>
                   <div className="flex items-center gap-2">
-                    <span className="text-gray-400 line-through text-xs">Rs. {item.Item_Price}</span>
-                    {restaurant.discount_id && restaurant.discount_value > 0 && (
+                    {item.Item_Price > (item.discounted_price || 0) && (
+                      <span className="text-gray-400 line-through text-xs">
+                        Rs. {item.Item_Price}
+                      </span>
+                    )}
+
+                    {/* Display discounted price if it exists */}
+                    {item.discounted_price &&
+                    item.discounted_price < item.Item_Price ? (
                       <span className="text-purple-500 font-semibold text-xs">
-                        Rs. {(item.Item_Price * (1 - restaurant.discount_value / 100)).toFixed(2)}
+                        Rs. {item.discounted_price.toFixed(2)}
+                      </span>
+                    ) : (
+                      <span className="text-purple-500 font-semibold text-xs">
+                        Rs. {item.Item_Price}
                       </span>
                     )}
                   </div>
                 </div>
+
                 <div className="flex items-center gap-2">
                   {item.Item_image && (
                     <img
@@ -243,7 +261,7 @@ const RestaurantMenu = () => {
 
       {/* Cart Component */}
       {loggedIn && (
-        <div className="fixed bottom-4 right-4 z-20">
+        <div className="fixed bottom-4 right-8 z-0">
           <Cart />
         </div>
       )}
@@ -252,4 +270,3 @@ const RestaurantMenu = () => {
 };
 
 export default RestaurantMenu;
-

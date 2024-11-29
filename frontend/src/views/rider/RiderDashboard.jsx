@@ -13,6 +13,8 @@ const RiderDashboard = () => {
   const [riderHistory, setHistory] = useState([]);
   const [pendingOrders, setPending] = useState([]);
   const [restaurantInfo, setRestaurantInfo] = useState([]);
+  const [tips,setTips] = useState(0);
+
   const navigate = useNavigate();
   const {setAlert} = useAlertContext();
 
@@ -34,6 +36,15 @@ const RiderDashboard = () => {
     }
   };
   
+  const getTips = async () => {
+    try {
+      const response = await axios.get(`/api/getTips/${userData.User_id}`);
+      if(response.data) setTips(response.data.tips);
+    } catch (err) {
+      console.log('Error fetching tips:', err);
+    }
+  };
+
   useEffect(() => {
 
   },[userData.status]);
@@ -45,6 +56,13 @@ const RiderDashboard = () => {
     if (userData?.User_id) {
       getRestaurantInfo();
       fetchHistory();
+      getTips();
+  
+      const intervalId = setInterval(() => {
+        getTips();
+      }, 500000);
+    
+      return () => clearInterval(intervalId);
     }
   }, [loggedIn, userData]);
 
@@ -147,23 +165,29 @@ const RiderDashboard = () => {
   
 
   return (
-    <div className="min-h-screen bg-purple-100">
+    <div className="min-h-screen bg-purple-50">
   <div className="container mx-auto px-4 py-8">
     <div className="flex items-center justify-between mb-8">
       <h1 className="text-3xl font-bold text-indigo-800">Rider Dashboard</h1>
-      <button 
-        className={`flex items-center px-4 py-2 rounded text-white text-base 
-          ${userData.status ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'}
-          transition duration-300 ease-in-out`}
-        onClick={updateAvailabilityStatus}
-      >
-        {/* Show icon based on availability status */}
-        {userData.status ? (
-          <><FaTimesCircle className="mr-2 text-xl" /> Mark Yourself Unavailable</>
-        ) : (
-          <><FaCheckCircle className="mr-2 text-xl" /> Mark Yourself Available</>
-        )}
-      </button>
+      <button
+  className={`flex items-center justify-center gap-2 px-6 py-3 rounded-full text-base font-medium transition duration-300 ease-in-out 
+    ${userData.status ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'} 
+    focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
+  onClick={updateAvailabilityStatus}
+>
+  {/* Show icon based on availability status */}
+  {userData.status ? (
+    <>
+      <FaTimesCircle className="text-xl" />
+      <span className="hidden sm:inline">Mark Yourself Unavailable</span>
+    </>
+  ) : (
+    <>
+      <FaCheckCircle className="text-xl" />
+      <span className="hidden sm:inline">Mark Yourself Available</span>
+    </>
+  )}
+</button>
     </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
@@ -199,8 +223,8 @@ const RiderDashboard = () => {
               <FaDollarSign className="text-yellow-600 text-2xl" />
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-gray-700">Today's Earnings</h2>
-              <p className="text-xl font-bold text-yellow-600">$45.00</p>
+              <h2 className="text-lg font-semibold text-gray-700">Today's Tips</h2>
+              <p className="text-xl font-bold text-yellow-600">Rs.{tips}</p>
             </div>
           </div>
         </div>
@@ -335,10 +359,10 @@ const RiderDashboard = () => {
                 />
               </div>
               <button
-                className="w-full bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition duration-300"
+                className="w-full bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700 transition duration-300"
                 onClick={e => { e.preventDefault(); analyzeOrder({}); setOrderDetailsPopup(false);}}
               >
-                done
+                close
               </button>
               <button
                 className="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition duration-300"

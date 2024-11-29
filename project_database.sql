@@ -107,6 +107,15 @@ ALTER TABLE Delivery_Rider MODIFY Phone_no VARCHAR(20) UNIQUE;
 ALTER TABLE Delivery_Rider MODIFY BikeNo VARCHAR(20) UNIQUE;
 
 
+drop table Rider_Tips;
+CREATE TABLE Rider_Tips (
+    rider_id INT NOT NULL,
+    tips INT DEFAULT 0,    
+    tip_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (rider_id, tip_date)
+);
+
+ALTER TABLE Rider_Tips ADD CONSTRAINT rid_fk FOREIGN KEY(rider_id) REFERENCES delivery_rider(rider_id);
 
 CREATE TABLE Orders (
     Customer_id INT NOT NULL,
@@ -125,6 +134,7 @@ ALTER TABLE Orders ADD COLUMN status_updated_at DATETIME DEFAULT CURRENT_TIMESTA
 ALTER TABLE Orders ADD COLUMN promo_id INT DEFAULT NULL;
 ALTER TABLE Orders ADD CONSTRAINT promo_fk foreign key(promo_id) REFERENCES promos(promo_id) ON DELETE SET NULL;
 ALTER TABLE Orders ADD COLUMN total_amount FLOAT DEFAULT 0;
+ALTER TABLE Orders ADD COLUMN rider_tip INT DEFAULT 0;
 
 CREATE TABLE Ordered_Items (
     Order_id INT default NULL,

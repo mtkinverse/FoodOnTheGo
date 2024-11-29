@@ -160,7 +160,7 @@ const CartContextProvider = ({ children }) => {
     setCartCount(cart.reduce((count, item) => count + item.quantity, 0));
   }, [cart, userData?.User_id]);
 
-  const placeOrder = async (addressRecv, pointNear) => {
+  const placeOrder = async (addressRecv, pointNear ,riderTip) => {
     let items = [];
   
     cart.forEach((ele) => {
@@ -173,7 +173,7 @@ const CartContextProvider = ({ children }) => {
       });
     });
 
-    const total = getTotalAmount();
+    const total = getTotalAmount() + riderTip;
     const req = {
       Customer_id: userData.User_id,
       Menu_Id: cart[0].Menu_id,
@@ -181,7 +181,8 @@ const CartContextProvider = ({ children }) => {
       NearbyPoint: pointNear,
       items: items,
       total_amount: total, 
-      promo_id: promo?.promo_id ? promo?.promo_id : null
+      promo_id: promo?.promo_id ? promo?.promo_id : null,
+      riderTip : riderTip
     };
   
     try {

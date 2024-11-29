@@ -2,17 +2,33 @@ import React, { useState } from 'react';
 import { StarIcon } from '@heroicons/react/24/solid';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import axios from 'axios';
-
+import { useAlertContext } from '../contexts/alertContext';
+import { useUserContext } from '../contexts/userContext';
 const RatingPopup = ({ order, onClose }) => {
+  const {setPastOrders,pastOrders} = useUserContext();
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
   const [description, setDescription] = useState('');
   const [message, setMessage] = useState('');
-
+  const {setAlert} = useAlertContext();
+  
   const handleSubmit = async () => {
       try{
-          await axios.post(`/api/reviewOrder/${order[0].order_id}`, {rating,description});
-          setMessage('Thankyou for your feedback');
+        console.log('sending submit review',order.order_id,rating,description);
+        const response = await axios.post(`/api/reviewOrder/${order.order_id}`, { rating, description });
+        const newReviewId = response.data.review_id; 
+    
+        setPastOrders((prevOrders) => {
+          const updatedOrders = prevOrders.map((o) => {
+            if (o.order_id === order.order_id) {
+              return { ...o, review_id: newReviewId }; 
+            }
+            return o;
+          });
+          return updatedOrders; 
+        });
+          setAlert({message: 'Thankyou for your review!!',type:'success'});
+        
           onClose();
       }
       catch(err){
@@ -21,7 +37,7 @@ const RatingPopup = ({ order, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50 p-4">
+    <div className="fixed inset-0 bg-white backdrop-blur-sm flex justify-center items-center z-50 p-4">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all">
         {/* Header */}
         <div className="bg-gradient-to-r from-purple-600 to-purple-800 text-white p-6 relative">
@@ -33,7 +49,7 @@ const RatingPopup = ({ order, onClose }) => {
           </button>
           <h2 className="text-2xl font-bold">Rate Your Experience</h2>
           <p className="text-sm text-purple-100 mt-2">
-            Order ID: {order[0].order_id} | {order[0].restaurant_name}
+            Order ID: {order.order_id} | {order.restaurant_name}
           </p>
         </div>
 
