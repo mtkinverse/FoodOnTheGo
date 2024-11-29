@@ -39,49 +39,56 @@ module.exports.getDeals = (req, res) => {
         });
     });
 };
-
 module.exports.AddDiscount = (req, res) => {
     console.log('Here to add discount');
     const location_id = req.params.id;
     const { discount_value, start_date, end_date } = req.body;
-    console.log(discount_value, start_date, end_date);
 
-    const q = 'SELECT restaurant_id from restaurant where location_id = ?';
-    db.query(q, [location_id], (err, result) => {
-        if (err) {
-            return res.status(500).json({ message: 'No such location id found' });
-        }
-
-        if (result.length === 0) {
-            return res.status(404).json({ message: 'No restaurant found for the given location id' });
+    const queryRestaurant = 'SELECT restaurant_id FROM restaurant WHERE location_id = ?';
+    db.query(queryRestaurant, [location_id], (err, result) => {
+        if (err || result.length === 0) {
+            const message = err ? 'Error fetching restaurant data' : 'No restaurant found for the given location ID';
+            return res.status(404).json({ message });
         }
 
         const restaurant_id = result[0].restaurant_id;
-        const qqq = 'SELECT * from discount where restaurant_id = ? and end_date >= CURRENT_TIMESTAMP';
-        db.query(qqq, [restaurant_id], (err2, result2) => {
+
+        const queryActiveDiscount = `
+            SELECT * FROM discount 
+            WHERE restaurant_id = ? AND end_date >= CURRENT_TIMESTAMP
+        `;
+        db.query(queryActiveDiscount, [restaurant_id], (err2, activeDiscounts) => {
             if (err2) {
-                return res.status(500).json({ message: err2.message });
+                console.error('Error checking active discounts:', err2);
+                return res.status(500).json({ message: 'Error checking active discounts' });
             }
 
-            if (result2.length > 0) {
-                return res.status(200).json({ message: 'Only one flat active discount is allowed' });
+            if (activeDiscounts.length > 0) {
+                return res.status(409).json({
+                    message: 'Only one flat active discount is allowed for this restaurant'
+                });
             }
 
-            console.log(restaurant_id);
-            const qq = `
+            const insertDiscount = `
                 INSERT INTO discount (restaurant_id, discount_value, start_date, end_date)
-                VALUES (?, ?, ?, ?); 
+                VALUES (?, ?, ?, ?);
             `;
-            db.query(qq, [restaurant_id, discount_value, start_date, end_date], (err1, result1) => {
-                if (err1) {
+            db.query(insertDiscount, [restaurant_id, discount_value, start_date, end_date], (err3, result1) => {
+                if (err3) {
+                    console.error('Error adding discount:', err3);
                     return res.status(500).json({ message: 'Error adding discount' });
                 }
-                console.log('Discount added');
-                return res.status(200).json({ success: true, message: 'Discount added successfully' });
+
+                console.log('Discount added successfully');
+                return res.status(201).json({
+                    success: true,
+                    message: 'Discount added successfully',
+                });
             });
         });
     });
 };
+
 
 module.exports.AddPromo = (req,res) => {
     const location_id = req.params.id;

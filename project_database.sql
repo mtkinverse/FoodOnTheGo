@@ -78,7 +78,7 @@ CREATE TABLE Menu_Items (
     Menu_id INT NOT NULL
 );
 ALTER TABLE Menu_Items AUTO_INCREMENT = 18029;
-
+ALTER TABLE MEnu_Items ADD COLUMN Category VARCHAR(50);
 
 
 CREATE TABLE DeliveryAddress(

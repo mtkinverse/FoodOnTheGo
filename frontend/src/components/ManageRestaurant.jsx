@@ -30,6 +30,7 @@ const ManageRestaurant = ({
     name: "",
     price: "",
     cuisine: "",
+    category: "other", //if not specified
     image: null,
   });
   const [addItemPopupOpen, setAddItemPopupOpen] = useState(false);
@@ -344,6 +345,7 @@ const ManageRestaurant = ({
     formData.append("name", menuItem.name);
     formData.append("price", menuItem.price);
     formData.append("cuisine", menuItem.cuisine);
+    formData.append("category",menuItem.category);
     if (menuItem.image) {
       console.log("image appened");
       formData.append("image", menuItem.image);
@@ -823,7 +825,24 @@ const ManageRestaurant = ({
                       required
                     />
                   </div>
-
+                  
+                  <div className="mb-4">
+                    <label
+                      htmlFor="category"
+                      className="block text-gray-700 font-bold mb-2"
+                    >
+                      Category:
+                    </label>
+                    <input
+                      type="text"
+                      id="category"
+                      name="category"
+                      className="w-full border rounded-lg py-2 px-3 text-gray-700"
+                      value={menuItem.category}
+                      onChange={handleMenuItemChange}
+                      required
+                    />
+                  </div>
                   <div className="mb-4">
                     <label
                       htmlFor="image"

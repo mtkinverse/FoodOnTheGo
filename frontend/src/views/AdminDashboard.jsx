@@ -63,38 +63,42 @@ const DealsPopup = ({ setDealPopup }) => {
   const handleDiscountSubmit = async (e) => {
     e.preventDefault();
     try {
-      console.log('sending request for ',newDiscount);
-      const response = await axios.post(`/api/addDiscount/${userData.Location_id}`, newDiscount);
-      if (response.status === 200) {
-        if(response.data){
-          setAlert({
-            message: 'New discount added',
-            type: 'success'
-          });
-        }
-        else{
-          setAlert({
-            message: 'You can only have one active flat discount',
-            type: 'success'
-          });
-        }
-        setDealPopup(false);
-        setNewDiscount({
-          discount_value: '',
-          start_date: '',
-          end_date:'',
-        });
-      }
-    }
-    catch (err) {
-       console.log(err.response)
-      setAlert({
-        message: 'Error adding discount',
-        type: 'failure'
-      });
-    }
+        console.log('Sending request for', newDiscount);
 
-  }
+        const response = await axios.post(
+            `/api/addDiscount/${userData.Location_id}`,
+            newDiscount
+        );
+
+        if (response.status === 201 || response.status === 200) {
+            setAlert({
+                message: 'New discount added successfully!',
+                type: 'success',
+            });
+
+            setDealPopup(false);
+            setNewDiscount({
+                discount_value: '',
+                start_date: '',
+                end_date: '',
+            });
+        } else if (response.status === 409) {
+            setAlert({
+                message: response.data.message || 'You can only have one active flat discount.',
+                type: 'failure',
+            });
+        }
+    } catch (err) {
+        console.error(err.response);
+
+        setAlert({
+            message:
+                err.response?.data?.message || 'An error occurred while adding the discount. Please try again later.',
+            type: 'failure',
+        });
+    }
+};
+
 
   return (
     <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-50">
@@ -357,7 +361,7 @@ const AdminDashboard = () => {
   
   const [availablePromos, setAvailablePromos] = useState([]);
   const [availableDiscount,setAvailableDiscount]=  useState([]);
-  const [showDealsPop, setShowDeals] = useState([]);
+  const [showDealsPop, setShowDeals] = useState(false);
 
   const showDeals = () => {
     axios
@@ -489,7 +493,7 @@ const AdminDashboard = () => {
   
  
   return (
-    <div className="min-h-screen bg-purple-100 py-8">
+    <div className="min-h-screen bg-purple-50 py-8">
       <div className="container mx-auto px-4">
         <header className="mb-8 text-center">
           <h1 className="text-3xl font-bold text-gray-800 mb-2">Restaurant Admin Dashboard</h1>
@@ -801,7 +805,7 @@ const AdminDashboard = () => {
               {/* Display Promos */}
               {availablePromos.length > 0 && (
                 <div>
-                  <h3 className="text-xl font-semibold mb-2">Available Promos</h3>
+                  <h3 className="text-xl font-semibold mb-2">Active Promos</h3>
                   {availablePromos.map((promo) => (
                     <div key={promo.promo_id} className="flex justify-between items-center p-4 border-b">
                       <div>
@@ -826,7 +830,7 @@ const AdminDashboard = () => {
               {/* Display Discounts */}
               {availableDiscount.length > 0 && (
                 <div>
-                  <h3 className="text-xl font-semibold mb-2">Available Discounts</h3>
+                  <h3 className="text-xl font-semibold mb-2">Active Discount</h3>
                   {availableDiscount.map((discount) => (
                     <div key={discount.discount_id} className="flex justify-between items-center p-4 border-b">
                       <div>

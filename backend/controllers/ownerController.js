@@ -136,7 +136,7 @@ module.exports.addMenuItem = (req, res) => {
     console.log('hit add item');
     const restaurant_id = req.params.id;
     console.log(req.body);
-    const { name, price, cuisine, menu_id } = req.body;
+    const { name, price, cuisine, category,menu_id } = req.body;
     const Item_image = req.file ? `http://localhost:8800/images/${restaurant_id}/${req.file.filename}` : null; // Handle file upload
 
     if (!Item_image) {
@@ -144,9 +144,9 @@ module.exports.addMenuItem = (req, res) => {
         return res.status(400).json({ error: 'Image file is required' });
     }
 
-    const insert_query = 'INSERT INTO menu_items (Dish_Name, Item_Price, Item_image, Cuisine, Menu_id) VALUES (?, ?, ?, ?, ?)';
+    const insert_query = 'INSERT INTO menu_items (Dish_Name, Item_Price, Item_image, Cuisine,category, Menu_id) VALUES (?, ?, ?, ?,?, ?)';
 
-    db.query(insert_query, [name, price, Item_image, cuisine, menu_id], (err, menuResult) => {
+    db.query(insert_query, [name, price, Item_image, cuisine,category, menu_id], (err, menuResult) => {
         if (err) {
             return res.status(500).json({ error: 'Failed to add menu item', details: err.message });
         }
