@@ -132,6 +132,8 @@ CREATE TABLE Ordered_Items (
     quantity FLOAT NOT NULL
 );
 
+ALTER TABLE Ordered_Items ADD COLUMN price FLOAT; -- to manage the discounted price!
+
 CREATE TABLE Order_Review(
     Review_id INT AUTO_INCREMENT PRIMARY KEY,
     Review_Description VARCHAR(100),
@@ -407,5 +409,28 @@ delete from promos;
 select * from locations;
 select * from restaurant;
 delete from restaurant;
-
+select * from discount;
 select * from Promos;
+
+
+ SELECT 
+        o.order_id,
+        o.order_status,
+        d.address,
+        r.restaurant_name,
+        o.customer_id,
+        DATE(o.order_time) AS order_date, 
+        o.total_amount,
+        TIME(o.order_time) AS order_time,
+        i.dish_name,  -- Dish name from menu_items
+        oo.item_id,
+        oo.quantity,
+        oo.price,  -- Price from ordered_items
+        oo.price * oo.quantity AS sub_total -- Calculate sub_total using item_price from ordered_items
+      FROM orders o 
+      JOIN deliveryaddress d ON o.address_id = d.address_id
+      JOIN restaurant r ON o.restaurant_id = r.restaurant_id
+      JOIN ordered_items oo ON o.order_id = oo.order_id        
+      JOIN menu_items i ON oo.item_id = i.item_id  -- Join with menu_items to get dish_name
+      WHERE o.customer_id = 99196
+      ORDER BY order_date DESC;

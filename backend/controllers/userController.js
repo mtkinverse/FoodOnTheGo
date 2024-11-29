@@ -188,31 +188,64 @@ module.exports.logoutUser = (req,res) =>{
 }
 
 
-
 module.exports.getMenu = (req, res) => {
-    console.log('menu hit');
+    console.log('Menu endpoint hit');
     const restaurant_id = req.params.id;
+
+    // Query to fetch the menu_id for the given restaurant
     const menu_query = 'SELECT menu_id FROM restaurant WHERE restaurant_id = ?';
 
     db.query(menu_query, [restaurant_id], (err, result) => {
         if (err) {
+            console.error('Error fetching menu ID:', err.message);
             return res.status(400).json({ message: 'Database query failed' });
         }
 
         if (result.length === 0) {
+            console.warn('No restaurant found for ID:', restaurant_id);
             return res.status(404).json({ message: 'Restaurant not found' });
         }
 
         const menu_id = result[0].menu_id;
 
-        const items_query = 'SELECT * FROM menu_items WHERE menu_id = ?';
+        const discount_query = `
+            SELECT discount_value 
+            FROM discount 
+            WHERE restaurant_id = ? 
+              AND end_date >= CURRENT_TIMESTAMP
+        `;
 
-        db.query(items_query, [menu_id], (err, items) => {
-            if (err) {
-                return res.status(400).json({ message: 'Failed to fetch menu items' });
+        db.query(discount_query, [restaurant_id], (err2, discountResult) => {
+            if (err2) {
+                console.error('Error fetching discount:', err2.message);
+                return res.status(400).json({ message: 'Failed to fetch discount information' });
             }
-           console.log('sending items',items);
-            return res.status(200).json(items);
+
+            const discount_value = discountResult.length > 0 ? discountResult[0].discount_value : 0;
+            console.log('Discount value:', discount_value);
+
+            const items_query = 'SELECT * FROM menu_items WHERE menu_id = ?';
+
+            db.query(items_query, [menu_id], (err3, items) => {
+                if (err3) {
+                    console.error('Error fetching menu items:', err3.message);
+                    return res.status(400).json({ message: 'Failed to fetch menu items' });
+                }
+
+                const itemsWithDiscount = items.map(item => {
+                    const discounted_price = discount_value > 0
+                        ? (item.Item_Price * (1 - discount_value / 100)).toFixed(2)
+                        : item.Item_Price;
+                    
+                    return {
+                        ...item,
+                        discounted_price: parseFloat(discounted_price),
+                    };
+                });
+
+                console.log('Sending items with discount:', itemsWithDiscount);
+                return res.status(200).json(itemsWithDiscount);
+            });
         });
     });
 };

@@ -157,53 +157,59 @@ const RestaurantMenu = () => {
         </div>
       </div>
 
-      {/* Menu Items */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        {filteredItems.map((item, index) => (
-          <div
-            key={index}
-            className="flex justify-between items-center bg-white p-4 rounded-lg border border-gray-100 hover:border-purple-100 transition-colors"
-          >
-            <div className="flex-1 min-w-0 mr-4">
-              <h3 className="font-semibold text-lg mb-1 truncate">
-                {item.Dish_Name}
-              </h3>
-              <div className="flex items-center gap-2">
-                {/* Original price with line-through */}
-                <span className="text-gray-400 line-through text-sm">
-                  Rs. {item.Item_Price}
-                </span>
+     {/* Menu Items */}
+<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+  {filteredItems.map((item, index) => (
+    <div
+      key={index}
+      className="flex justify-between items-center bg-white p-4 rounded-lg border border-gray-100 hover:border-purple-100 transition-colors"
+    >
+      <div className="flex-1 min-w-0 mr-4">
+        {/* Dish Name */}
+        <h3 className="font-semibold text-lg mb-1 truncate">{item.Dish_Name}</h3>
 
-                {/* Discounted price if discount is applied */}
-                {restaurant.discount_id && restaurant.discount_value > 0 && (
-                  <span className="text-purple-500 font-semibold">
-                    Rs.{" "}
-                    {(
-                      item.Item_Price *
-                      (1 - restaurant.discount_value / 100)
-                    ).toFixed(2)}
-                  </span>
-                )}
-              </div>
-            </div>
-            <div className="flex items-center gap-4">
-              {item.Item_image && (
-                <img
-                  src={item.Item_image}
-                  alt={item.Dish_Name}
-                  className="w-20 h-20 md:w-24 md:h-24 object-cover rounded-lg"
-                />
-              )}
-              <button
-                className="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-white border border-gray-200 rounded-full hover:border-purple-500 transition-colors group"
-                aria-label={`Add ${item.Dish_Name} to cart`}
-                onClick={() => handleAddToCart(item)}
-              >
-                <FaPlus className="w-4 h-4 text-purple-500 group-hover:scale-110 transition-transform" />
-              </button>
-            </div>
-          </div>
-        ))}
+        <div className="flex items-center gap-2">
+          {/* Original Price with line-through (if discount applied) */}
+          {item.discounted_price && item.discounted_price < item.Item_Price ? (
+            <>
+              <span className="text-gray-400 line-through text-sm">
+                Rs. {item.Item_Price}
+              </span>
+              {/* Discounted Price */}
+              <span className="text-purple-500 font-semibold">
+                Rs. {item.discounted_price}
+              </span>
+            </>
+          ) : (
+            /* Show only original price if no discount */
+            <span className="text-purple-500 font-semibold">
+              Rs. {item.Item_Price}
+            </span>
+          )}
+        </div>
+      </div>
+      <div className="flex items-center gap-4">
+        {/* Item Image */}
+        {item.Item_image && (
+          <img
+            src={item.Item_image}
+            alt={item.Dish_Name}
+            className="w-20 h-20 md:w-24 md:h-24 object-cover rounded-lg"
+          />
+        )}
+        {/* Add to Cart Button */}
+        <button
+          className="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-white border border-gray-200 rounded-full hover:border-purple-500 transition-colors group"
+          aria-label={`Add ${item.Dish_Name} to cart`}
+          onClick={() => handleAddToCart(item)}
+        >
+          <FaPlus className="w-4 h-4 text-purple-500 group-hover:scale-110 transition-transform" />
+        </button>
+      </div>
+    </div>
+  ))}
+
+
 
         {/* Cart Component */}
         {loggedIn && (

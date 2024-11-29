@@ -1,5 +1,45 @@
 const db = require('../db');
 
+module.exports.getDeals = (req, res) => {
+    const location_id = req.params.id;
+
+    const restaurantQuery = 'SELECT restaurant_id FROM restaurant WHERE location_id = ?';
+    console.log('get deals hit',location_id);
+    db.query(restaurantQuery, [location_id], (err, restaurantResult) => {
+        if (err) {
+            console.error("Error fetching restaurant:", err);
+            return res.status(500).send("Internal Server Error");
+        }
+
+        if (restaurantResult.length === 0) {
+            return res.status(404).send("No restaurant found for the given location.");
+        }
+
+        const restaurant_id = restaurantResult[0].restaurant_id;
+
+        const promosQuery = 'SELECT * FROM promos WHERE restaurant_id = ? AND end_date >= CURRENT_TIMESTAMP';
+        db.query(promosQuery, [restaurant_id], (err, promosResult) => {
+            if (err) {
+                console.error("Error fetching promos:", err);
+                return res.status(500).send("Internal Server Error");
+            }
+
+            const discountsQuery = 'SELECT * FROM discount WHERE restaurant_id = ? AND end_date >= CURRENT_TIMESTAMP';
+            db.query(discountsQuery, [restaurant_id], (err, discountsResult) => {
+                if (err) {
+                    console.error("Error fetching discounts:", err);
+                    return res.status(500).send("Internal Server Error");
+                }
+                console.log(promosResult,discountsResult);
+                res.json({
+                    promos: promosResult,
+                    discounts: discountsResult
+                });
+            });
+        });
+    });
+};
+
 module.exports.AddDiscount = (req, res) => {
     console.log('Here to add discount');
     const location_id = req.params.id;
@@ -70,6 +110,8 @@ console.log(req.body);
     })
 }
 
+
+
 module.exports.getRiders = (req,res) => {
     const location_id = req.params.id;
     const q = `
@@ -89,19 +131,24 @@ module.exports.getRiders = (req,res) => {
         }
     })
 }
-
-module.exports.getOrders = (req,res) => {
+module.exports.getOrders = (req, res) => {
     const location_id = req.params.id;
-    console.log('location id is ',location_id);
-    
+    console.log('location id is ', location_id);
+
     const q = `
-       select o.order_id,o.order_status,TIME(o.order_time) AS order_time,mm.dish_name,i.quantity,mm.item_price * i.quantity as sub_total ,d.address,o.delivered_by_id
-       from orders o join deliveryaddress d on o.address_id = d.address_id
-       join restaurant r on r.restaurant_id = o.restaurant_id
-       join ordered_items i on i.order_id = o.order_id
-       join menu_items mm on i.item_id = mm.item_id
-       where r.location_id = ? and o.order_status IN ('Placed','Preparing','Out for delivery');
-    `
+       SELECT o.order_id, o.total_amount, o.order_status, TIME(o.order_time) AS order_time, o.promo_id, 
+              p.promo_value, mm.dish_name, i.quantity, i.price * i.quantity AS sub_total, 
+              d.address, o.delivered_by_id
+       FROM orders o 
+       JOIN deliveryaddress d ON o.address_id = d.address_id
+       JOIN restaurant r ON r.restaurant_id = o.restaurant_id
+       JOIN ordered_items i ON i.order_id = o.order_id
+       JOIN menu_items mm ON i.item_id = mm.item_id
+       LEFT JOIN promos p ON o.promo_id = p.promo_id  -- Using LEFT JOIN to include orders with no promo
+       WHERE r.location_id = ? 
+       AND o.order_status IN ('Placed', 'Preparing', 'Out for delivery');
+    `;
+    
     db.query(q, [location_id], (err, result) => {
         if (err) {
             console.error("Error fetching orders:", err);
@@ -109,12 +156,21 @@ module.exports.getOrders = (req,res) => {
         }
 
         const groupedOrders = result.reduce((acc, row) => {
-            const {order_id,order_status,order_time,dish_name,quantity,sub_total,address,delivered_by_id} = row;
+            const { order_id, order_status, order_time, dish_name, quantity, sub_total, address, delivered_by_id, promo_value, total_amount } = row;
 
             let order = acc.find(o => o.order_id === order_id);
 
             if (!order) {
-                order = {order_id,time: order_time,address,status: order_status,items: [],total: 0,rider_id : delivered_by_id};
+                order = {
+                    order_id,
+                    time: order_time,
+                    address,
+                    status: order_status,
+                    items: [],
+                    total_amount,
+                    rider_id: delivered_by_id,
+                    promo_value: promo_value || 'No Promo'  // If promo_value is null, use 'No Promo'
+                };
                 acc.push(order);
             }
 
@@ -124,13 +180,14 @@ module.exports.getOrders = (req,res) => {
                 sub_total,
             });
 
-            order.total += parseFloat(sub_total);
             return acc;
         }, []);
-    console.log(groupedOrders);
-        res.json({orders: groupedOrders});
+
+        console.log(groupedOrders);
+        res.json({ orders: groupedOrders });
     });
-}
+};
+
 
 module.exports.updateOrderStatus = (req,res) => {
     const order_id = req.params.id;

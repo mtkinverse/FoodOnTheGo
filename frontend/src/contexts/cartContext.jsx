@@ -14,25 +14,33 @@ const CartContextProvider = ({ children }) => {
   const { setAlert } = useAlertContext();
   const [promo, setPromo] = useState({
     promo_code: '',
-    promo_code: '',
+    promo_id: null,
     promo_value: 0,
     min_total : 0
   }); //user enters;
+
   
-  const getSubTotal = () =>{ 
-    let sub_total = cart.reduce((total, item) => total + item.Item_Price * item.quantity, 0);
+  const getSubTotal = () => {
+    let sub_total = cart.reduce((total, item) => {
+      const price = item.discounted_price && item.discounted_price < item.Item_Price 
+        ? item.discounted_price 
+        : item.Item_Price;
+      return total + price * item.quantity;
+    }, 0);
     return sub_total;
-  }
-
-
+  };
+  
+  
   const getDiscountedTotal = () => {
     let discountedTotal = getSubTotal();
 
     if (promo.promo_id) {
-      discountedTotal -= discountedTotal * (1 - promo.promo_value / 100);
+      discountedTotal = discountedTotal * (1 - promo.promo_value / 100);
     }
     return discountedTotal > 0 ? discountedTotal : 0; 
   };
+
+  
 
   const getTotalAmount = () => {
     console.log(promo);
@@ -40,8 +48,102 @@ const CartContextProvider = ({ children }) => {
     const totalAmount = discountedTotal + DELIVERY_CHARGES ; 
     return isNaN(totalAmount) ? 0 : totalAmount;
   };
-  
 
+  let promoData;
+
+  const applyPromoCode = async () => {
+    try {
+      console.log('Sending request to verify promo:', cart[0]?.Menu_id, promo.promo_code);
+  
+      const response = await axios.get(`/api/verifyPromo/${cart[0]?.Menu_id}`, {
+        params: { promo_code: promo.promo_code, user_id: userData.User_id },
+      });
+  
+      if (response.status === 200) {
+        const promoData = response.data;
+  
+        if (promoData) {
+          const subTotal = getSubTotal();
+  
+          if (subTotal >= promoData.Min_Total) {
+            console.log('Promo verified, Subtotal:', subTotal);
+  
+            setPromo((prev) => ({
+              ...prev,
+              promo_id: promoData.promo_id,
+              promo_value: promoData.promo_value,
+              min_total: promoData.Min_Total,
+            }));
+  
+            setAlert({
+              message: `Promo applied successfully! You get a ${promoData.promo_value}% discount.`,
+              type: 'success',
+            });
+          } else {
+            console.warn('Subtotal does not meet promo requirements.');
+  
+            setAlert({
+              message: `Your subtotal must be at least Rs.${promoData.Min_Total} to apply this promo.`,
+              type: 'failure',
+            });
+  
+            setPromo ({
+              promo_code: '',
+              promo_id: null,
+              promo_value: 0,
+              min_total: 0,
+            });
+          }
+        }
+      }
+    } catch (err) {
+      if (err.response?.status === 403) {
+        console.warn('Promo usage limit reached.');
+  
+        setAlert({
+          message: 'You have used the promo the maximum number of times.',
+          type: 'failure',
+        });
+  
+        setPromo({
+          promo_code: '',
+          promo_id: null,
+          promo_value: 0,
+          min_total: 0,
+        });
+      } else if (err.response?.status === 404) {
+        console.warn('Promo not found or expired.');
+  
+        setAlert({
+          message: 'The promo code is invalid or expired.',
+          type: 'failure',
+        });
+  
+        setPromo({
+          promo_code: '',
+          promo_id: null,
+          promo_value: 0,
+          min_total: 0,
+        });
+      } else {
+        console.error('Error verifying promo code:', err);
+  
+        setAlert({
+          message: 'An error occurred while verifying the promo code. Please try again later.',
+          type: 'failure',
+        });
+  
+        setPromo({
+          promo_code: '',
+          promo_id: null,
+          promo_value: 0,
+          min_total: 0,
+        });
+      }
+    }
+  };
+  
+  
   useEffect(() => {
     if (loggedIn && userData?.User_id) {
       const storage_name = `${userData.User_id}_cart`;
@@ -58,9 +160,7 @@ const CartContextProvider = ({ children }) => {
     setCartCount(cart.reduce((count, item) => count + item.quantity, 0));
   }, [cart, userData?.User_id]);
 
-
   const placeOrder = async (addressRecv, pointNear) => {
-    const total = getTotalAmount();
     let items = [];
   
     cart.forEach((ele) => {
@@ -68,73 +168,34 @@ const CartContextProvider = ({ children }) => {
         Item_id: ele.Item_id,
         quantity: ele.quantity,
         Order_id: null,
+        Item_Price: ele.Item_Price,
+        discounted_price : ele.discounted_price
       });
     });
-  
-    // Handle promo code validation if present
-    let tempP = promo; // Ensure you use the latest promo from the context
-  
-    if (promo.promo_code !== "") {
-      try {
-        const response = await axios.get(
-          `/api/getPromoDetails/${cart[0].Menu_id}`,
-          {
-            params: { promo_code: promo.promo_code, user_id: userData.User_id },
-          }
-        );
-        if (response.status === 200 && response.data) {
-          const temp = response.data;
-          tempP = {
-            promo_id: temp.promo_id,
-            promo_code: promo.promo_code,
-            promo_value: temp.promo_value,
-            min_total: temp.Min_Total,
-          };
-          setPromo(tempP);
-  
-          if (total >= tempP.min_total) {
-            setAlert({ message: `You get ${tempP.promo_value}% discount!`, type: "success" });
-          } else {
-            setAlert({ message: `You must spend a minimum of Rs.${tempP.min_total}!`, type: "failure" });
-            setPromo({ promo_code: "" });
-          }
-        } else {
-          setAlert({ message: "No such promo found", type: "failure" });
-        }
-      } catch (err) {
-        setAlert({
-          message: err.response ? err.response.data.message : "Something went wrong",
-          type: "failure",
-        });
-        setPromo({ promo_code: "" });
-      }
-    }
-  
+
+    const total = getTotalAmount();
     const req = {
       Customer_id: userData.User_id,
       Menu_Id: cart[0].Menu_id,
       Address: addressRecv,
       NearbyPoint: pointNear,
       items: items,
-      total_amount: getTotalAmount() || 0, // Ensure it's not null or undefined
-      promo_id: tempP?.promo_code ? tempP?.promo_id : 0, // Use tempP for the latest promo data
+      total_amount: total, 
+      promo_id: promo?.promo_id ? promo?.promo_id : null
     };
   
-    // Send the request to place the order
     try {
       const res = await axios.post("/api/placeOrder", JSON.stringify(req), {
         headers: { "Content-Type": "application/json" },
       });
   
       if (res.status === 200) {
-        setTimeout(() => {
           setAlert({
             message: res.data.message,
             type: "success",
           });
           setCart([]);
           fetchOrders();
-        }, 3000);
       }
     } catch (err) {
       setAlert({
@@ -213,7 +274,8 @@ const CartContextProvider = ({ children }) => {
         setPromo,
         getDiscountedTotal,
         getSubTotal,
-        getTotalAmount
+        getTotalAmount,
+        applyPromoCode
       }}
     >
       {children}

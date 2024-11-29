@@ -2,7 +2,7 @@ import React, { useEffect, useState, setI } from "react";
 import { useUserContext } from "../contexts/userContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { FaClipboardList, FaUtensils, FaTruck, FaEye, FaCog, FaMotorcycle, FaBiking } from 'react-icons/fa';
+import { FaClipboardList, FaUtensils, FaTruck, FaEye, FaCog, FaEdit, FaTrash  } from 'react-icons/fa';
 import { useAlertContext } from "../contexts/alertContext";
 
 const DealsPopup = ({ setDealPopup }) => {
@@ -353,22 +353,23 @@ const AdminDashboard = () => {
 
   const { setAlert } = useAlertContext();
 
-  //ye karna hai
  
   
   const [availablePromos, setAvailablePromos] = useState([]);
-  const [PromosPopup, setPromosPopup] = useState([]);
+  const [availableDiscount,setAvailableDiscount]=  useState([]);
+  const [showDealsPop, setShowDeals] = useState([]);
 
-  const showPromo = () => {
-    if (availablePromos.length > 0)
-      axios.get('/api/getAvailablePromos/' + userData.Location_id)
-        .then(res => {
-          setAvailablePromos(res.data)
-          setPromosPopup(true);
-        })
-        .catch(err => setAlert({ message: err.message, type: 'failure' }))
-  }
-  
+  const showDeals = () => {
+    axios
+      .get(`/api/getCurrentDeals/${userData.Location_id}`)
+      .then((res) => {
+        setAvailablePromos(res.data.promos);
+        setAvailableDiscount(res.data.discounts);
+        setShowDeals(true);
+      })
+      .catch((err) => setAlert({ message: err.message, type: 'failure' }));
+  };
+
   const [dealPopup,setDealPopup] = useState(false);
 
   useEffect(() => {
@@ -504,7 +505,7 @@ const AdminDashboard = () => {
             New Deal
           </button>
           <button
-            onClick={showPromo}
+            onClick={showDeals}
             className="bg-purple-500 text-white px-6 py-2 rounded-md font-medium hover:bg-purple-700 transition duration-200"
           >
             View Deals
@@ -686,16 +687,26 @@ const AdminDashboard = () => {
                       </li>
                     ))}
                   </ul>
-                  <div className="flex justify-between text-lg font-semibold text-gray-800 border-t pt-4">
-                    <span>Total</span>
-                    <span>Rs. {selectedOrder.total}</span>
-                  </div>
+                  <div className="flex flex-col space-y-2 pt-4 border-t">
+            {/* Promo Value */}
+            {selectedOrder.promo_value !== 'No Promo' && (
+              <div className="flex justify-between text-lg font-semibold text-gray-800">
+                <span>Promo applied:</span>
+                <span>{selectedOrder.promo_value}%</span>
+              </div>
+            )}
+            {/* Total Amount */}
+            <div className="flex justify-between text-lg font-semibold text-gray-800">
+              <span>Total</span>
+              <span>Rs. {selectedOrder.total_amount}</span>
+            </div>
+          </div>
                 </>
               ) : (
                 <p className="text-gray-500 italic">No items in this order.</p>
               )}
               <button
-                className="mt-6 w-full bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 transition duration-300"
+                className="mt-6 w-full bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition duration-300"
                 onClick={() => setDetailsPopup(false)}
               >
                 Close
@@ -772,19 +783,73 @@ const AdminDashboard = () => {
             </div>
           </div>
         )}
+ {/* Trigger the deals popup */}
+ {showDealsPop && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-lg w-full max-w-lg p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-semibold">Current Deals</h2>
+              <button
+                className="text-2xl text-gray-600 hover:text-gray-800"
+                onClick={() => {setShowDeals(false)}}
+              >
+                &times; {/* Close button (×) */}
+              </button>
+            </div>
 
-        {PromosPopup &&
+            <div className="space-y-4">
+              {/* Display Promos */}
+              {availablePromos.length > 0 && (
+                <div>
+                  <h3 className="text-xl font-semibold mb-2">Available Promos</h3>
+                  {availablePromos.map((promo) => (
+                    <div key={promo.promo_id} className="flex justify-between items-center p-4 border-b">
+                      <div>
+                        <span className="font-semibold">{promo.promo_code}</span>
+                        <p className="text-sm text-gray-600">Discount: {promo.promo_value}%</p>
+                      </div>
+                      <div className="flex space-x-2">
+                        <FaEdit
+                          className="text-blue-500 cursor-pointer"
+                          // onClick={() => handleUpdate(promo.promo_id, 'promo')}
+                        />
+                        <FaTrash
+                          className="text-red-500 cursor-pointer"
+                          // onClick={() => handleDelete(promo.promo_id, 'promo')}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
 
-          <div className="h-3/4 my-auto">
-            {availablePromos.length &&
-              availablePromos.map(ele => (
-                <div></div>
-              ))
-            }
+              {/* Display Discounts */}
+              {availableDiscount.length > 0 && (
+                <div>
+                  <h3 className="text-xl font-semibold mb-2">Available Discounts</h3>
+                  {availableDiscount.map((discount) => (
+                    <div key={discount.discount_id} className="flex justify-between items-center p-4 border-b">
+                      <div>
+                        <p className="text-sm text-gray-600">Discount: {discount.discount_value}%</p>
+                      </div>
+                      <div className="flex space-x-2">
+                        <FaEdit
+                          className="text-blue-500 cursor-pointer"
+                          // onClick={() => handleUpdate(discount.discount_id, 'discount')}
+                        />
+                        <FaTrash
+                          className="text-red-500 cursor-pointer"
+                          // onClick={() => handleDelete(discount.discount_id, 'discount')}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
-
-        }
-
+        </div>
+      )}
       </div>
     </div>
   );
