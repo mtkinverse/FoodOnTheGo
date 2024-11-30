@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FaUtensils, FaStar, FaClock } from 'react-icons/fa';
+import { FaUtensils, FaFire,FaStar, FaClock } from 'react-icons/fa';
 import TopRestaurants from './TopRestaurants';
 import Cart from './Cart';
 import { useUserContext } from '../contexts/userContext';
@@ -49,13 +49,20 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Top Restaurants Section */}
-      <section className="py-20 bg-purple-100">
-        <div className="container mx-auto px-6">
-          <h2 className="text-4xl font-semibold text-center text-purple-800 mb-12">Top Restaurants</h2>
-          <TopRestaurants />
-        </div>
-      </section>
+   {/* Top Restaurants Section */}
+<section className="py-20 bg-purple-100">
+  <div className="container mx-auto px-6">
+    {/* Section Title with Icon Next to It */}
+    <div className="flex justify-center items-center mb-12">
+      <h2 className="text-4xl font-bold text-purple-800 flex items-center">
+        Top Restaurants
+      </h2>
+    </div>
+
+    {/* Top Restaurants List */}
+    <TopRestaurants />
+  </div>
+</section>
 
       {loggedIn && <Cart />}
 

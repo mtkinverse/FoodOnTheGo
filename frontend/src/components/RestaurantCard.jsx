@@ -1,35 +1,55 @@
-import React from 'react';
-import { useUserContext } from '../contexts/userContext';
-import { Clock, Star, Utensils, MapPin } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import React from "react";
+import { useUserContext } from "../contexts/userContext";
+import {
+  Clock,
+  Star,
+  Gift,
+  MapPin,
+  Menu,
+  Repeat,
+} from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useAlertContext } from "../contexts/alertContext";
 
-const RestaurantCard = ({ restaurant,flag }) => {
+const RestaurantCard = ({ restaurant, flag }) => {
   const {
     Restaurant_Name,
     OpensAt,
     ClosesAt,
     Restaurant_Image,
     Rating,
-    Restaurant_id, 
+    Restaurant_id,
     Address,
     review_count,
-    discount_value
+    discount_value,
   } = restaurant;
 
   const { loggedIn } = useUserContext();
   const navigate = useNavigate();
+  const { setAlert } = useAlertContext();
 
+  // Function to format time without seconds (e.g., 10:30)
+  const formatTime = (time) => {
+    const [hours, minutes] = time.split(":");
+    return `${hours}:${minutes}`;
+  };
+
+  const formattedOpensAt = formatTime(OpensAt);
+  const formattedClosesAt = formatTime(ClosesAt);
+  
+  // Function to check if restaurant is currently open
   const isCurrentlyOpen = (opensAt, closesAt) => {
     const timeToMinutes = (time) => {
       const [hours, minutes, seconds] = time.split(":").map(Number);
       return hours * 60 + minutes + seconds / 60;
     };
-  
+
     const openingTime = timeToMinutes(opensAt);
     const closingTime = timeToMinutes(closesAt);
     const now = new Date();
-    const currentTime = now.getHours() * 60 + now.getMinutes() + now.getSeconds() / 60;
-  
+    const currentTime =
+      now.getHours() * 60 + now.getMinutes() + now.getSeconds() / 60;
+
     if (closingTime > openingTime) {
       return currentTime >= openingTime && currentTime < closingTime;
     } else {
@@ -37,12 +57,48 @@ const RestaurantCard = ({ restaurant,flag }) => {
     }
   };
 
+  const openStatus = isCurrentlyOpen(OpensAt, ClosesAt); 
+  const getNextDayName = () => {
+    const today = new Date();
+    const nextDay = new Date(today);
+    nextDay.setHours(10, 30, 0, 0); 
+  
+    if (today.getHours() >= 10 && today.getMinutes() >= 30) {
+      nextDay.setDate(nextDay.getDate() + 1); 
+    }
+  
+    const options = { weekday: "long" }; 
+    return nextDay.toLocaleDateString(undefined, options);
+  };
+  
+
+  const nextDayName = getNextDayName();
+
+  const handleMenuButtonClick = () => {
+    // if(!openStatus) {
+    //   setAlert({message: 'Sorry,the restaurant is closed until tomorrow',type : 'failure'})
+    // }
+    // else 
+    navigate(`/menu/${Restaurant_Name}/${Restaurant_id}`);
+  };
+
   return (
     <div className="group relative bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 max-w-sm">
       <div className="absolute top-4 left-4 z-10 flex flex-col gap-2">
-        {discount_value && <span className="px-3 py-1 rounded-full text-sm font-medium text-white bg-purple-500">
-          {discount_value} % off
-        </span> }
+        {/* Only show the discount if the restaurant is open */}
+        {openStatus && discount_value && (
+          <span className="px-3 py-1 rounded-full text-sm font-medium text-white bg-purple-500 flex items-center space-x-2">
+            <Gift className="w-4 h-4" />
+            <span>{discount_value} % off</span>
+          </span>
+        )}
+
+        {/* Open/Closed Badge */}
+        <span
+          className={`px-3 py-1 rounded-full text-sm font-medium ${openStatus ? "bg-green-500 text-white" : "bg-red-500 text-white"}`}
+        >
+          {openStatus ? "Open Now" : `Closed until ${nextDayName} ${formattedOpensAt}`}
+        </span>
       </div>
 
       <div className="relative h-48 overflow-hidden">
@@ -50,16 +106,17 @@ const RestaurantCard = ({ restaurant,flag }) => {
         <img
           src={Restaurant_Image}
           alt={Restaurant_Name}
-          className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-300"
+          className={`w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-300 ${!openStatus ? 'blur-sm' : ''}`}
         />
 
         {/* Rating badge */}
         <div className="absolute bottom-4 right-4 z-10 flex items-center space-x-1 bg-white/90 px-2 py-1 rounded-full">
-          <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+          <Star className="w-4 h-4 animate-pulse text-yellow-400 fill-yellow-400" />
           <span className="text-sm font-semibold">{Rating}</span>
-          <span className="text-sm text-gray-500">({Math.floor(review_count)}+)</span>
+          <span className="text-sm text-gray-500">
+            ({Math.floor(review_count)}+)
+          </span>
         </div>
-
       </div>
 
       <div className="p-5 space-y-4">
@@ -75,19 +132,29 @@ const RestaurantCard = ({ restaurant,flag }) => {
         <div className="flex items-center text-gray-600">
           <Clock className="w-4 h-4 flex-shrink-0" />
           <span className="text-sm ml-2">
-            {OpensAt} - {ClosesAt}
+            {formattedOpensAt} - {formattedClosesAt}
           </span>
         </div>
 
         <button
-          onClick={() => navigate(`/menu/${Restaurant_Name}/${Restaurant_id}`)}
-          className="w-full py-3 px-4 flex items-center justify-center space-x-2 rounded-lg transition-colors duration-200 bg-purple-500 
-                   hover:bg-purple-600 text-white" 
+          onClick={handleMenuButtonClick}
+          className="w-full py-3 px-4 flex items-center justify-center space-x-3 rounded-lg transition-colors duration-300 bg-purple-500 hover:bg-purple-600 text-white shadow-lg hover:shadow-xl"
         >
-          <Utensils className="w-4 h-4" />
-          {flag === 'View Menu' && <span className="font-medium">View Menu</span>}
-          {flag === 'Reorder' && <span className="font-medium">Reorder</span>}
+          {/* For "View Menu" */}
+          {flag === "View Menu" && (
+            <>
+              <Menu className="w-5 h-5" />
+              <span className="font-semibold">View Menu</span>
+            </>
+          )}
 
+          {/* For "Reorder" */}
+          {flag === "Reorder" && (
+            <>
+              <Repeat className="w-5 h-5" />
+              <span className="font-semibold">Reorder</span>
+            </>
+          )}
         </button>
       </div>
     </div>
@@ -95,4 +162,3 @@ const RestaurantCard = ({ restaurant,flag }) => {
 };
 
 export default RestaurantCard;
-

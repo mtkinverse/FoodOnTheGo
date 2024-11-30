@@ -63,9 +63,9 @@ const TopRestaurants = () => {
         Math.min(prevIndex + 1, restaurantData.length - 1)
       );
     } else {
-      // On desktop/tablet, move by itemsToShow
+      // On desktop/tablet, move by 1 item at a time (instead of itemsToShow)
       setCurrentIndex((prevIndex) =>
-        Math.min(prevIndex + itemsToShow, restaurantData.length - itemsToShow)
+        Math.min(prevIndex + 1, restaurantData.length - 1)
       );
     }
   };
@@ -75,10 +75,8 @@ const TopRestaurants = () => {
       // On mobile, move one item at a time
       setCurrentIndex((prevIndex) => Math.max(prevIndex - 1, 0));
     } else {
-      // On desktop/tablet, move by itemsToShow
-      setCurrentIndex((prevIndex) => 
-        Math.max(prevIndex - itemsToShow, 0)
-      );
+      // On desktop/tablet, move by 1 item at a time (instead of itemsToShow)
+      setCurrentIndex((prevIndex) => Math.max(prevIndex - 1, 0));
     }
   };
 
@@ -96,7 +94,6 @@ const TopRestaurants = () => {
     <div className="relative w-full max-w-7xl mx-auto px-4 py-8">
       {/* Title and Navigation Controls */}
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-gray-800">Top Restaurants</h2>
         <div className="flex items-center space-x-2">
           {/* Navigation Dots */}
           <div className="hidden md:flex items-center space-x-1 mr-4">
@@ -152,7 +149,7 @@ const TopRestaurants = () => {
         <div 
           className="flex transition-transform duration-500 ease-out"
           style={{ 
-            transform: `translateX(-${currentIndex * (100 / (isMobile ? restaurantData.length : itemsToShow))}%)`,
+            transform: `translateX(-${(currentIndex / restaurantData.length) * 100}%)`, // Adjust based on the current index
             width: `${(restaurantData.length / (isMobile ? 1 : itemsToShow)) * 100}%`
           }}
         >
@@ -162,7 +159,7 @@ const TopRestaurants = () => {
               className="px-2"
               style={{ width: `${100 / (isMobile ? restaurantData.length : restaurantData.length)}%` }}
             >
-              <RestaurantCard restaurant={restaurant} />
+              <RestaurantCard restaurant={restaurant} flag={'View Menu'} />
             </div>
           ))}
         </div>
@@ -187,4 +184,3 @@ const TopRestaurants = () => {
 };
 
 export default TopRestaurants;
-

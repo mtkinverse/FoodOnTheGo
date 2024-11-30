@@ -35,7 +35,7 @@ module.exports.orderAgain = (req, res) => {
               WHERE restaurant_id = ? AND review_id IS NOT NULL
             `;
 
-            db.query(reviewCountQuery, [restaurant.restaurant_id], (err, reviewData) => {
+            db.query(reviewCountQuery, [restaurant.Restaurant_id], (err, reviewData) => {
                 if (err) {
                     return res.status(500).json({ error: 'Failed to fetch review count', details: err.message });
                 }
@@ -46,6 +46,7 @@ module.exports.orderAgain = (req, res) => {
 
                 if (processedCount === data.length) {
                     // Send response when all restaurants have been processed
+                    console.log('sending ORDER AGAIN ',restaurantsWithReviewCount);
                     return res.status(200).json(restaurantsWithReviewCount);
                 }
             });
@@ -186,13 +187,17 @@ module.exports.getLastOrder  = (req,res) =>{
         return res.status(200).json(result);
     })
 }
-module.exports.PlaceOrder = async (req, res) => {
+module.exports.PlaceOrder = (req, res) => {
     console.log('Received order request:', req.body);
 
-    const { Customer_id, Menu_Id, Address, NearbyPoint, items, total_amount, promo_id,riderTip } = req.body;
-    try {
-        const q1 = 'SELECT Restaurant_id FROM restaurant WHERE menu_id = ?';
-        const [restaurantResult] = await db.promise().query(q1, [Menu_Id]);
+    const { Customer_id, Menu_Id, Address, NearbyPoint, items, total_amount, promo_id, riderTip } = req.body;
+
+    const q1 = 'SELECT Restaurant_id FROM restaurant WHERE menu_id = ?';
+    db.query(q1, [Menu_Id], (err, restaurantResult) => {
+        if (err) {
+            console.error('Database query error:', err);
+            return res.status(500).json({ message: 'Database query error' });
+        }
 
         if (restaurantResult.length === 0) {
             return res.status(404).json({ message: 'Menu not found' });
@@ -202,32 +207,55 @@ module.exports.PlaceOrder = async (req, res) => {
         console.log('Found Restaurant_id:', Restaurant_id);
 
         const createOrderQuery = 'CALL PLACEORDER (?, ?, ?, ?, @Created_Order_id)';
-        await db.promise().query(createOrderQuery, [Customer_id, Restaurant_id, Address, NearbyPoint]);
+        db.query(createOrderQuery, [Customer_id, Restaurant_id, Address, NearbyPoint], (err, orderResult) => {
+            if (err) {
+                console.error('Error while placing order:', err);
+                return res.status(500).json({ message: 'Error while placing order' });
+            }
 
-        const [orderResult] = await db.promise().query('SELECT @Created_Order_id AS orderId');
-        const Order_id = orderResult[0].orderId;
-        console.log('Created Order ID:', Order_id);
+            db.query('SELECT @Created_Order_id AS orderId', (err, orderStatus) => {
+                if (err) {
+                    console.error('Error fetching order ID:', err);
+                    return res.status(500).json({ message: 'Error fetching order ID' });
+                }
 
-        const itemInsertQuery = 'INSERT INTO ordered_items (order_id, item_id, quantity, price) VALUES (?, ?, ?, ?)';
-        for (const item of items) {
-            const priceToUse = item.discounted_price && item.discounted_price < item.Item_Price
-                ? item.discounted_price
-                : item.Item_Price; 
-                console.log('adding item to orderd_items ',item.Item_id,item.quantity,priceToUse);
-            await db.promise().query(itemInsertQuery, [Order_id, item.Item_id, item.quantity, priceToUse]);
-        }
+                const Order_id = orderStatus[0].orderId;
+                if (!Order_id) {
+                    return res.status(400).json({ message: 'Failed to create order. Restaurant may be closed.' });
+                }
 
-        const updateOrderQuery = 'UPDATE orders SET promo_id = ?, total_amount = ? ,rider_tip = ? WHERE order_id = ?';
-        console.log('Updating order ', Order_id, promo_id, total_amount);
-        await db.promise().query(updateOrderQuery, [promo_id, total_amount, riderTip,Order_id]);
+                console.log('Created Order ID:', Order_id);
 
-        return res.status(200).json({ success: true, message: 'Order placed successfully' });
-    } catch (error) {
-        console.error('Error while placing order:', error);
-        return res.status(500).json({ error: 'An error occurred while placing the order', details: error.message });
-    }
+                const itemInsertQuery = 'INSERT INTO ordered_items (order_id, item_id, quantity, price) VALUES (?, ?, ?, ?)';
+                items.forEach((item, index) => {
+                    const priceToUse = item.discounted_price && item.discounted_price < item.Item_Price
+                        ? item.discounted_price
+                        : item.Item_Price;
+                    console.log('Adding item to ordered_items:', item.Item_id, item.quantity, priceToUse);
+                    db.query(itemInsertQuery, [Order_id, item.Item_id, item.quantity, priceToUse], (err) => {
+                        if (err) {
+                            console.error('Error inserting item into ordered_items:', err);
+                            return res.status(500).json({ message: 'Error inserting item into order' });
+                        }
+
+                        if (index === items.length - 1) {
+                            const updateOrderQuery = 'UPDATE orders SET promo_id = ?, total_amount = ?, rider_tip = ? WHERE order_id = ?';
+                            console.log('Updating order with promo_id:', promo_id, 'total_amount:', total_amount);
+                            db.query(updateOrderQuery, [promo_id, total_amount, riderTip, Order_id], (err) => {
+                                if (err) {
+                                    console.error('Error updating order:', err);
+                                    return res.status(500).json({ message: 'Error updating order' });
+                                }
+
+                                return res.status(200).json({ success: true, message: 'Order placed successfully' });
+                            });
+                        }
+                    });
+                });
+            });
+        });
+    });
 };
-
 
 
 

@@ -22,7 +22,7 @@ const Footer = () => {
             <p className="text-sm md:text-base">Delicious food, delivered to your doorstep</p>
           </div>
           <div className="flex flex-col items-center md:items-end">
-            <div className="flex space-x-6 mb-4">
+            <div className="flex flex-wrap justify-center md:justify-end space-x-6 mb-4">
               <SocialIcon icon={<FaFacebook size={24} />} href="#" />
               <SocialIcon icon={<FaTwitter size={24} />} href="#" />
               <SocialIcon icon={<FaInstagram size={24} />} href="#" />
@@ -48,4 +48,3 @@ const Footer = () => {
 };
 
 export default Footer;
-

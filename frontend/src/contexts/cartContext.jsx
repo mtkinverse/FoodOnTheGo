@@ -160,52 +160,61 @@ const CartContextProvider = ({ children }) => {
     setCartCount(cart.reduce((count, item) => count + item.quantity, 0));
   }, [cart, userData?.User_id]);
 
-  const placeOrder = async (addressRecv, pointNear ,riderTip) => {
+  const placeOrder = async (addressRecv, pointNear, riderTip) => {
     let items = [];
   
+    // Prepare the items array from the cart
     cart.forEach((ele) => {
       items = items.concat({
         Item_id: ele.Item_id,
         quantity: ele.quantity,
         Order_id: null,
         Item_Price: ele.Item_Price,
-        discounted_price : ele.discounted_price
+        discounted_price: ele.discounted_price,
       });
     });
-
+  
     const total = getTotalAmount() + riderTip;
+  
+    // Prepare the request object to send to the backend
     const req = {
       Customer_id: userData.User_id,
       Menu_Id: cart[0].Menu_id,
       Address: addressRecv,
       NearbyPoint: pointNear,
       items: items,
-      total_amount: total, 
+      total_amount: total,
       promo_id: promo?.promo_id ? promo?.promo_id : null,
-      riderTip : riderTip
+      riderTip: riderTip,
     };
   
     try {
-      const res = await axios.post("/api/placeOrder", JSON.stringify(req), {
+      // Make the API call to place the order
+      const res = await axios.post("/api/placeOrder", req, {
         headers: { "Content-Type": "application/json" },
       });
   
+      // Check if the response is successful
       if (res.status === 200) {
-          setAlert({
-            message: res.data.message,
-            type: "success",
-          });
-          setCart([]);
-          fetchOrders();
+        setAlert({
+          message: res.data.message,
+          type: "success",
+        });
+        setCart([]); // Clear the cart after placing the order
+        fetchOrders(); // Fetch the updated orders list
       }
     } catch (err) {
+      // Handle the error if something goes wrong
+      const errorMessage =
+        err.response && err.response.data && err.response.data.message
+          ? err.response.data.message
+          : "An error occurred while placing your order.";
       setAlert({
-        message: "Cannot place order",
+        message: errorMessage,
         type: "failure",
       });
     }
   };
-  
   
 
   const handleAddToCart = (item) => {

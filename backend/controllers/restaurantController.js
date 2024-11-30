@@ -1,5 +1,27 @@
 const db = require('../db');
 
+module.exports.getReviews = (req,res) => {
+    const restaurant_id = req.params.id;
+    console.log('get reviews hit ');
+    const q = `
+         SELECT re.*,c.customer_name from order_review re
+        join orders o on o.review_id = re.review_id
+        join customer c on c.customer_id = o.customer_id
+        join restaurant r on o.restaurant_id = r.restaurant_id
+        where r.restaurant_id =  ?;
+    `
+
+    db.query(q,[restaurant_id],(err,result) => {
+      if(err){
+        return res.status(400).json({message : 'Error getting reviews'});
+      }
+      console.log(
+        'review result ',result
+      )
+      return res.status(200).json(result);
+    })
+}
+
 module.exports.getRestaurants = (req, res) => {
   const q = `
    SELECT * 

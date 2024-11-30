@@ -20,7 +20,6 @@ import { useCartContext } from "../contexts/cartContext";
 import { useAlertContext } from "../contexts/alertContext";
 import RatingPopup from "./RateOrder";
 import { useNavigate } from "react-router-dom";
-
 const ShowPastOrders = ({
   pastOrders,
   pastPopup,
@@ -29,6 +28,7 @@ const ShowPastOrders = ({
   setSelectedOrder,
 }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
+
   if (pastPopup) {
     document.body.style.overflow = "hidden";
   } else {
@@ -43,6 +43,11 @@ const ShowPastOrders = ({
 
   const prevSlide = () => {
     setCurrentSlide((prev) => (prev === 0 ? prev : prev - 1));
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-GB"); // Format: DD/MM/YYYY
   };
 
   return (
@@ -97,6 +102,9 @@ const ShowPastOrders = ({
                             </h3>
                             <p className="text-base text-purple-600 font-medium">
                               {order.restaurant_name}
+                            </p>
+                            <p className="text-sm text-gray-500 mt-1">
+                              {formatDate(order.order_date)}
                             </p>
                           </div>
                         </div>
@@ -589,6 +597,7 @@ const Navbar = () => {
     e.preventDefault();
     try {
       signout();
+      navigate('/');
     } catch (err) {
       console.log(err);
     }
@@ -701,7 +710,7 @@ const Navbar = () => {
           {/* Logo */}
           <div className="flex items-center space-x-2">
             <img
-              src="images/logo.png"
+              src="/images/logo.png"
               alt="FoodGO Logo"
               className="h-8 w-auto"
             />
