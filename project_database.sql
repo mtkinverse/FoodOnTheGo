@@ -117,6 +117,9 @@ CREATE TABLE Rider_Tips (
 
 ALTER TABLE Rider_Tips ADD CONSTRAINT rid_fk FOREIGN KEY(rider_id) REFERENCES delivery_rider(rider_id);
 
+select * from delivery_rider;
+SELECT tips from rider_tips where rider_id = 102928 and date(tip_date) = CURRENT_DATE;
+
 CREATE TABLE Orders (
     Customer_id INT NOT NULL,
     Order_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -135,6 +138,9 @@ ALTER TABLE Orders ADD COLUMN promo_id INT DEFAULT NULL;
 ALTER TABLE Orders ADD CONSTRAINT promo_fk foreign key(promo_id) REFERENCES promos(promo_id) ON DELETE SET NULL;
 ALTER TABLE Orders ADD COLUMN total_amount FLOAT DEFAULT 0;
 ALTER TABLE Orders ADD COLUMN rider_tip INT DEFAULT 0;
+
+select * from orders;
+select * from rider_tips;
 
 CREATE TABLE Ordered_Items (
     Order_id INT default NULL,
@@ -423,12 +429,13 @@ select * from discount;
 select * from Promos;
 
 
- SELECT 
+SELECT 
         o.order_id,
         o.order_status,
         d.address,
         r.restaurant_name,
         o.customer_id,
+        o.review_id,
         DATE(o.order_time) AS order_date, 
         o.total_amount,
         TIME(o.order_time) AS order_time,
@@ -444,3 +451,7 @@ select * from Promos;
       JOIN menu_items i ON oo.item_id = i.item_id  -- Join with menu_items to get dish_name
       WHERE o.customer_id = 99196
       ORDER BY order_date DESC;
+
+    ;
+    
+    select * from orders;

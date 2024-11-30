@@ -1,19 +1,34 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
-import {ChevronLeft,ChevronRight,X,Trash2,CheckCircle,} from "lucide-react";
-import {FaBars, FaChevronDown,FaUserCircle,FaPencilAlt, FaTimes,} from "react-icons/fa";
+import {
+  ChevronLeft,
+  ChevronRight,
+  X,
+  Trash2,
+  CheckCircle,
+} from "lucide-react";
+import {
+  FaBars,
+  FaChevronDown,
+  FaUserCircle,
+  FaPencilAlt,
+  FaTimes,
+} from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 import { useUserContext } from "../contexts/userContext";
 import { useCartContext } from "../contexts/cartContext";
 import { useAlertContext } from "../contexts/alertContext";
 import RatingPopup from "./RateOrder";
+import { useNavigate } from "react-router-dom";
 
-const ShowPastOrders = ({ pastOrders, pastPopup, pastOrdersPopup }) => {
-
-
+const ShowPastOrders = ({
+  pastOrders,
+  pastPopup,
+  pastOrdersPopup,
+  promptForReview,
+  setSelectedOrder,
+}) => {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [reviewPopup, promptForReview] = useState(false);
-  const [selectedOrder,setSelectedOrder] = useState(null);
   if (pastPopup) {
     document.body.style.overflow = "hidden";
   } else {
@@ -135,7 +150,11 @@ const ShowPastOrders = ({ pastOrders, pastPopup, pastOrdersPopup }) => {
                           <div className="pt-4">
                             {order.review_id === null ? (
                               <button
-                                onClick={() => {promptForReview(order); setSelectedOrder(order)}}
+                                onClick={() => {
+                                  promptForReview(true);
+                                  setSelectedOrder(order);
+                                  pastOrdersPopup(false);
+                                }}
                                 className="flex items-center justify-center text-white bg-purple-600 hover:bg-purple-700 rounded-full py-2 px-6 text-sm font-semibold transition-colors"
                               >
                                 Leave a Review
@@ -150,13 +169,6 @@ const ShowPastOrders = ({ pastOrders, pastPopup, pastOrdersPopup }) => {
                               </button>
                             )}
                           </div>
-
-                          {reviewPopup && selectedOrder && 
-                                     <RatingPopup 
-                                      order={selectedOrder} 
-                                      onClose={() => promptForReview(false)} 
-                                  
-                                     />}
                         </div>
                       </div>
                     </div>
@@ -306,7 +318,7 @@ function ShowCurrentOrders({
 
                         {/* Progress Bar */}
                         <div className="space-y-2">
-                          <div className="flex justify-between text-xs text-gray-500">
+                          <div className="flex justify-between text-[10px] sm:text-xs text-gray-500">
                             {[
                               "Placed",
                               "Preparing",
@@ -315,7 +327,7 @@ function ShowCurrentOrders({
                             ].map((stage, idx) => (
                               <span
                                 key={stage}
-                                className={`${
+                                className={`text-center w-1/4 ${
                                   idx <=
                                   [
                                     "Placed",
@@ -359,7 +371,6 @@ function ShowCurrentOrders({
                             ))}
                           </div>
                         </div>
-
                         {/* Order Details */}
                         <div className="space-y-4">
                           <div>
@@ -456,6 +467,7 @@ function ShowCurrentOrders({
 }
 
 const Navbar = () => {
+  const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const profileMenuRef = useRef(null); // Ref to handle outside click
@@ -476,6 +488,10 @@ const Navbar = () => {
   const [viewProfile, setViewProfile] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [passwordPopup, setPasswordPop] = useState(false);
+
+  const [reviewPopup, promptForReview] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+
   const [newPassword, setNewPassword] = useState({
     first_entry: "",
     second_entry: "",
@@ -516,7 +532,7 @@ const Navbar = () => {
   const [pastPopup, pastOrdersPopup] = useState(false);
 
   const toggleProfileMenu = () => {
-    setIsProfileMenuOpen(!isProfileMenuOpen);
+    setIsProfileMenuOpen((prev) => !prev);
   };
 
   const handleBikeChange = (e) => {
@@ -604,8 +620,8 @@ const Navbar = () => {
   const navItems = [
     { label: "Home", path: "/" },
     { label: "Restaurants", path: "/restaurants" },
-    { label: "About Us", path: "/about" },
-    { label: "Contact", path: "/contact" },
+    // { label: "About Us", path: "/about" },
+    // { label: "Contact", path: "/contact" },
   ];
 
   if (
@@ -693,106 +709,26 @@ const Navbar = () => {
           </div>
 
           {/* Desktop Menu */}
-          <div className="hidden sm:flex sm:space-x-8">
-            {navItems.map((item, index) => (
-              <NavLink
-                key={index}
-                to={item.path}
-                className={({ isActive }) =>
-                  `${
-                    isActive ? "font-bold text-purple-700" : ""
-                  } text-sm font-medium text-purple-600 hover:text-purple-700 transition duration-300`
-                }
-              >
-                {item.label}
-              </NavLink>
-            ))}
-          </div>
-
-          <div className="flex items-center space-x-4">
-            {loggedIn ? (
-              <div className="relative">
-                <button
-                  onClick={toggleProfileMenu}
-                  className="flex items-center space-x-2 text-sm font-medium text-purple-600 hover:text-purple-700"
+          <div className="hidden sm:flex items-center justify-between w-full">
+            {/* Navigation Links - Centered */}
+            <div className="flex-grow flex justify-center space-x-8">
+              {navItems.map((item, index) => (
+                <NavLink
+                  key={index}
+                  to={item.path}
+                  className={({ isActive }) =>
+                    `${
+                      isActive ? "font-bold text-purple-700" : ""
+                    } text-sm font-medium text-purple-600 hover:text-purple-700 transition duration-300`
+                  }
                 >
-                  <FaUserCircle className="h-8 w-8 text-purple-600" />
-                  <span className="text-sm font-medium hidden sm:inline">
-                    {userData.User_name}
-                  </span>
-                  {userData.role === "Customer" && currentOrders.length > 0 && (
-                    <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                  )}
-                  <FaChevronDown
-                    className={`transform ${
-                      isProfileMenuOpen ? "rotate-180" : ""
-                    }`}
-                  />
-                </button>
+                  {item.label}
+                </NavLink>
+              ))}
+            </div>
 
-                {isProfileMenuOpen && (
-                  <div
-                    ref={profileMenuRef}
-                    className="absolute right-0 mt-2 w-48 bg-purple-600 border border-purple-600 rounded-md shadow-lg z-20"
-                  >
-                    <button
-                      className="block px-4 py-2 text-sm text-white hover:bg-purple-800"
-                      onClick={() => setViewProfile(true)}
-                    >
-                      View Profile
-                    </button>
-
-                    {(userData.role === "Customer" ||
-                      userData.role === "Delivery_Rider") && (
-                      <button
-                        className="block px-4 py-2 text-sm text-white hover:bg-purple-800"
-                        onClick={() => deleteAccountpop(true)}
-                      >
-                        Delete Account
-                      </button>
-                    )}
-
-                    {userData.role === "Customer" && (
-                      <button
-                        className="block px-4 py-2 text-sm text-white hover:bg-purple-800"
-                        onClick={() => pastOrdersPopup(true)}
-                      >
-                        View Past Orders
-                      </button>
-                    )}
-
-                    {userData.role === "Customer" &&
-                      currentOrders.length > 0 && (
-                        <div className="flex items-center space-x-2">
-                          <button
-                            className="block px-4 py-2 text-sm text-white hover:bg-purple-800"
-                            onClick={() => CurrentOrdersPopup(true)}
-                          >
-                            Current Orders
-                          </button>
-                          <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                        </div>
-                      )}
-
-                    {userData.role === "Delivery_Rider" && (
-                      <button
-                        className="block px-4 py-2 text-sm text-white hover:bg-purple-800"
-                        onClick={() => setBikePopup(true)}
-                      >
-                        Change Vehicle Details
-                      </button>
-                    )}
-
-                    <button
-                      onClick={signItOut}
-                      className="w-full text-left block px-4 py-2 text-sm text-white hover:bg-purple-800"
-                    >
-                      Sign Out
-                    </button>
-                  </div>
-                )}
-              </div>
-            ) : (
+            {/* Login Button - Right aligned */}
+            {!loggedIn && (
               <NavLink
                 to="/login"
                 className="inline-flex items-center px-4 py-2 border border-purple-600 rounded-md text-sm font-medium text-purple-600 hover:bg-purple-50 hover:text-purple-700 transition duration-300"
@@ -801,6 +737,112 @@ const Navbar = () => {
               </NavLink>
             )}
           </div>
+
+          <div className="flex items-center space-x-4">
+  {loggedIn && (
+    <div className="relative">
+      <button
+        onClick={toggleProfileMenu}
+        className="flex items-center space-x-2 text-sm font-medium text-purple-600 hover:text-purple-700"
+      >
+        <FaUserCircle className="hidden sm:block h-8 w-8 text-purple-600" />
+        
+        {/* Username with conditional green dot */}
+        <div className="flex items-center space-x-1">
+          <span className="hidden sm:inline">
+            {userData.User_name.split(" ")[0]}
+          </span>
+          {userData.role === "Customer" && currentOrders.length > 0 && (
+            <div className=" hidden sm:inline w-3 h-3 bg-green-500 rounded-full animate-pulse sm:ml-1"></div>
+          )}
+        </div>
+
+        <FaChevronDown
+          className={`hidden sm:block h-5 w-5 text-purple-600 transform transition-transform ${
+            isProfileMenuOpen ? "rotate-180" : ""
+          }`}
+        />
+      </button>
+
+      {isProfileMenuOpen && (
+        <div
+          ref={profileMenuRef}
+          className="absolute right-0 mt-2 w-max max-w-xs bg-purple-600 border border-purple-600 rounded-md shadow-lg z-20"
+        >
+          <button
+            className="block w-full px-4 py-2 text-sm text-white hover:bg-purple-800"
+            onClick={() => {
+              setViewProfile(true);
+              setIsProfileMenuOpen(false);
+            }}
+          >
+            View Profile
+          </button>
+
+          {(userData.role === "Customer" ||
+            userData.role === "Delivery_Rider") && (
+            <button
+              className="block w-full px-4 py-2 text-sm text-white hover:bg-purple-800"
+              onClick={() => {
+                deleteAccountpop(true);
+                setIsProfileMenuOpen(false);
+              }}
+            >
+              Delete Account
+            </button>
+          )}
+
+          {userData.role === "Customer" && (
+            <button
+              className="block w-full px-4 py-2 text-sm text-white hover:bg-purple-800"
+              onClick={() => {
+                pastOrdersPopup(true);
+                setIsProfileMenuOpen(false);
+              }}
+            >
+              View Past Orders
+            </button>
+          )}
+{userData.role === "Customer" && currentOrders.length > 0 && (
+  <div className="flex items-center px-4 py-2 text-sm text-white hover:bg-purple-800">
+    <button
+      className="flex-1 text-left"
+      onClick={() => {
+        CurrentOrdersPopup(true);
+        setIsProfileMenuOpen(false);
+      }}
+    >
+      Current Orders
+    </button>
+    <div className="ml-2 w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+  </div>
+)}
+
+
+          {userData.role === "Delivery_Rider" && (
+            <button
+              className="block w-full px-4 py-2 text-sm text-white hover:bg-purple-800"
+              onClick={() => {
+                setBikePopup(true);
+                setIsProfileMenuOpen(false);
+              }}
+            >
+              Change Vehicle Details
+            </button>
+          )}
+
+          <button
+            onClick={signItOut}
+            className="block w-full px-4 py-2 text-sm text-white hover:bg-purple-800"
+          >
+            Sign Out
+          </button>
+        </div>
+      )}
+    </div>
+  )}
+</div>
+
 
           {/* Mobile Menu Toggle */}
           <div className="sm:hidden flex items-center">
@@ -836,109 +878,112 @@ const Navbar = () => {
                     {item.label}
                   </NavLink>
                 ))}
+                {!loggedIn && (
+                  <NavLink
+                    to="/login"
+                    className={({ isActive }) =>
+                      `block px-3 py-2 rounded-md text-base font-medium ${
+                        isActive
+                          ? "bg-purple-100 text-purple-700 font-bold"
+                          : "text-purple-600 hover:bg-purple-100 hover:text-purple-700"
+                      } transition duration-300`
+                    }
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Login
+                  </NavLink>
+                )}
 
                 {/* Mobile Profile Section */}
-                {loggedIn && (
-                  <div className="border-t border-purple-200 pt-4">
-                    <div className="flex items-center px-3 space-x-3">
-                      <FaUserCircle className="h-8 w-8 text-purple-600" />
-                      <div>
-                        <div className="text-base font-medium text-purple-700">
-                          {userData.User_name}
-                        </div>
-                        <div className="text-sm text-purple-500">
-                          {userData.Email_address}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="mt-3 space-y-1">
-                      <button
-                        onClick={() => {
-                          setViewProfile(true);
-                          setIsMenuOpen(false);
-                        }}
-                        className="block w-full text-left px-3 py-2 text-base font-medium text-purple-600 hover:bg-purple-100 hover:text-purple-700"
-                      >
-                        View Profile
-                      </button>
+                {/* Mobile Profile Section */}
+{loggedIn && (
+  <div className="border-t border-purple-200 pt-4">
+    <div className="flex items-center px-3 space-x-3">
+      <FaUserCircle className="h-8 w-8 text-purple-600" />
+      <div>
+        <div className="text-base font-medium text-purple-700">
+          {userData.User_name}
+        </div>
+        <div className="text-sm text-purple-500">
+          {userData.Email_address}
+        </div>
+      </div>
+    </div>
+    <div className="mt-3 space-y-1">
+      <button
+        onClick={() => {
+          setViewProfile(true);
+          setIsMenuOpen(false);
+        }}
+        className="block w-full text-left px-3 py-2 text-base font-medium text-purple-600 hover:bg-purple-100 hover:text-purple-700"
+      >
+        View Profile
+      </button>
 
-                      {(userData.role === "Customer" ||
-                        userData.role === "Delivery_Rider") && (
-                        <button
-                          onClick={() => deleteAccountpop(true)}
-                          className="block w-full text-left px-3 py-2 text-base font-medium text-purple-600 hover:bg-purple-100 hover:text-purple-700"
-                        >
-                          Delete Account
-                        </button>
-                      )}
+      {(userData.role === "Customer" ||
+        userData.role === "Delivery_Rider") && (
+        <button
+          onClick={() => deleteAccountpop(true)}
+          className="block w-full text-left px-3 py-2 text-base font-medium text-purple-600 hover:bg-purple-100 hover:text-purple-700"
+        >
+          Delete Account
+        </button>
+      )}
 
-                      {userData.role === "Customer" &&
-                        currentOrders.length > 0 && (
-                          <div className="mt-3 space-y-1">
-                            <button
-                              className="block w-full text-left px-3 py-2 text-base font-medium text-purple-600 hover:bg-purple-100 hover:text-purple-700"
-                              onClick={() => {
-                                CurrentOrdersPopup(true);
-                                setIsMenuOpen(false);
-                              }}
-                            >
-                              View Current Orders
-                            </button>
-                            <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                          </div>
-                        )}
+      {userData.role === "Customer" && currentOrders.length > 0 && (
+        <div className="flex items-center justify-between px-3 py-2 text-base font-medium text-purple-600 hover:bg-purple-100 hover:text-purple-700">
+          <button
+            className="flex-1 text-left"
+            onClick={() => {
+              CurrentOrdersPopup(true);
+              setIsMenuOpen(false);
+            }}
+          >
+            View Current Orders
+          </button>
+          <div className="ml-2 w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+        </div>
+      )}
 
-                      {userData.role === "Customer" &&
-                        pastOrders.length > 0 && (
-                          <div className="mt-3 space-y-1">
-                            <button
-                              className="block w-full text-left px-3 py-2 text-base font-medium text-purple-600 hover:bg-purple-100 hover:text-purple-700"
-                              onClick={() => {
-                                pastOrdersPopup(true);
-                                setIsMenuOpen(false);
-                              }}
-                            >
-                              View Past Orders
-                            </button>
-                          </div>
-                        )}
+      {userData.role === "Customer" && pastOrders.length > 0 && (
+        <div className="mt-3 space-y-1">
+          <button
+            className="block w-full text-left px-3 py-2 text-base font-medium text-purple-600 hover:bg-purple-100 hover:text-purple-700"
+            onClick={() => {
+              pastOrdersPopup(true);
+              setIsMenuOpen(false);
+            }}
+          >
+            View Past Orders
+          </button>
+        </div>
+      )}
 
-                      {userData.role === "Delivery_Rider" && (
-                        <button
-                          onClick={() => {
-                            setBikePopup(true);
-                            setIsMenuOpen(false);
-                          }}
-                          className="block w-full text-left px-3 py-2 text-base font-medium text-purple-600 hover:bg-purple-100 hover:text-purple-700"
-                        >
-                          Change Vehicle Details
-                        </button>
-                      )}
+      {userData.role === "Delivery_Rider" && (
+        <button
+          onClick={() => {
+            setBikePopup(true);
+            setIsMenuOpen(false);
+          }}
+          className="block w-full text-left px-3 py-2 text-base font-medium text-purple-600 hover:bg-purple-100 hover:text-purple-700"
+        >
+          Change Vehicle Details
+        </button>
+      )}
 
-                      {userData.role === "Delivery_Rider" && (
-                        <button
-                          onClick={() => {
-                            setBikePopup(true);
-                            setIsMenuOpen(false);
-                          }}
-                          className="block w-full text-left px-3 py-2 text-base font-medium text-purple-600 hover:bg-purple-100 hover:text-purple-700"
-                        >
-                          Change Vehicle Details
-                        </button>
-                      )}
+      <button
+        onClick={(e) => {
+          signItOut(e);
+          setIsMenuOpen(false);
+        }}
+        className="block w-full text-left px-3 py-2 text-base font-medium text-purple-600 hover:bg-purple-100 hover:text-purple-700"
+      >
+        Sign Out
+      </button>
+    </div>
+  </div>
+)}
 
-                      <button
-                        onClick={(e) => {
-                          signItOut(e);
-                          setIsMenuOpen(false);
-                        }}
-                        className="block w-full text-left px-3 py-2 text-base font-medium text-purple-600 hover:bg-purple-100 hover:text-purple-700"
-                      >
-                        Sign Out
-                      </button>
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
           )}
@@ -948,6 +993,15 @@ const Navbar = () => {
               pastOrders={pastOrders}
               pastPopup={pastPopup}
               pastOrdersPopup={pastOrdersPopup}
+              promptForReview={promptForReview}
+              setSelectedOrder={setSelectedOrder}
+            />
+          )}
+
+          {reviewPopup && (
+            <RatingPopup
+              order={selectedOrder}
+              onClose={() => promptForReview(false)}
             />
           )}
           {currentPopup && (
@@ -960,7 +1014,7 @@ const Navbar = () => {
           )}
 
           {bikePopup && (
-            <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50">
+            <div className="fixed inset-0 bg-gray-800 backdrop-blur-sm  bg-opacity-75 flex items-center justify-center z-50">
               <div className="bg-white w-11/12 max-w-md p-6 rounded-lg shadow-lg">
                 <h2 className="text-2xl font-bold text-purple-700 text-center mb-4">
                   Update Your Vehicle
@@ -1001,159 +1055,168 @@ const Navbar = () => {
               </div>
             </div>
           )}
-
           {viewProfile && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-              <div className="bg-white w-96 p-6 rounded-lg shadow-lg relative">
+            <div className="fixed inset-0 backdrop-blur-sm  flex items-center justify-center p-4 z-50">
+              <div className="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden relative transform transition-all duration-300 hover:scale-[1.01]">
                 <button
-                  className="absolute top-4  text-purple-600 hover:text-purple-800 text-xl"
-                  onClick={() => setViewProfile(false)} // Toggle edit mode
+                  className="absolute top-4 left-4 text-purple-600 hover:text-purple-800 transition-colors duration-200 z-10"
+                  onClick={() => setViewProfile(false)}
                 >
-                  X
+                  <FaTimes className="text-2xl" />
                 </button>
 
                 <button
-                  className="absolute top-4 right-2 text-purple-600 hover:text-purple-800 text-xl"
+                  className="absolute top-4 right-4 text-purple-600 hover:text-purple-800 transition-colors duration-200 z-10"
                   onClick={() => setEditMode(!editMode)}
                 >
-                  <FaPencilAlt />
+                  <FaPencilAlt className="text-xl" />
                 </button>
 
-                <h2 className="text-2xl font-bold text-purple-600 mb-6 text-center">
-                  Your Profile
-                </h2>
+                <div className="p-6 space-y-6">
+                  <h2 className="text-3xl font-extrabold text-purple-600 text-center mb-6 tracking-tight">
+                    Your Profile
+                  </h2>
 
-                {/* Name */}
-                <div className="mb-6">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Name
-                  </label>
-                  <div className="flex items-center">
+                  {/* Name */}
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Name
+                    </label>
                     <input
                       type="text"
                       name="User_name"
                       value={updatedDetails.User_name}
                       onChange={handleDetailChange}
                       readOnly={!editMode}
-                      className="flex-grow px-3 py-2 border border-gray-300 rounded-md text-gray-700 bg-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-600"
+                      className="w-full px-4 py-3 border border-purple-200 rounded-lg text-gray-700 
+            bg-purple-50 focus:outline-none focus:ring-2 focus:ring-purple-500 
+            transition-all duration-300 ease-in-out"
                     />
                   </div>
-                </div>
 
-                {/* Email */}
-                <div className="mb-6">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Email
-                  </label>
-                  <div className="flex items-center">
+                  {/* Email */}
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Email
+                    </label>
                     <input
                       type="email"
                       name="Email_address"
                       value={updatedDetails.Email_address}
                       onChange={handleDetailChange}
                       readOnly={!editMode}
-                      className="flex-grow px-3 py-2 border border-gray-300 rounded-md text-gray-700 bg-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-600"
+                      className="w-full px-4 py-3 border border-purple-200 rounded-lg text-gray-700 
+            bg-purple-50 focus:outline-none focus:ring-2 focus:ring-purple-500 
+            transition-all duration-300 ease-in-out"
                     />
                   </div>
-                </div>
 
-                {/* Phone */}
-                <div className="mb-6">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Phone
-                  </label>
-                  <div className="flex items-center">
+                  {/* Phone */}
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Phone
+                    </label>
                     <input
                       type="text"
                       name="phone_no"
                       value={updatedDetails.phone_no}
                       onChange={handleDetailChange}
                       readOnly={!editMode}
-                      className="flex-grow px-3 py-2 border border-gray-300 rounded-md text-gray-700 bg-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-600"
+                      className="w-full px-4 py-3 border border-purple-200 rounded-lg text-gray-700 
+            bg-purple-50 focus:outline-none focus:ring-2 focus:ring-purple-500 
+            transition-all duration-300 ease-in-out"
                     />
                   </div>
-                </div>
 
-                {/* Change Password */}
-                <div className="mb-4">
-                  <button
-                    onClick={() => setPasswordPop(true)}
-                    className="w-full py-2 text-white bg-purple-600 rounded-md hover:bg-purple-700 transition duration-200"
-                  >
-                    Change Password
-                  </button>
-                </div>
-
-                {passwordPopup && (
-                  <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-                    <div className="bg-white w-96 p-6 rounded-lg shadow-lg relative">
-                      <button
-                        className="absolute top-2 right-2 text-purple-600 hover:text-purple-800 text-xl"
-                        onClick={() => setPasswordPop(false)}
-                      >
-                        X
-                      </button>
-
-                      <h2 className="text-2xl font-bold text-purple-600 mb-6 text-center">
-                        Change Password
-                      </h2>
-
-                      <div className="mb-6">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          New Password
-                        </label>
-                        <input
-                          type="password"
-                          name="first_entry"
-                          value={newPassword.first_entry}
-                          onChange={handlePasswordChange}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-600"
-                        />
-                      </div>
-
-                      <div className="mb-6">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Confirm New Password
-                        </label>
-                        <input
-                          type="password"
-                          name="second_entry"
-                          value={newPassword.second_entry}
-                          onChange={handlePasswordChange}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-600"
-                        />
-                      </div>
-
-                      {/* Save Button */}
-                      <div className="mb-4">
-                        <button
-                          onClick={handlePasswordSubmit}
-                          className="w-full py-2 text-white bg-purple-600 rounded-md hover:bg-purple-700 transition duration-200"
-                        >
-                          Save Changes
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Save Button */}
-                {editMode && (
+                  {/* Change Password */}
                   <div className="mb-4">
                     <button
-                      onClick={handleSave}
-                      className="w-full py-2 text-white bg-purple-600 rounded-md hover:bg-purple-700 transition duration-200"
+                      onClick={() => setPasswordPop(true)}
+                      className="w-full py-3 text-white bg-purple-600 rounded-lg hover:bg-purple-700 
+            transition duration-300 ease-in-out transform hover:scale-[1.02]"
                     >
-                      Save Changes
+                      Change Password
                     </button>
                   </div>
-                )}
+
+                  {passwordPopup && (
+                    <div className="fixed inset-0  backdrop-blur-sm  flex justify-center items-center z-50">
+                      <div className="bg-white w-full max-w-md p-6 rounded-2xl shadow-2xl relative">
+                        <button
+                          className="absolute top-4 right-4 text-purple-600 hover:text-purple-800"
+                          onClick={() => setPasswordPop(false)}
+                        >
+                          <FaTimes className="text-2xl" />
+                        </button>
+
+                        <h2 className="text-2xl font-bold text-purple-600 mb-6 text-center">
+                          Change Password
+                        </h2>
+
+                        <div className="mb-4">
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            New Password
+                          </label>
+                          <input
+                            type="password"
+                            name="first_entry"
+                            value={newPassword.first_entry}
+                            onChange={handlePasswordChange}
+                            className="w-full px-4 py-3 border border-purple-200 rounded-lg 
+                  focus:outline-none focus:ring-2 focus:ring-purple-500 
+                  transition-all duration-300 ease-in-out"
+                          />
+                        </div>
+
+                        <div className="mb-6">
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Confirm New Password
+                          </label>
+                          <input
+                            type="password"
+                            name="second_entry"
+                            value={newPassword.second_entry}
+                            onChange={handlePasswordChange}
+                            className="w-full px-4 py-3 border border-purple-200 rounded-lg 
+                  focus:outline-none focus:ring-2 focus:ring-purple-500 
+                  transition-all duration-300 ease-in-out"
+                          />
+                        </div>
+
+                        <div className="mb-4">
+                          <button
+                            onClick={handlePasswordSubmit}
+                            className="w-full py-3 text-white bg-purple-600 rounded-lg 
+                  hover:bg-purple-700 transition duration-300 ease-in-out 
+                  transform hover:scale-[1.02]"
+                          >
+                            Save Changes
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Save Button */}
+                  {editMode && (
+                    <div className="mb-4">
+                      <button
+                        onClick={handleSave}
+                        className="w-full py-3 text-white bg-purple-600 rounded-lg 
+              hover:bg-purple-700 transition duration-300 ease-in-out 
+              transform hover:scale-[1.02]"
+                      >
+                        Save Changes
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           )}
 
           {deletePop && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+            <div className="fixed inset-0 backdrop-blur-sm  bg-opacity-50 flex justify-center items-center z-50">
               <div className="bg-white w-96 p-6 rounded-lg shadow-lg relative max-w-full">
                 {/* Close Button */}
                 <button

@@ -8,7 +8,7 @@ module.exports.getRestaurants = (req, res) => {
    LEFT JOIN Discount d ON d.restaurant_id = r.restaurant_id AND d.end_date > CURRENT_TIMESTAMP;
 `;
 
-db.query(q, [4], (err, data) => {
+db.query(q,[], (err, data) => {
   if (err) {
     return res.status(500).json({ error: 'Database query failed', details: err.message });
   }

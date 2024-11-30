@@ -217,6 +217,7 @@ const CartContextProvider = ({ children }) => {
       );
       if (confirmClear) {
         setCart([{ ...item, quantity: 1 }]);
+        setAlert({message: 'Items from another restaurant in your cart have been removed!',type: 'success'});
         return;
       } else {
         return;
@@ -233,7 +234,7 @@ const CartContextProvider = ({ children }) => {
     } else {
       newCart.push({ ...item, quantity: 1 });
     }
-
+    setAlert({message : 'Item added to cart!',type : 'success'});
     setCart(newCart);
   };
 
@@ -263,6 +264,7 @@ const CartContextProvider = ({ children }) => {
 
   const clearCart = () => {
     setCart([]);
+    setAlert({message: 'Your cart was cleared',type: 'success'});
   }
 
   return (

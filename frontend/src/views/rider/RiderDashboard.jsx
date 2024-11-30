@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useUserContext } from "../../contexts/userContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { FaBiking, FaBox, FaCheckCircle, FaDollarSign, FaUtensils, FaMapMarkerAlt, FaTimesCircle } from 'react-icons/fa';
+import {FaTimes, FaBiking, FaBox, FaCheckCircle, FaDollarSign, FaUtensils, FaMapMarkerAlt, FaTimesCircle } from 'react-icons/fa';
 import { useAlertContext } from "../../contexts/alertContext";
 
 const RiderDashboard = () => {
@@ -312,68 +312,88 @@ const RiderDashboard = () => {
           </div>
         </div>
       )}
+{orderDetailPopup && (
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div className="bg-white rounded-2xl shadow-lg w-full max-w-md m-4 overflow-hidden">
+      {/* Header */}
+      <div className="bg-purple-600 px-6 py-4 flex items-center justify-between">
+        <h2 className="text-xl font-bold text-white">Order Details</h2>
+        <button
+          onClick={() => {
+            analyzeOrder({});
+            setOrderDetailsPopup(false);
+          }}
+          className="text-white hover:text-purple-200 transition-colors"
+        >
+          <FaTimes className="text-xl" />
+        </button>
+      </div>
 
-      {orderDetailPopup &&
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl p-8 max-w-md w-full m-4">
-            <h2 className="text-2xl font-bold text-indigo-800 mb-4">Order Details</h2>
-            <form className="space-y-4">
-              <div>
-                <label htmlFor="CustomerName" className="block text-sm font-medium text-gray-700 mb-1">
-                  Customer Name
-                </label>
-                <input
-                  id="CustomerName"
-                  type="text"
-                  value={analyzingOrder.Customer_Name}
-                  readOnly
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                required
-                />
-              </div>
-              
-              <div>
-                <label htmlFor="NearbyPoint" className="block text-sm font-medium text-gray-700 mb-1">
-                  Near by point
-                </label>
-                <input
-                  id="NearbyPoint"
-                  type="text"
-                  value={analyzingOrder.NearbyPoint}
-                  readOnly
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                required
-                />
-              </div>
-              <div>
-                <label htmlFor="PhoneNo" className="block text-sm font-medium text-gray-700 mb-1">
-                  Customer Mobile
-                </label>
-                <input
-                  id="PhoneNo"
-                  type="text"
-                  value={analyzingOrder.PhoneNo}
-                  readOnly
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                required
-                />
-              </div>
-              <button
-                className="w-full bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700 transition duration-300"
-                onClick={e => { e.preventDefault(); analyzeOrder({}); setOrderDetailsPopup(false);}}
-              >
-                close
-              </button>
-              <button
-                className="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition duration-300"
-                onClick={handleOrderDelivery}
-              >
-                Delivered
-              </button>
-            </form>
-          </div>
+      {/* Content */}
+      <form className="space-y-4 p-6">
+        <div>
+          <label
+            htmlFor="CustomerName"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
+            Customer Name
+          </label>
+          <input
+            id="CustomerName"
+            type="text"
+            value={analyzingOrder.Customer_Name}
+            readOnly
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+          />
         </div>
-      }
+
+        <div>
+          <label
+            htmlFor="NearbyPoint"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
+            Nearby Point
+          </label>
+          <input
+            id="NearbyPoint"
+            type="text"
+            value={analyzingOrder.NearbyPoint}
+            readOnly
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+          />
+        </div>
+
+        <div>
+          <label
+            htmlFor="PhoneNo"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
+            Customer Mobile
+          </label>
+          <input
+            id="PhoneNo"
+            type="text"
+            value={analyzingOrder.PhoneNo}
+            readOnly
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+          />
+        </div>
+
+        <button
+  className="bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition duration-300 text-sm sm:text-base"
+  onClick={handleOrderDelivery}
+>
+  <div className="flex items-center space-x-2">
+    <FaCheckCircle />
+    <span>Mark as Delivered</span>
+  </div>
+</button>
+
+      </form>
+    </div>
+  </div>
+)}
+
 
     </div>
   );

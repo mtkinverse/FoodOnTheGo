@@ -1,5 +1,59 @@
 const db = require('../db');
 
+module.exports.orderAgain = (req, res) => {
+    const customer_id = req.params.id;
+
+    const q = `
+      SELECT r.*, loc.*, d.discount_value
+      FROM restaurant r
+      JOIN locations loc ON r.location_id = loc.location_id
+      LEFT JOIN Discount d ON d.restaurant_id = r.restaurant_id AND d.end_date > CURRENT_TIMESTAMP
+      JOIN (
+        SELECT DISTINCT restaurant_id
+        FROM Orders
+        WHERE customer_id = ?
+      ) o ON o.restaurant_id = r.restaurant_id
+    `;
+
+    db.query(q, [customer_id], (err, data) => {
+        if (err) {
+            return res.status(500).json({ error: 'Database query failed', details: err.message });
+        }
+
+        const restaurantsWithReviewCount = [];
+
+        if (!data.length) {
+            return res.status(200).json(restaurantsWithReviewCount); // Return empty array if no results
+        }
+
+        let processedCount = 0;
+
+        data.forEach((restaurant) => {
+            const reviewCountQuery = `
+              SELECT COUNT(*) AS review_count
+              FROM orders
+              WHERE restaurant_id = ? AND review_id IS NOT NULL
+            `;
+
+            db.query(reviewCountQuery, [restaurant.restaurant_id], (err, reviewData) => {
+                if (err) {
+                    return res.status(500).json({ error: 'Failed to fetch review count', details: err.message });
+                }
+
+                restaurant.review_count = reviewData[0]?.review_count || 0; // Add review_count to restaurant
+                restaurantsWithReviewCount.push(restaurant);
+                processedCount++;
+
+                if (processedCount === data.length) {
+                    // Send response when all restaurants have been processed
+                    return res.status(200).json(restaurantsWithReviewCount);
+                }
+            });
+        });
+    });
+};
+
+
 module.exports.verifyPromo = (req, res) => {
     console.log('Verify promo hit');
     const menu_id = req.params.id;
