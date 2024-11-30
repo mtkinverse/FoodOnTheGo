@@ -41,11 +41,8 @@ const DealsPopup = ({ setDealPopup,selectedDeal,setSelectedDeal }) => {
     if(selectedDeal){
       if(selectedDeal.Type === 'discount') setNewDiscount({...selectedDeal, start_date : formatDate(selectedDeal.start_date), end_date : formatDate(selectedDeal.end_date)})
       if(selectedDeal.Type === 'promo') setNewPromo({...selectedDeal, start_date : formatDate(selectedDeal.start_date), end_date : formatDate(selectedDeal.end_date)})
-        setDealType(selectedDeal.Type)
-      console.log(selectedDeal);
-      
+        setDealType(selectedDeal.Type)      
     }
-    else console.log('selected deal undefined');
   
   },[])
 
@@ -96,13 +93,16 @@ const DealsPopup = ({ setDealPopup,selectedDeal,setSelectedDeal }) => {
       }
     })
     .then(res => {
-      setSelectedDeal({});
+      setSelectedDeal(null);
       setAlert({ message : 'Deal updated',type : 'success'})
-      setDealPopup(false);
     })
     .catch(err => {
       console.log(err.message);
       setAlert({ message : 'Cannot update deal',type : 'failure'})
+    })
+    .finally(()=>{
+      setDealType(null);
+      setDealPopup(false);
     })
   }
 
@@ -333,7 +333,11 @@ const DealsPopup = ({ setDealPopup,selectedDeal,setSelectedDeal }) => {
                   <button
                     type="button"
                     className="bg-gray-300 text-gray-800 py-2 px-4 rounded-lg hover:bg-gray-400 transition duration-300"
-                    onClick={() => setDealPopup(false)}
+                    onClick={() => {
+                      setSelectedDeal(null);
+                      setDealType(null);
+                      setDealPopup(false)}
+                    }
                   >
                     Close
                   </button>
@@ -365,7 +369,7 @@ const DealsPopup = ({ setDealPopup,selectedDeal,setSelectedDeal }) => {
                     htmlFor="discount_value"
                     className="block text-sm font-medium text-gray-700"
                   >
-                    Promo Value (%)
+                    Discount Value (%)
                   </label>
                   <input
                     type="number"
@@ -428,7 +432,10 @@ const DealsPopup = ({ setDealPopup,selectedDeal,setSelectedDeal }) => {
                   <button
                     type="button"
                     className="bg-gray-300 text-gray-800 py-2 px-4 rounded-lg hover:bg-gray-400 transition duration-300"
-                    onClick={() => setDealPopup(false)}
+                    onClick={() => {
+                      setSelectedDeal(null);
+                      setDealPopup(false);
+                    }}
                   >
                     Close
                   </button>
@@ -488,6 +495,7 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     if (!loggedIn) navigate("/");
+    setSelectedDeal(null);
   }, [loggedIn, navigate]);
 
   useEffect(() => {}, [restaurantOrders]);
@@ -659,6 +667,8 @@ const AdminDashboard = () => {
           <button
             onClick={() => {
               setDealPopup(true);
+              console.log('selected deal' ,selectedDeal);
+              
             }}
             className="bg-purple-500 text-white px-6 py-2 rounded-md font-medium hover:bg-purple-700 transition duration-200"
           >

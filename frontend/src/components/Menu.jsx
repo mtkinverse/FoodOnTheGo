@@ -12,7 +12,7 @@ const RestaurantMenu = () => {
   const { setAlert } = useAlertContext();
   const navigate = useNavigate();
   const { loggedIn, userData } = useUserContext();
-  const { handleAddToCart } = useCartContext(userData.User_id);
+  const { handleAddToCart,cart } = useCartContext(userData.User_id);
 
   const [restaurant, setRestaurant] = useState(null);
   const [menuItems, setMenuItems] = useState([]);
@@ -212,7 +212,7 @@ const RestaurantMenu = () => {
                 key={index}
                 className="flex justify-between items-start bg-white p-3 rounded-lg border border-gray-100 hover:border-purple-100 transition-colors"
               >
-                <div className="flex-1 min-w-0 pr-2">
+                <div className="flex-1 min-w-0 pr-2 my-2">
                   <h3 className="font-semibold text-sm mb-1 truncate">
                     {item.Dish_Name}
                   </h3>
@@ -237,12 +237,12 @@ const RestaurantMenu = () => {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 my-auto h-full">
                   {item.Item_image && (
                     <img
                       src={item.Item_image}
                       alt={item.Dish_Name}
-                      className="w-12 h-12 object-cover rounded-lg"
+                      className="w-12 h-full object-cover rounded-lg"
                     />
                   )}
                   <button
