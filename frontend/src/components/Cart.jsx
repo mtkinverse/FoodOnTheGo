@@ -1,11 +1,29 @@
 import React, { useEffect, useState } from "react";
 import { useCartContext } from "../contexts/cartContext";
-import { FaShoppingCart, FaPlus, FaMinus, FaTrash, FaBiking } from "react-icons/fa";
+import {
+  FaShoppingCart,
+  FaPlus,
+  FaMinus,
+  FaTrash,
+  FaBiking,
+} from "react-icons/fa";
 import { Banknote } from "lucide-react";
 
 const Cart = () => {
-  const { cart, cartCount, handleIncrement, handleDecrement, handleRemove,
-    placeOrder, promo, setPromo, getSubTotal, getTotalAmount, applyPromoCode,clearCart } = useCartContext();
+  const {
+    cart,
+    cartCount,
+    handleIncrement,
+    handleDecrement,
+    handleRemove,
+    placeOrder,
+    promo,
+    setPromo,
+    getSubTotal,
+    getTotalAmount,
+    applyPromoCode,
+    clearCart,
+  } = useCartContext();
 
   const [location, setLocation] = useState({
     Address: "",
@@ -17,12 +35,13 @@ const Cart = () => {
   const [tipAmount, setTipAmount] = useState(0);
   const handleApplyPromoCode = () => {
     applyPromoCode();
-  }
+  };
 
   const handleOrderPlacment = (e) => {
     e.preventDefault();
     placeOrder(location.Address, location.NearbyPoint, tipAmount);
     setOrderPopUp(false);
+    setTipAmount(0);
     setLocation({
       Address: "",
       NearbyPoint: "",
@@ -57,7 +76,9 @@ const Cart = () => {
       >
         <div className="h-full flex flex-col">
           <div className="p-6 border-b flex justify-between items-center">
-            <h2 className="text-2xl my-auto font-bold text-purple-900">Your Cart</h2>
+            <h2 className="text-2xl my-auto font-bold text-purple-900">
+              Your Cart
+            </h2>
             <button
               onClick={() => setCartPopup(false)}
               className="text-red-500 hover:text-red-700 text-2xl"
@@ -79,12 +100,15 @@ const Cart = () => {
                 >
                   <div>
                     {/* Dish Name */}
-                    <h3 className="font-bold text-purple-900">{item.Dish_Name}</h3>
+                    <h3 className="font-bold text-purple-900">
+                      {item.Dish_Name}
+                    </h3>
 
                     {/* Price */}
                     <div className="flex items-center gap-2">
                       {/* Original Price with line-through (if discounted) */}
-                      {item.discounted_price && item.discounted_price < item.Item_Price ? (
+                      {item.discounted_price &&
+                      item.discounted_price < item.Item_Price ? (
                         <>
                           <span className="text-gray-400 line-through text-sm">
                             Rs.{item.Item_Price}
@@ -164,23 +188,29 @@ const Cart = () => {
 
           <div className="p-6 border-t space-y-4">
             <div className="flex justify-between">
-              <span className="text-lg font-medium text-purple-900">Subtotal:</span>
+              <span className="text-lg font-medium text-purple-900">
+                Subtotal:
+              </span>
               <span className="text-lg font-bold text-purple-900">
                 Rs.{getSubTotal()}
               </span>
             </div>
             <hr />
-            {
-              promo.promo_id && (
-                <div className="flex justify-between">
-                  <span className="text-lg font-medium text-purple-900">Discount:</span>
-                  <span className="text-lg font-bold text-purple-900">{promo.promo_value}%</span>
-                </div>
-              )
-            }
+            {promo.promo_id && (
+              <div className="flex justify-between">
+                <span className="text-lg font-medium text-purple-900">
+                  Discount:
+                </span>
+                <span className="text-lg font-bold text-purple-900">
+                  {promo.promo_value}%
+                </span>
+              </div>
+            )}
             {promo.promo_id && <hr />}
             <div className="flex justify-between">
-              <span className="text-lg font-medium text-purple-900">Delivery:</span>
+              <span className="text-lg font-medium text-purple-900">
+                Delivery:
+              </span>
               <span className="text-lg font-bold text-purple-900">Rs.150</span>
             </div>
             <hr />
@@ -265,38 +295,37 @@ const Cart = () => {
                   required
                 />
               </div>
-
               {/* Tip Options */}
               <div className="mb-6">
                 <label className="block text-gray-700 font-bold mb-2">
                   Add a Tip for Your Rider
                 </label>
-                <div className="flex gap-4 items-center justify-between">
+                <div className="grid grid-cols-3 gap-2 sm:gap-4">
                   {/* Tip Option 50 */}
                   <button
                     type="button"
                     onClick={() => setTipAmount(50)}
-                    className="flex items-center gap-2 bg-purple-100 hover:bg-purple-200 rounded-lg py-2 px-4 text-purple-600"
+                    className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 bg-purple-100 hover:bg-purple-200 rounded-lg py-2 px-2 sm:px-4 text-purple-600 text-sm sm:text-base"
                   >
-                    <FaBiking className="text-purple-600" />
+                    <FaBiking className="text-purple-600 text-sm sm:text-base" />
                     Rs.50
                   </button>
                   {/* Tip Option 100 */}
                   <button
                     type="button"
                     onClick={() => setTipAmount(100)}
-                    className="flex items-center gap-2 bg-purple-100 hover:bg-purple-200 rounded-lg py-2 px-4 text-purple-600"
+                    className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 bg-purple-100 hover:bg-purple-200 rounded-lg py-2 px-2 sm:px-4 text-purple-600 text-sm sm:text-base"
                   >
-                    <FaBiking className="text-purple-600" />
+                    <FaBiking className="text-purple-600 text-sm sm:text-base" />
                     Rs.100
                   </button>
                   {/* Tip Option 150 */}
                   <button
                     type="button"
                     onClick={() => setTipAmount(150)}
-                    className="flex items-center gap-2 bg-purple-100 hover:bg-purple-200 rounded-lg py-2 px-4 text-purple-600"
+                    className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 bg-purple-100 hover:bg-purple-200 rounded-lg py-2 px-2 sm:px-4 text-purple-600 text-sm sm:text-base"
                   >
-                    <FaBiking className="text-purple-600" />
+                    <FaBiking className="text-purple-600 text-sm sm:text-base" />
                     Rs.150
                   </button>
                 </div>
@@ -306,11 +335,12 @@ const Cart = () => {
                   placeholder="Custom Tip Amount"
                   className="mt-3 w-full border rounded-lg py-2 px-3 text-gray-700"
                   onChange={(e) => setTipAmount(e.target.value)}
-                  value={tipAmount || ''}
+                  value={tipAmount || ""}
                 />
-                <p className="text-sm text-gray-500 mt-2">Your rider will receive this tip by us, in hand.</p>
+                <p className="text-xs sm:text-sm text-gray-500 mt-2">
+                  Your rider will receive this tip by us, in hand.
+                </p>
               </div>
-
               <div className="mb-6">
                 <label className="block text-gray-700 font-bold mb-2">
                   Payment Method

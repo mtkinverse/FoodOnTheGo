@@ -70,20 +70,22 @@ const AddRestaurantPopup = ({ isOpen, onClose,fetchRestaurants}) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-50">
-      <div className="bg-white w-full max-w-md p-6 rounded-lg shadow-lg">
-        <div className="flex justify-between items-center border-b pb-4 mb-4">
-          <h2 className="text-xl font-bold text-purple-900">Add Restaurant</h2>
+    <div className="fixed inset-0 bg-opacity-60 flex items-center justify-center p-4 z-50 overflow-y-auto">
+      <div className="bg-white w-full max-w-md mx-auto rounded-xl shadow-2xl overflow-hidden animate-fade-in-up">
+        <div className="bg-purple-600 px-6 py-4 flex justify-between items-center border-b border-purple-100">
+          <h2 className="text-2xl font-bold text-white tracking-tight">Add Restaurant</h2>
           <button
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-700 text-xl"
+            className="text-gray-500 hover:text-gray-700 hover:bg-purple-100 rounded-full p-2 transition-colors duration-200 text-2xl leading-none"
           >
             &times;
           </button>
         </div>
-        <form onSubmit={handleSubmit} encType="multipart/form-data">
-          <div className="mb-4">
-            <label className="block mb-1 text-gray-700 font-semibold">
+        
+        <form onSubmit={handleSubmit} encType="multipart/form-data" className="p-6 space-y-4">
+          {/* Restaurant Name */}
+          <div>
+            <label className="block mb-2 text-sm font-semibold text-gray-700">
               Restaurant Name
             </label>
             <input
@@ -91,95 +93,101 @@ const AddRestaurantPopup = ({ isOpen, onClose,fetchRestaurants}) => {
               name="Restaurant_name"
               value={formValues.Restaurant_name}
               onChange={handleChange}
-              className="w-full border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="w-full px-4 py-2.5 border border-purple-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-sm"
               placeholder="Enter restaurant name"
               required
             />
           </div>
 
-          <div className="mb-4">
-            <label className="block mb-1 text-gray-700 font-semibold">
-              Opens At
-            </label>
-            <input
-              type="time"
-              name="OpensAt"
-              value={formValues.OpensAt}
-              onChange={handleChange}
-              className="w-full border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-              required
-            />
+          {/* Operating Hours */}
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block mb-2 text-sm font-semibold text-gray-700">
+                Opens At
+              </label>
+              <input
+                type="time"
+                name="OpensAt"
+                value={formValues.OpensAt}
+                onChange={handleChange}
+                className="w-full px-4 py-2.5 border border-purple-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-sm"
+                required
+              />
+            </div>
+            <div>
+              <label className="block mb-2 text-sm font-semibold text-gray-700">
+                Closes At
+              </label>
+              <input
+                type="time"
+                name="ClosesAt"
+                value={formValues.ClosesAt}
+                onChange={handleChange}
+                className="w-full px-4 py-2.5 border border-purple-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-sm"
+                required
+              />
+            </div>
           </div>
 
-          <div className="mb-4">
-            <label className="block mb-1 text-gray-700 font-semibold">
-              Closes At
-            </label>
-            <input
-              type="time"
-              name="ClosesAt"
-              value={formValues.ClosesAt}
-              onChange={handleChange}
-              className="w-full border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-              required
-            />
-          </div>
-          
-          <div className="mb-4">
-            <label className="block mb-1 text-gray-700 font-semibold">
-              Your first location's address
+          {/* Address */}
+          <div>
+            <label className="block mb-2 text-sm font-semibold text-gray-700">
+              First Location Address
             </label>
             <input
               type="text"
               name="Address"
               value={formValues.Address}
               onChange={handleChange}
-              className="w-full border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-              required
-            />
-          </div>
-          
-          <div className="mb-4">
-            <label className="block mb-1 text-gray-700 font-semibold">
-              Your first location's contact number
-            </label>
-            <input
-              type="text"
-              name="Loc_Contact_No"
-              value={formValues.Loc_Contact_No}
-              onChange={handleChange}
-              className="w-full border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="w-full px-4 py-2.5 border border-purple-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-sm"
               required
             />
           </div>
 
-          <div className="mb-4">
-            <label className="block mb-1 text-gray-700 font-semibold">
+          {/* Contact Number */}
+          <div>
+            <label className="block mb-2 text-sm font-semibold text-gray-700">
+              Location Contact Number
+            </label>
+            <input
+              type="tel"
+              name="Loc_Contact_No"
+              value={formValues.Loc_Contact_No}
+              onChange={handleChange}
+              className="w-full px-4 py-2.5 border border-purple-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-sm"
+              required
+            />
+          </div>
+
+          {/* Restaurant Image */}
+          <div>
+            <label className="block mb-2 text-sm font-semibold text-gray-700">
               Restaurant Image
             </label>
             <input
               type="file"
               name="Restaurant_image"
               onChange={handleChange}
-              className="w-full border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="w-full file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100 border border-purple-200 rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-purple-500"
               accept="image/*"
               required
             />
           </div>
 
-          <div className="flex justify-end gap-4">
+          {/* Action Buttons */}
+          <div className="flex flex-col sm:flex-row justify-end gap-3 mt-6">
             <button
               type="button"
               onClick={onClose}
-              className="py-2 px-4 rounded-md bg-gray-300 hover:bg-gray-400 text-gray-700"
+              className="w-full sm:w-auto px-6 py-2.5 text-sm rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300 transition-colors duration-300"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="py-2 px-4 rounded-md bg-purple-600 hover:bg-purple-700 text-white"
+              className="w-full sm:w-auto px-6 py-2.5 text-sm rounded-lg bg-purple-600 text-white hover:bg-purple-700 transition-colors duration-300"
             >
-              Add
+              Add Restaurant
             </button>
           </div>
         </form>

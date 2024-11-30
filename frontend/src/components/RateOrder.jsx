@@ -4,12 +4,13 @@ import { XMarkIcon } from '@heroicons/react/24/outline';
 import axios from 'axios';
 import { useAlertContext } from '../contexts/alertContext';
 import { useUserContext } from '../contexts/userContext';
+
 const RatingPopup = ({ order, onClose }) => {
-  const {setPastOrders,pastOrders} = useUserContext();
+  const {setPastOrders} = useUserContext();
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
   const [description, setDescription] = useState('');
-  const [message, setMessage] = useState('');
+
   const {setAlert} = useAlertContext();
   
   const handleSubmit = async () => {
@@ -37,7 +38,7 @@ const RatingPopup = ({ order, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-white backdrop-blur-sm flex justify-center items-center z-50 p-4">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50 p-4">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all">
         {/* Header */}
         <div className="bg-gradient-to-r from-purple-600 to-purple-800 text-white p-6 relative">
@@ -97,10 +98,7 @@ const RatingPopup = ({ order, onClose }) => {
             className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-300 mb-4 resize-none h-24"
           />
 
-          {/* Submit Button */}
-          {message ? (
-            <p className="text-red-500 text-center mb-4">{message}</p>
-          ) : (
+        
             <button
               onClick={handleSubmit}
               className="
@@ -115,7 +113,7 @@ const RatingPopup = ({ order, onClose }) => {
             >
               Submit Rating
             </button>
-          )}
+
         </div>
       </div>
     </div>

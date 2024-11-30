@@ -85,20 +85,25 @@ const RestaurantMenu = () => {
   const groupedCategories = Object.fromEntries(
     Object.entries(
       filteredItems.reduce((acc, item) => {
-        const category = item.Category || "Other";
+        // Normalize the category name to lowercase
+        const category = (item.Category || "Other").toLowerCase();
+  
         if (!acc[category]) {
           acc[category] = [];
         }
         acc[category].push(item);
         return acc;
       }, {})
-    ).sort(([a], [b]) => {
-      if (a === "Other") return 1;
-      if (b === "Other") return -1;
+    )
+    // Sort the categories alphabetically, putting "Other" last
+    .sort(([a], [b]) => {
+      if (a === "other") return 1;  // Handle "other" category to be last
+      if (b === "other") return -1;
       return a.localeCompare(b);
     })
   );
-
+  
+  
   if (!restaurant)
     return (
       <div className="flex items-center justify-center min-h-screen">

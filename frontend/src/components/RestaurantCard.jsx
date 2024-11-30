@@ -3,7 +3,7 @@ import { useUserContext } from '../contexts/userContext';
 import { Clock, Star, Utensils, MapPin } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-const RestaurantCard = ({ restaurant }) => {
+const RestaurantCard = ({ restaurant,flag }) => {
   const {
     Restaurant_Name,
     OpensAt,
@@ -85,7 +85,9 @@ const RestaurantCard = ({ restaurant }) => {
                    hover:bg-purple-600 text-white" 
         >
           <Utensils className="w-4 h-4" />
-          <span className="font-medium">View Menu</span>
+          {flag === 'View Menu' && <span className="font-medium">View Menu</span>}
+          {flag === 'Reorder' && <span className="font-medium">Reorder</span>}
+
         </button>
       </div>
     </div>
