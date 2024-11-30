@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 const { getOrders, getRiders, updateOrderStatus, dispatchOrder, getDeliveryDetails, 
     AddPromo,AddDiscount,getDeals, 
-    deleteDeal} = require('../controllers/adminController');
+    deleteDeal,
+    updateDeal} = require('../controllers/adminController');
 
 router.get('/getOrders/:id',getOrders);
 router.get('/getAvaliableRiders/:id',getRiders);
@@ -13,5 +14,6 @@ router.post('/addPromo/:id',AddPromo);
 router.get('/getCurrentDeals/:id',getDeals);
 router.post('/addDiscount/:id',AddDiscount);
 router.post('/deleteDeal/:id',deleteDeal);
+router.post('/updateDeal',updateDeal);
 
 module.exports = router;

@@ -13,7 +13,7 @@ import {
 } from "react-icons/fa";
 import { useAlertContext } from "../contexts/alertContext";
 
-const DealsPopup = ({ setDealPopup }) => {
+const DealsPopup = ({ setDealPopup,selectedDeal,setSelectedDeal }) => {
   const [dealType, setDealType] = useState(null);
   const { setAlert } = useAlertContext();
   const { userData } = useUserContext();
@@ -33,10 +33,26 @@ const DealsPopup = ({ setDealPopup }) => {
     Min_Total: 0,
   });
 
+  const formatDate = (date) => {
+    return new Date(date).toISOString().split("T")[0]; // Convert to YYYY-MM-DD
+  };
+
+  useEffect(()=>{
+    if(selectedDeal){
+      if(selectedDeal.Type === 'discount') setNewDiscount({...selectedDeal, start_date : formatDate(selectedDeal.start_date), end_date : formatDate(selectedDeal.end_date)})
+      if(selectedDeal.Type === 'promo') setNewPromo({...selectedDeal, start_date : formatDate(selectedDeal.start_date), end_date : formatDate(selectedDeal.end_date)})
+        setDealType(selectedDeal.Type)
+      console.log(selectedDeal);
+      
+    }
+    else console.log('selected deal undefined');
+  
+  },[])
+
   // const [NewPromoPopup, setNewPromoPopup] = useState(false);
 
-  const handlePromoSubmit = async (e) => {
-    e.preventDefault();
+  const handlePromoSubmit = async () => {
+
     try {
       const response = await axios.post(
         `/api/addPromo/${userData.Location_id}`,
@@ -68,8 +84,30 @@ const DealsPopup = ({ setDealPopup }) => {
     }
   };
 
-  const handleDiscountSubmit = async (e) => {
-    e.preventDefault();
+  const handlePromoUpdate = () => {
+    let temp;
+    if(dealType === 'promo') temp = { ...newpromo, Type : 'promo'};
+    else temp = {...newpromo, Type : 'discount'}
+    
+    axios.post('/api/updateDeal',JSON.stringify(temp),{
+      withCredentials : true,
+      headers: {
+        'Content-Type': 'application/json' // Explicitly set Content-Type to JSON
+      }
+    })
+    .then(res => {
+      setSelectedDeal({});
+      setAlert({ message : 'Deal updated',type : 'success'})
+      setDealPopup(false);
+    })
+    .catch(err => {
+      console.log(err.message);
+      setAlert({ message : 'Cannot update deal',type : 'failure'})
+    })
+  }
+
+  const handleDiscountSubmit = async () => {
+
     try {
       console.log("Sending request for", newDiscount);
 
@@ -151,9 +189,15 @@ const DealsPopup = ({ setDealPopup }) => {
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
               <h2 className="text-2xl font-bold text-gray-800 mb-4">
-                Create New Promo
+                {selectedDeal ? 'Update Promo' : 'Create New Promo'}
               </h2>
-              <form onSubmit={handlePromoSubmit}>
+              <form onSubmit={e =>
+                {
+                  e.preventDefault();
+                  if(selectedDeal) {setSelectedDeal({...newpromo,Type:dealType});handlePromoUpdate()}
+                  else handlePromoSubmit()
+                }
+                }>
                 <div className="mb-4">
                   <label
                     htmlFor="promo_code"
@@ -272,11 +316,12 @@ const DealsPopup = ({ setDealPopup }) => {
                   <input
                     type="number"
                     id="limit"
-                    value={newpromo.limit}
+                    name={selectedDeal ? 'usage_limit':'limit'}
+                    value={selectedDeal ? newpromo.usage_limit : newpromo.limit}
                     onChange={(e) =>
                       setNewPromo((prev) => ({
                         ...prev,
-                        limit: e.target.value,
+                        [e.target.name]: e.target.value,
                       }))
                     }
                     className="w-full p-2 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
@@ -296,7 +341,7 @@ const DealsPopup = ({ setDealPopup }) => {
                     type="submit"
                     className="bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition duration-300"
                   >
-                    Submit
+                    {selectedDeal ? 'Update' : 'Submit'}
                   </button>
                 </div>
               </form>
@@ -307,9 +352,14 @@ const DealsPopup = ({ setDealPopup }) => {
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
               <h2 className="text-2xl font-bold text-gray-800 mb-4">
-                Start a new flat discount
+                {selectedDeal ? 'Update Discount Deal' : 'Start a new flat discount'}
               </h2>
-              <form onSubmit={handleDiscountSubmit}>
+              <form onSubmit={e => {
+                e.preventDefault();
+                if(selectedDeal){ setSelectedDeal({...newDiscount,Type:dealType}); handlePromoUpdate() }
+                else handleDiscountSubmit();
+                }}
+              >
                 <div className="mb-4">
                   <label
                     htmlFor="discount_value"
@@ -386,7 +436,7 @@ const DealsPopup = ({ setDealPopup }) => {
                     type="submit"
                     className="bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition duration-300"
                   >
-                    Submit
+                    {selectedDeal ? 'Update' : 'Submit'}
                   </button>
                 </div>
               </form>
@@ -421,6 +471,7 @@ const AdminDashboard = () => {
   const [availablePromos, setAvailablePromos] = useState([]);
   const [availableDiscount, setAvailableDiscount] = useState([]);
   const [showDealsPop, setShowDeals] = useState(false);
+  const [selectedDeal, setSelectedDeal] = useState({});
 
   const showDeals = () => {
     axios
@@ -581,6 +632,18 @@ const AdminDashboard = () => {
     }
   };
 
+  const updateDeal = (promoId,Type) => {
+    let temp;
+    if(Type === 'promo') temp = {...availablePromos.find(ele => ele.promo_id === promoId), Type}; 
+    else temp = {...availableDiscount.find(ele => ele.discount_id === promoId),Type}; 
+    
+    console.log('temp is :' , temp);
+    setSelectedDeal(temp); 
+    setShowDeals(false);
+    setDealPopup(true);
+    
+  }
+
   return (
     <div className="min-h-screen bg-purple-50 py-8">
       <div className="container mx-auto px-4">
@@ -609,7 +672,7 @@ const AdminDashboard = () => {
           </button>
         </div>
 
-        {dealPopup && <DealsPopup setDealPopup={setDealPopup} />}
+        {dealPopup && <DealsPopup setDealPopup={setDealPopup} selectedDeal = {selectedDeal} setSelectedDeal={setSelectedDeal} />}
 
         {/* Grid Section for Orders */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -978,7 +1041,7 @@ const AdminDashboard = () => {
                         <div className="flex space-x-2">
                           <FaEdit
                             className="text-blue-500 cursor-pointer"
-                            // onClick={() => handleUpdate(promo.promo_id, 'promo')}
+                            onClick={() => updateDeal(promo.promo_id, 'promo')}
                           />
                           <FaTrash
                             className="text-red-500 cursor-pointer"
@@ -1011,7 +1074,7 @@ const AdminDashboard = () => {
                         <div className="flex space-x-2">
                           <FaEdit
                             className="text-blue-500 cursor-pointer"
-                            // onClick={() => handleUpdate(discount.discount_id, 'discount')}
+                            onClick={() => updateDeal(discount.discount_id, 'discount')}
                           />
                           <FaTrash
                             className="text-red-500 cursor-pointer"

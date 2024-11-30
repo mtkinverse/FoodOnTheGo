@@ -261,6 +261,10 @@ const CartContextProvider = ({ children }) => {
     setCart((prevCart) => prevCart.filter((item) => item.Item_id !== itemId));
   };
 
+  const clearCart = () => {
+    setCart([]);
+  }
+
   return (
     <CartContext.Provider
       value={{
@@ -276,7 +280,8 @@ const CartContextProvider = ({ children }) => {
         getDiscountedTotal,
         getSubTotal,
         getTotalAmount,
-        applyPromoCode
+        applyPromoCode,
+        clearCart
       }}
     >
       {children}

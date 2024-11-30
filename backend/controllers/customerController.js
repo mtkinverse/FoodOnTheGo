@@ -26,7 +26,9 @@ module.exports.verifyPromo = (req, res) => {
             FROM promos 
             WHERE promo_code = ? 
               AND restaurant_id = ? 
-              AND end_date >= CURRENT_TIMESTAMP
+              AND end_date >= CURRENT_DATE
+              AND start_date <= CURRENT_DATE
+
         `;
         db.query(qq, [promo_code, restaurant_id], (err1, result1) => {
             if (err1) {
@@ -72,7 +74,7 @@ module.exports.verifyPromo = (req, res) => {
 
 module.exports.getPromos = (req,res) => {
     const restaurant_id = req.params.id;
-    const q = 'SELECT * from promos where restaurant_id = ? and start_date <= CURRENT_TIMESTAMP and end_date >= CURRENT_TIMESTAMP ';
+    const q = 'SELECT * from promos where restaurant_id = ? and start_date <= CURRENT_DATE and end_date >= CURRENT_DATE ';
 
     db.query(q,[restaurant_id,'active'],(err,result) => {
         if(err){

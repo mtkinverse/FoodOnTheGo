@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import { TrashIcon, PencilSquareIcon,XMarkIcon  } from "@heroicons/react/24/outline";
+import { TrashIcon, PencilSquareIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useAlertContext } from "../contexts/alertContext";
 
 const ManageRestaurant = ({
@@ -12,7 +12,7 @@ const ManageRestaurant = ({
 }) => {
 
 
-  const {setAlert} = useAlertContext();
+  const { setAlert } = useAlertContext();
 
   const { id } = useParams();
   const [menuId, setMenuId] = useState(restaurant.Menu_id); // Local state to track menu_id
@@ -185,8 +185,8 @@ const ManageRestaurant = ({
           },
         }
       );
-      setAlert( {
-        message : 'Location added successfully',
+      setAlert({
+        message: 'Location added successfully',
         type: 'success'
       });
       setAddLocationPopupOpen(false);
@@ -199,7 +199,7 @@ const ManageRestaurant = ({
     } catch (error) {
       console.error("Error adding location:", error.response?.data || error);
       setAlert({
-        message : 'Failed to add location',
+        message: 'Failed to add location',
         type: 'failure'
       });
     }
@@ -223,8 +223,8 @@ const ManageRestaurant = ({
           ClosesAt: timing.closesAt,
         }
       );
-      setAlert( {
-        message : 'Timings updated successfully!',
+      setAlert({
+        message: 'Timings updated successfully!',
         type: 'success'
       });
       console.log("Response:", response.data);
@@ -237,7 +237,7 @@ const ManageRestaurant = ({
     } catch (error) {
       console.error("Error updating timings:", error.response?.data || error);
       setAlert({
-        message : 'Failed to update timings ',
+        message: 'Failed to update timings ',
         type: 'failure'
       });
     }
@@ -283,7 +283,7 @@ const ManageRestaurant = ({
       axios.get('/api/getAdmin/' + restaurant.Location_id)
         .then(res => {
           console.log('received ', res.data.admin);
-          setAdminData({...res.data.admin,newPassword : ""})
+          setAdminData({ ...res.data.admin, newPassword: "" })
         })
         .catch(err => console.log(err.message))
     }
@@ -304,35 +304,35 @@ const ManageRestaurant = ({
       console.log(restaurant.Location_id);
 
       if (restaurant.r_admin === null) {
-        console.log('not me',adminData);
-        
+        console.log('not me', adminData);
+
         const response = await axios.post(
           `/api/addAdmin/${restaurant.Restaurant_id}`,
           { adminData, Location_id: restaurant.Location_id }
         );
-        if(response.status === 200){
+        if (response.status === 200) {
           setAlert({
-            message : 'Admin added',
+            message: 'Admin added',
             type: 'success'
           });
         }
-      } 
-      else{
+      }
+      else {
         console.log('heres : ', adminData)
-        axios.post('/api/updateAdmin',JSON.stringify({adminData}), {withCredentials: true, headers:{"Content-Type":"application/json"}})
-        .then(res => {
-          setAlert({
-            message : 'Admin updated successfully',
-            type: 'success'
-          });
-        })
-        .catch(err => console.log(err.message))
-      }      setAdminPopup(false);
-      
+        axios.post('/api/updateAdmin', JSON.stringify({ adminData }), { withCredentials: true, headers: { "Content-Type": "application/json" } })
+          .then(res => {
+            setAlert({
+              message: 'Admin updated successfully',
+              type: 'success'
+            });
+          })
+          .catch(err => console.log(err.message))
+      } setAdminPopup(false);
+
     } catch (err) {
       console.log("Error adding admin" + err.message);
       setAlert({
-        message : 'Error adding admin',
+        message: 'Error adding admin',
         type: 'failure'
       });
     }
@@ -345,7 +345,7 @@ const ManageRestaurant = ({
     formData.append("name", menuItem.name);
     formData.append("price", menuItem.price);
     formData.append("cuisine", menuItem.cuisine);
-    formData.append("category",menuItem.category);
+    formData.append("category", menuItem.category);
     if (menuItem.image) {
       console.log("image appened");
       formData.append("image", menuItem.image);
@@ -359,7 +359,7 @@ const ManageRestaurant = ({
         { headers: { "Content-Type": "multipart/form-data" } }
       );
       setAlert({
-        message : 'Menu item added successfully!',
+        message: 'Menu item added successfully!',
         type: 'success'
       });
       console.log("Response:", response.data);
@@ -373,8 +373,8 @@ const ManageRestaurant = ({
       });
     } catch (error) {
       console.error("Error adding menu item:", error.response?.data || error);
-      setAlert( {
-        message : 'Failed to add menu item',
+      setAlert({
+        message: 'Failed to add menu item',
         type: 'failure'
       });
     }
@@ -391,7 +391,7 @@ const ManageRestaurant = ({
     e.preventDefault();
     if (!newImage) {
       setAlert({
-        message : 'Please select an image',
+        message: 'Please select an image',
         type: 'failure'
       });
       return;
@@ -412,25 +412,25 @@ const ManageRestaurant = ({
         }
       );
       setAlert({
-        message : 'Image updated successfully',
-        type:'success'
+        message: 'Image updated successfully',
+        type: 'success'
       });
       setPicturePopupOpen(false); // Close the picture upload popup
       fetchRestaurants(); // Refresh the restaurant data
     } catch (error) {
       console.error("Error changing image:", error.response?.data || error);
-      setAlert( {
-        message : 'Failed to update image.',
-        type:'failure'
+      setAlert({
+        message: 'Failed to update image.',
+        type: 'failure'
       });
     }
   };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-lg w-3/4 max-w-4xl p-8 relative">
+      <div className="bg-white rounded-lg shadow-lg w-3/4 max-w-4xl p-8 relative max-h-[90%] sm:overflow-y-hidden overflow-y-scroll">
         <button
-          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 transition"
+          className="w-full sm:w-auto sm:absolute top-4 right-4 text-3xl text-gray-500 hover:text-gray-700 transition"
           onClick={onClose}
         >
           &times;
@@ -466,7 +466,7 @@ const ManageRestaurant = ({
 
           {adminPopup && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-              <div className="bg-white rounded-lg shadow-lg w-full max-w-md mx-4 sm:mx-0 p-6">
+              <div className="bg-white rounded-lg shadow-lg w-full max-w-md mx-4 sm:mx-0 p-6 max-h-[90%] overflow-y-scroll sm:overflow-y-hidden">
                 <h2 className="text-xl font-bold mb-4 text-center">
                   {restaurant.r_admin ? 'Update Admin' : 'Add Admin'}
                 </h2>
@@ -510,7 +510,7 @@ const ManageRestaurant = ({
                       htmlFor="account_password"
                       className="block text-sm font-medium text-gray-700"
                     >
-                      {restaurant.r_admin ? 'Current Password': 'Password'}
+                      {restaurant.r_admin ? 'Current Password' : 'Password'}
                     </label>
                     <input
                       type="password"
@@ -524,22 +524,22 @@ const ManageRestaurant = ({
                   </div>
                   {restaurant.r_admin &&
                     <div>
-                    <label
-                      htmlFor="account_password"
-                      className="block text-sm font-medium text-gray-700"
-                    >
-                      New Password
-                    </label>
-                    <input
-                      type="password"
-                      id="account_password"
-                      name="newPassword"
-                      value={adminData.newPassword}
-                      onChange={handleAdminChange}
-                      required
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-blue-200"
-                    />
-                  </div>}
+                      <label
+                        htmlFor="account_password"
+                        className="block text-sm font-medium text-gray-700"
+                      >
+                        New Password
+                      </label>
+                      <input
+                        type="password"
+                        id="account_password"
+                        name="newPassword"
+                        value={adminData.newPassword}
+                        onChange={handleAdminChange}
+                        required
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-blue-200"
+                      />
+                    </div>}
                   <div>
                     <label
                       htmlFor="phone_no"
@@ -554,19 +554,19 @@ const ManageRestaurant = ({
                       value={adminData.Phone_no}
                       onChange={handleAdminChange}
                       required
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-blue-200"
+                      className="w-full px-4 py-1 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-blue-200"
                     />
                   </div>
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center sm:justify-between flex-wrap justify-center">
                     <button
                       type="submit"
-                      className="bg-purple-600 text-white px-4 py-2 rounded-lg shadow hover:bg-purple-700 focus:outline-none focus:ring focus:ring-blue-300"
+                      className="bg-purple-600 mx-auto my-2 text-white px-4 py-2 rounded-lg shadow hover:bg-purple-700 focus:outline-none focus:ring focus:ring-blue-300"
                     >
                       {restaurant.r_admin ? 'Update Admin' : 'Create Admin'}
                     </button>
                     <button
                       type="button"
-                      className="bg-gray-600 text-white px-4 py-2 rounded-lg shadow hover:bg-gray-700 focus:outline-none focus:ring focus:ring-gray-300"
+                      className="bg-gray-600 mx-auto my-2 text-white px-4 py-2 rounded-lg shadow hover:bg-gray-700 focus:outline-none focus:ring focus:ring-gray-300"
                       onClick={() => setAdminPopup(false)}
                     >
                       Cancel
@@ -578,58 +578,63 @@ const ManageRestaurant = ({
           )}
 
           {updateMenuPopupOpen && (
-             <div className="fixed inset-0 bg-black/50 overflow-y-auto h-full w-full z-50 flex items-center justify-center">
-             <div className="relative w-11/12 max-w-2xl mx-auto bg-white rounded-xl shadow-2xl overflow-hidden">
-               {/* Header */}
-               <div className="bg-purple-600 text-white px-6 py-4 flex justify-between items-center">
-                 <h2 className="text-xl font-semibold">Update Menu</h2>
-                 <button 
-                   onClick={() => setUpdateMenuPopupOpen(false)}
-                   className="hover:bg-purple-700 rounded-full p-1 transition"
-                 >
-                   <XMarkIcon className="h-6 w-6" />
-                 </button>
-               </div>
-       
-               {/* Content */}
-               <div className="p-6">
-                 {menuItems.length > 0 ? (
-                   <div className="space-y-4">
-                     {menuItems.map((item) => (
-                       <div 
-                         key={item.id} 
-                         className="flex items-center justify-between bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition"
-                       >
-                         <div>
-                           <h3 className="text-lg font-bold text-gray-800">{item.Dish_Name}</h3>
-                           <p className="text-gray-600">Rs. {item.Item_Price}</p>
-                         </div>
-                         
-                         <div className="flex items-center space-x-3">
-                           <button 
-                             onClick={() =>{ 
-                              setUpdateMenuPopupOpen(false)
-                              handleUpdateItemClick(item)}}
-                             className="text-blue-500 hover:text-blue-700 bg-blue-50 p-2 rounded-full transition"
-                           >
-                             <PencilSquareIcon className="h-5 w-5" />
-                           </button>
-                           <button 
-                             onClick={() => handleDeleteItemClick(item.Item_id)}
-                             className="text-red-500 hover:text-red-700 bg-red-50 p-2 rounded-full transition"
-                           >
-                             <TrashIcon className="h-5 w-5" />
-                           </button>
-                         </div>
-                       </div>
-                     ))}
-                   </div>
-                 ) : (
-                   <p className="text-center text-gray-500 py-4">No items in the menu.</p>
-                 )}
-               </div>
-             </div>
-           </div>
+            <div className="fixed inset-0 bg-black/50 overflow-y-auto h-full w-full z-50 flex items-center justify-center">
+              <div className="relative w-11/12 max-w-2xl mx-auto bg-white rounded-xl shadow-2xl overflow-hidden">
+                {/* Header */}
+                <div className="max-h-[90%] sm:overflow-hidden overflow-y-scroll">
+                  <div className="bg-purple-600 text-white px-6 py-4 flex justify-between items-center">
+                    <h2 className="text-xl font-semibold">Update Menu</h2>
+                    <button
+                      onClick={() => setUpdateMenuPopupOpen(false)}
+                      className="hover:bg-purple-700 rounded-full p-1 transition"
+                    >
+                      <XMarkIcon className="h-6 w-6" />
+                    </button>
+                  </div>
+
+                  {/* Content */}
+                  <div className="p-6">
+                    {menuItems.length > 0 ? (
+                      <div className="space-y-4">
+                        {menuItems.map((item) => (
+                          <div
+                            key={item.id}
+                            className="flex items-center justify-between bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition"
+                          >
+                            <div>
+                              <h3 className="text-lg font-bold text-gray-800">{item.Dish_Name}</h3>
+                              <p className="text-gray-600">Rs. {item.Item_Price}</p>
+                            </div>
+
+                            <div className="flex items-center space-x-3">
+                              <button
+                                onClick={() => {
+                                  setUpdateMenuPopupOpen(false)
+                                  handleUpdateItemClick(item)
+                                }}
+                                className="text-blue-500 hover:text-blue-700 bg-blue-50 p-2 rounded-full transition"
+                              >
+                                <PencilSquareIcon className="h-5 w-5" />
+                              </button>
+                              <button
+                                onClick={() => handleDeleteItemClick(item.Item_id)}
+                                className="text-red-500 hover:text-red-700 bg-red-50 p-2 rounded-full transition"
+                              >
+                                <TrashIcon className="h-5 w-5" />
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-center text-gray-500 py-4">No items in the menu.</p>
+                    )}
+                  </div>
+
+
+                </div>
+              </div>
+            </div>
           )}
 
           {updateItemPopup && (
@@ -767,7 +772,7 @@ const ManageRestaurant = ({
           {/* Add Menu Item Modal */}
           {addItemPopupOpen && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-              <div className="bg-white rounded-lg shadow-lg w-1/3 p-6">
+              <div className="bg-white rounded-lg shadow-lg lg:w-1/3 p-6 max-h-[90%] overflow-y-scroll ">
                 <h2 className="text-2xl font-bold text-purple-600 mb-4">
                   Add Menu Item
                 </h2>
@@ -825,7 +830,7 @@ const ManageRestaurant = ({
                       required
                     />
                   </div>
-                  
+
                   <div className="mb-4">
                     <label
                       htmlFor="category"
@@ -860,7 +865,7 @@ const ManageRestaurant = ({
                     />
                   </div>
 
-                  <div className="flex justify-end">
+                  <div className="flex justify-center mx-auto">
                     <button
                       type="button"
                       className="mr-4 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400"
@@ -898,7 +903,7 @@ const ManageRestaurant = ({
 
           {addLocationPopupOpen && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-              <div className="bg-white rounded-lg shadow-lg w-1/3 p-6">
+              <div className="bg-white rounded-lg shadow-lg lg:w-1/3 p-6">
                 <h2 className="text-2xl font-bold text-purple-600 mb-4">
                   Add Location for {restaurant.Restaurant_Name}
                 </h2>
@@ -939,17 +944,17 @@ const ManageRestaurant = ({
                     />
                   </div>
 
-                  <div className="flex justify-end">
+                  <div className="flex justify-center sm:justify-end">
                     <button
                       type="button"
-                      className="mr-4 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400"
+                      className="mr-4 bg-gray-300 mx-auto text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400"
                       onClick={() => setAddLocationPopupOpen(false)}
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
-                      className="bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700"
+                      className="bg-purple-600 mx-auto text-white py-2 px-4 rounded-lg hover:bg-purple-700"
                     >
                       Add Location
                     </button>
@@ -969,7 +974,7 @@ const ManageRestaurant = ({
         {/* Timing Popup */}
         {timingPopupOpen && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg shadow-lg w-1/3 p-6">
+            <div className="bg-white rounded-lg shadow-lg lg:w-1/3 p-6">
               <h2 className="text-2xl font-bold text-purple-600 mb-4">
                 Update Timings
               </h2>
@@ -1031,7 +1036,7 @@ const ManageRestaurant = ({
         {/* Picture Change Popup */}
         {picturePopupOpen && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg shadow-lg w-1/3 p-6">
+            <div className="bg-white rounded-lg shadow-lg lg:w-1/3 p-6">
               <h2 className="text-2xl font-bold text-purple-600 mb-4">
                 Change Restaurant Picture
               </h2>
@@ -1052,17 +1057,17 @@ const ManageRestaurant = ({
                     required
                   />
                 </div>
-                <div className="flex justify-end">
+                <div className="flex justify-center md:justify-end">
                   <button
                     type="button"
-                    className="mr-4 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400"
+                    className="mr-4 bg-gray-300  text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400"
                     onClick={() => setPicturePopupOpen(false)}
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700"
+                    className="bg-purple-600  text-white py-2 px-4 rounded-lg hover:bg-purple-700"
                   >
                     Change
                   </button>

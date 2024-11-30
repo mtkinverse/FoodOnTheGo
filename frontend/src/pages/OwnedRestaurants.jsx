@@ -117,7 +117,7 @@ const OwnedRestaurants = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex flex-wrap justify-between items-center mb-8">
           <div>
             <h2 className="text-3xl font-bold text-gray-900">
               Your Restaurants
@@ -136,7 +136,7 @@ const OwnedRestaurants = () => {
           </button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {restaurants.map((restaurant) => (
             <div
               key={restaurant.Restaurant_id}
@@ -178,13 +178,13 @@ const OwnedRestaurants = () => {
                   )}
                 </div>
 
-                <div className="flex items-center space-x-3 pt-4 mt-4 border-t border-gray-100">
+                <div className="flex flex-wrap items-center space-x-3 pt-4 mt-4 border-t border-gray-100">
                   <button
                     onClick={() => {
                       setIsManageOpen(true);
                       setCurrentRestaurant(restaurant); // Pass the entire restaurant object
                     }}
-                    className="flex-1 inline-flex items-center justify-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-200"
+                    className="flex-1 inline-flex my-2 items-center justify-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-200"
                   >
                     <Settings className="w-4 h-4 mr-2" />
                     Manage
@@ -194,7 +194,7 @@ const OwnedRestaurants = () => {
                       setToDelete(restaurant);
                       setDeleteRestaurantPop(true);
                     }}
-                    className="flex-1 inline-flex items-center justify-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200"
+                    className="flex-1 inline-flex my-2 items-center justify-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200"
                   >
                     Delete
                     <ChevronRight className="w-4 h-4 ml-2" />
