@@ -6,6 +6,7 @@ import {
   X,
   Trash2,
   CheckCircle,
+  Bike
 } from "lucide-react";
 import {
   FaBars,
@@ -13,6 +14,7 @@ import {
   FaUserCircle,
   FaPencilAlt,
   FaTimes,
+  FaCheckCircle
 } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 import { useUserContext } from "../contexts/userContext";
@@ -48,22 +50,22 @@ const ShowPastOrders = ({
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString("en-GB"); // Format: DD/MM/YYYY
+    return date.toLocaleDateString("en-GB");
   };
 
   return (
     <>
       {pastPopup && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 backdrop-blur-md p-6">
-          <div className="bg-white w-full max-w-3xl rounded-2xl shadow-xl border-2 border-purple-200 overflow-hidden">
+        <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 backdrop-blur-sm p-4">
+          <div className="bg-purple-50 w-full max-w-2xl rounded-lg shadow-2xl overflow-hidden">
             {/* Header */}
-            <div className="p-6 border-b border-gray-100">
+            <div className="p-4 bg-purple-700 border-b border-purple-200">
               <div className="flex justify-between items-center">
                 <div>
-                  <h2 className="text-2xl font-bold text-purple-700">
+                  <h2 className="text-xl font-bold text-white">
                     Past Orders
                   </h2>
-                  <p className="text-sm text-gray-600 mt-1">
+                  <p className="text-sm text-white">
                     You have {pastOrders.length} past orders
                   </p>
                 </div>
@@ -72,19 +74,19 @@ const ShowPastOrders = ({
                     pastOrdersPopup(false);
                     document.body.style.overflow = "unset";
                   }}
-                  className="text-gray-500 hover:text-gray-700 transition-colors"
+                  className="text-purple-400 hover:text-purple-600 transition-colors"
                   aria-label="Close past orders view"
                 >
-                  <X className="h-6 w-6" />
+                  <FaTimes className="h-5 w-5" />
                 </button>
               </div>
             </div>
 
             {/* Carousel */}
-            <div className="relative p-6">
+            <div className="relative p-4">
               <div className="overflow-hidden">
                 <div
-                  className="flex transition-transform duration-500 ease-in-out"
+                  className="flex transition-transform duration-300 ease-in-out"
                   style={{ transform: `translateX(-${currentSlide * 100}%)` }}
                   role="region"
                   aria-label="Order carousel"
@@ -92,49 +94,46 @@ const ShowPastOrders = ({
                   {pastOrders.map((order, index) => (
                     <div
                       key={order.order_id}
-                      className="w-full flex-shrink-0 px-4"
+                      className="w-full flex-shrink-0 px-2"
                     >
-                      <div className="bg-white rounded-xl border border-purple-100 p-6 shadow-md space-y-6">
+                      <div className="bg-white rounded-md border border-purple-200 p-4 shadow-sm space-y-4">
                         {/* Order Header */}
                         <div className="flex justify-between items-start">
                           <div>
-                            <h3 className="text-lg font-semibold text-purple-700">
-                              Order #{order.order_id}
+                            <h3 className="text-lg font-semibold text-purple-800">
+                              Order #{order.order_id}  |   {order.restaurant_name}
                             </h3>
-                            <p className="text-base text-purple-600 font-medium">
-                              {order.restaurant_name}
-                            </p>
-                            <p className="text-sm text-gray-500 mt-1">
-                              {formatDate(order.order_date)}
+                            <p className="text-sm ">
+                              <strong > {formatDate(order.order_date)}</strong>
                             </p>
                           </div>
                         </div>
 
                         {/* Order Details */}
-                        <div className="space-y-4">
+                        <div className="space-y-3">
                           <div>
-                            <p className="text-sm font-medium text-gray-500">
+                            <p className="text-sm font-medium ">
                               Delivery Address
-                            </p>
-                            <p className="text-sm text-gray-700 mt-1">
-                              {order.address}
+                              <span className="text-sm text-gray-700">
+                             <strong>  {order.address}</strong>
+                            </span>
                             </p>
                           </div>
 
                           <div>
-                            <p className="text-sm font-medium text-gray-500 mb-2">
+                            <p className="text-sm font-medium  mb-1">
                               Order Items
                             </p>
-                            <div className="space-y-2">
+                            <div className="space-y-1">
                               {order.items.map((item, idx) => (
                                 <div
                                   key={idx}
                                   className="flex justify-between text-sm"
                                 >
-                                  <span className="text-gray-700">
+                                  <span >
                                     {item.dish_name}{" "}
-                                    <span className="text-gray-500">
-                                      x{item.quantity}
+                                    <span className="text-purple-800">
+                                      (x{item.quantity})
                                     </span>
                                   </span>
                                   <span className="font-medium text-gray-900">
@@ -145,17 +144,16 @@ const ShowPastOrders = ({
                             </div>
                           </div>
 
-                          <div className="pt-4 border-t border-gray-100">
+                          <div className="pt-2 border-t border-gray-200">
                             <div className="flex justify-between items-center">
-                              <span className="font-medium text-gray-900">
+                              <span className="font-medium text-gray-700">
                                 Total
                               </span>
-                              <span className="text-lg font-bold text-purple-600">
+                              <span className="text-lg font-bold text-purple-700">
                                 Rs {order.total_amount}
                               </span>
                             </div>
                           </div>
-
                           <div className="pt-4">
                             {order.review_id === null ? (
                               <button
@@ -164,7 +162,7 @@ const ShowPastOrders = ({
                                   setSelectedOrder(order);
                                   pastOrdersPopup(false);
                                 }}
-                                className="flex items-center justify-center text-white bg-purple-600 hover:bg-purple-700 rounded-full py-2 px-6 text-sm font-semibold transition-colors"
+                                className="flex items-center justify-center text-white bg-purple-600 hover:bg-purple-800 rounded-full py-2 px-6 text-sm font-semibold transition-colors"
                               >
                                 Leave a Review
                               </button>
@@ -189,20 +187,20 @@ const ShowPastOrders = ({
               {currentSlide > 0 && (
                 <button
                   onClick={prevSlide}
-                  className="absolute left-0 top-1/2 -translate-y-1/2 bg-white rounded-full p-2 shadow-lg hover:bg-gray-50 transition-colors"
+                  className="absolute left-2 top-1/2 -translate-y-1/2 bg-white rounded-full p-2 shadow-md hover:bg-gray-100 transition-colors"
                   aria-label="Previous order"
                 >
-                  <ChevronLeft className="w-6 h-6 text-purple-600" />
+                  <ChevronLeft className="w-4 h-4 text-gray-600" />
                 </button>
               )}
 
               {currentSlide < pastOrders.length - 1 && (
                 <button
                   onClick={nextSlide}
-                  className="absolute right-0 top-1/2 -translate-y-1/2 bg-white rounded-full p-2 shadow-lg hover:bg-gray-50 transition-colors"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-white rounded-full p-2 shadow-md hover:bg-gray-100 transition-colors"
                   aria-label="Next order"
                 >
-                  <ChevronRight className="w-6 h-6 text-purple-600" />
+                  <ChevronRight className="w-4 h-4 text-gray-600" />
                 </button>
               )}
 
@@ -228,6 +226,7 @@ const ShowPastOrders = ({
   );
 };
 
+
 function ShowCurrentOrders({
   currentOrders,
   cancelOrder,
@@ -251,7 +250,8 @@ function ShowCurrentOrders({
   const prevSlide = () => {
     setCurrentSlide((prev) => (prev === 0 ? prev : prev - 1));
   };
-
+  
+  
   const shouldBlink = (stage, currentStatus) => {
     const stages = ["Placed", "Preparing", "Out for delivery", "Delivered"];
     const currentIdx = stages.indexOf(currentStatus);
@@ -265,13 +265,13 @@ function ShowCurrentOrders({
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 backdrop-blur-md p-6">
           <div className="bg-white w-full max-w-3xl rounded-2xl shadow-xl border-2 border-purple-200 overflow-hidden">
             {/* Header */}
-            <div className="p-6 border-b border-gray-100">
+            <div className="p-6 bg-purple-700 border-b border-gray-100">
               <div className="flex justify-between items-center">
                 <div>
-                  <h2 className="text-2xl font-bold text-purple-700">
+                  <h2 className="text-2xl font-bold text-white">
                     Current Orders
                   </h2>
-                  <p className="text-sm text-gray-600 mt-1">
+                  <p className="text-sm text-white mt-1">
                     You have {currentOrders.length} orders in process
                   </p>
                 </div>
@@ -307,11 +307,9 @@ function ShowCurrentOrders({
                         <div className="flex justify-between items-start">
                           <div>
                             <h3 className="text-lg font-semibold text-purple-700">
-                              Order #{order.order_id}
+                              Order #{order.order_id} |   {order.restaurant_name}
                             </h3>
-                            <p className="text-base text-purple-600 font-medium">
-                              {order.restaurant_name}
-                            </p>
+                   
                           </div>
                           {(order.status === "Placed" ||
                             order.status === "Preparing") && (
@@ -383,16 +381,15 @@ function ShowCurrentOrders({
                         {/* Order Details */}
                         <div className="space-y-4">
                           <div>
-                            <p className="text-sm font-medium text-gray-500">
-                              Delivery Address
-                            </p>
-                            <p className="text-sm text-gray-700 mt-1">
+                            <p className="text-sm font-medium ">
+                              Delivery Address: <span className="text-sm mt-1" > 
                               {order.address}
+                              </span>
                             </p>
                           </div>
 
                           <div>
-                            <p className="text-sm font-medium text-gray-500 mb-2">
+                            <p className="text-sm font-medium mb-2">
                               Order Items
                             </p>
                             <div className="space-y-2">
@@ -401,10 +398,10 @@ function ShowCurrentOrders({
                                   key={idx}
                                   className="flex justify-between text-sm"
                                 >
-                                  <span className="text-gray-700">
-                                    {item.dish_name}{" "}
-                                    <span className="text-gray-500">
-                                      x{item.quantity}
+                                  <span>
+                                    {item.dish_name}{"  "}
+                                    <span className="text-purple-800">
+                                      (x{item.quantity})
                                     </span>
                                   </span>
                                   <span className="font-medium text-gray-900">
@@ -753,22 +750,22 @@ const Navbar = () => {
     <div className="relative">
       <button
         onClick={toggleProfileMenu}
-        className="flex items-center space-x-2 text-sm font-medium text-purple-600 hover:text-purple-700"
+        className="flex items-center space-x-2 text-sm font-medium text-purple-600 hover:text-purple-700 focus:outline-none"
       >
         <FaUserCircle className="hidden sm:block h-8 w-8 text-purple-600" />
         
         {/* Username with conditional green dot */}
         <div className="flex items-center space-x-1">
-          <span className="hidden sm:inline">
+          <span className="hidden sm:inline font-medium">
             {userData.User_name.split(" ")[0]}
           </span>
           {userData.role === "Customer" && currentOrders.length > 0 && (
-            <div className=" hidden sm:inline w-3 h-3 bg-green-500 rounded-full animate-pulse sm:ml-1"></div>
+            <div className="hidden sm:inline w-3 h-3 bg-green-500 rounded-full animate-pulse sm:ml-1"></div>
           )}
         </div>
 
         <FaChevronDown
-          className={`hidden sm:block h-5 w-5 text-purple-600 transform transition-transform ${
+          className={`hidden sm:block h-5 w-5 text-purple-600 transform transition-transform duration-300 ease-in-out ${
             isProfileMenuOpen ? "rotate-180" : ""
           }`}
         />
@@ -1023,48 +1020,50 @@ const Navbar = () => {
             />
           )}
 
-          {bikePopup && (
-            <div className="fixed inset-0 bg-gray-800 backdrop-blur-sm  bg-opacity-75 flex items-center justify-center z-50">
-              <div className="bg-white w-11/12 max-w-md p-6 rounded-lg shadow-lg">
-                <h2 className="text-2xl font-bold text-purple-700 text-center mb-4">
-                  Update Your Vehicle
-                </h2>
-                <p className="text-gray-700 text-sm text-center mb-6">
-                  Please provide your new bike's number plate .
-                </p>
-                <form className="space-y-4" onSubmit={handleBikeChange}>
-                  <div>
-                    <label
-                      htmlFor="numberPlate"
-                      className="block text-gray-600 text-sm font-medium mb-1"
-                    >
-                      Bike Number Plate
-                    </label>
-                    <input
-                      id="numberPlate"
-                      type="text"
-                      name="BikeNo"
-                      value={bikeDetails.BikeNo || ""}
-                      onChange={(e) =>
-                        setBikeDetails((prev) => ({
-                          ...prev,
-                          BikeNo: e.target.value,
-                        }))
-                      }
-                      className="w-full border border-gray-300 rounded-lg p-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
-                      required
-                    />
-                  </div>
-                  <button
-                    type="submit"
-                    className="w-full bg-purple-500 text-white py-2 rounded-lg hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
-                  >
-                    Submit
-                  </button>
-                </form>
-              </div>
-            </div>
-          )}
+{bikePopup && (
+  <div className="fixed inset-0 bg-gray-800 bg-opacity-75 backdrop-blur-sm flex items-center justify-center z-50">
+    <div className="bg-white w-full max-w-md p-8 rounded-xl shadow-lg transition-transform transform hover:scale-105">
+      <h2 className="text-3xl font-semibold text-purple-700 text-center mb-5">
+        Update Your Vehicle
+      </h2>
+      <p className="text-gray-600 text-base text-center mb-6">
+        Please provide your new bike's number plate.
+      </p>
+      <form className="space-y-5" onSubmit={handleBikeChange}>
+        <div>
+          <label
+            htmlFor="numberPlate"
+            className="block text-gray-700 text-sm font-medium mb-2"
+          >
+            Bike Number Plate
+          </label>
+          <input
+            id="numberPlate"
+            type="text"
+            name="BikeNo"
+            value={bikeDetails.BikeNo || ""}
+            onChange={(e) =>
+              setBikeDetails((prev) => ({
+                ...prev,
+                BikeNo: e.target.value,
+              }))
+            }
+            className="w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-purple-600 transition-all duration-200"
+            required
+          />
+        </div>
+        <button
+          type="submit"
+          className="w-full bg-purple-600 text-white py-3 rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-all duration-200 flex items-center justify-center space-x-2"
+        >
+          <span>Submit</span>
+          <Bike className="w-5 h-5 text-white" />
+        </button>
+      </form>
+    </div>
+  </div>
+)}
+
           {viewProfile && (
             <div className="fixed inset-0 backdrop-blur-sm  flex items-center justify-center p-4 z-50">
               <div className="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden relative transform transition-all duration-300 hover:scale-[1.01]">

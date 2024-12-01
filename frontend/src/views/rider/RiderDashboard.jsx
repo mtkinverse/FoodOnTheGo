@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useUserContext } from "../../contexts/userContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import {FaTimes, FaBiking, FaBox, FaCheckCircle, FaDollarSign, FaUtensils, FaMapMarkerAlt, FaTimesCircle } from 'react-icons/fa';
+import { Bike, Utensils, DollarSign, Package, CheckCircle, MapPin, X, AlertCircle } from 'lucide-react';
 import { useAlertContext } from "../../contexts/alertContext";
 
 const RiderDashboard = () => {
@@ -165,45 +165,44 @@ const RiderDashboard = () => {
   
 
   return (
-    <div className="min-h-screen bg-purple-50">
-  <div className="container mx-auto px-4 py-8">
-    <div className="flex items-center justify-between mb-8">
-      <h1 className="text-3xl font-bold text-indigo-800">Rider Dashboard</h1>
-      <button
-  className={`flex items-center justify-center gap-2 px-6 py-3 rounded-full text-base font-medium transition duration-300 ease-in-out 
-    ${userData.status ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'} 
-    focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
-  onClick={updateAvailabilityStatus}
->
-  {/* Show icon based on availability status */}
-  {userData.status ? (
-    <>
-      <FaTimesCircle className="text-xl" />
-      <span className="hidden sm:inline">Mark Yourself Unavailable</span>
-    </>
-  ) : (
-    <>
-      <FaCheckCircle className="text-xl" />
-      <span className="hidden sm:inline">Mark Yourself Available</span>
-    </>
-  )}
-</button>
-    </div>
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-white">
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex flex-col sm:flex-row items-center justify-between mb-8 gap-4">
+          <h1 className="text-3xl font-bold text-purple-800">Rider Dashboard</h1>
+          <button
+            className={`flex items-center justify-center gap-2 px-6 py-3 rounded-full text-base font-medium transition duration-300 ease-in-out 
+              ${userData.status ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'} 
+              text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500`}
+            onClick={updateAvailabilityStatus}
+          >
+            {userData.status ? (
+              <>
+                <AlertCircle className="w-5 h-5" />
+                <span className="hidden sm:inline">Mark Unavailable</span>
+              </>
+            ) : (
+              <>
+                <CheckCircle className="w-5 h-5" />
+                <span className="hidden sm:inline">Mark Available</span>
+              </>
+            )}
+          </button>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white rounded-2xl shadow-lg p-6 flex items-center space-x-4">
-            <div className="bg-indigo-100 rounded-full p-3">
-              <FaBiking className="text-indigo-600 text-2xl" />
+          <div className="bg-white rounded-2xl shadow-lg p-6 flex items-center space-x-4 transition-all duration-300 hover:shadow-xl">
+            <div className="bg-purple-100 rounded-full p-3">
+              <Bike className="text-purple-600 w-6 h-6" />
             </div>
             <div>
               <h2 className="text-lg font-semibold text-gray-700">Your Bike</h2>
-              <p className="text-xl font-bold text-indigo-600">{bikeDetails.BikeNo || "Not Registered"}</p>
+              <p className="text-xl font-bold text-purple-600">{bikeDetails.BikeNo || "Not Registered"}</p>
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-lg p-6 flex items-center space-x-4">
+          <div className="bg-white rounded-2xl shadow-lg p-6 flex items-center space-x-4 transition-all duration-300 hover:shadow-xl">
             <div className="bg-green-100 rounded-full p-3">
-              <FaUtensils className="text-green-600 text-2xl" />
+              <Utensils className="text-green-600 w-6 h-6" />
             </div>
             <div>
               <h2 className="text-lg font-semibold text-gray-700">Restaurant</h2>
@@ -218,9 +217,9 @@ const RiderDashboard = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-lg p-6 flex items-center space-x-4">
+          <div className="bg-white rounded-2xl shadow-lg p-6 flex items-center space-x-4 transition-all duration-300 hover:shadow-xl">
             <div className="bg-yellow-100 rounded-full p-3">
-              <FaDollarSign className="text-yellow-600 text-2xl" />
+              <DollarSign className="text-yellow-600 w-6 h-6" />
             </div>
             <div>
               <h2 className="text-lg font-semibold text-gray-700">Today's Tips</h2>
@@ -230,26 +229,28 @@ const RiderDashboard = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div className="bg-white rounded-2xl shadow-lg p-6">
+          <div className="bg-white rounded-2xl shadow-lg p-6 transition-all duration-300 hover:shadow-xl">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-indigo-800">Orders To Deliver</h2>
-              <FaBox className="text-indigo-600 text-2xl" />
+              <h2 className="text-2xl font-bold text-purple-800">Orders To Deliver</h2>
+              <Package className="text-purple-600 w-6 h-6" />
             </div>
             {Array.isArray(pendingOrders) && pendingOrders.length > 0 ? (
-              <ul className="space-y-4 pl-0">
+              <ul className="space-y-4">
                 {pendingOrders.map((currentOrder) => (
-                  <li key={currentOrder.Order_id} className="bg-indigo-50 rounded-xl p-4 flex justify-between items-center">
+                  <li key={currentOrder.Order_id} className="bg-purple-50 rounded-xl p-4 flex justify-between items-center transition-all duration-300 hover:bg-purple-100">
                     <div>
-                      <span className="text-indigo-600 font-semibold">Order #{currentOrder.Order_id}</span>
+                      <span className="text-purple-600 font-semibold">Order #{currentOrder.Order_id}</span>
                       <p className="text-sm text-gray-600 flex items-center mt-1">
-                        <FaMapMarkerAlt className="mr-1 text-indigo-400" />
+                        <MapPin className="mr-1 text-purple-400 w-4 h-4" />
                         {currentOrder.Address}
                       </p>
                     </div>
-                    <button className="px-4 py-2 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 transition duration-300"
-                      onClick={e => { setOrderAndDisplay(currentOrder.Order_id) }}
+                    <button 
+                      className="px-4 py-2 bg-purple-600 text-white rounded-full hover:bg-purple-700 transition duration-300 flex items-center space-x-2"
+                      onClick={() => setOrderAndDisplay(currentOrder.Order_id)}
                     >
-                      Details
+                      <span>Details</span>
+                      <Package className="w-4 h-4" />
                     </button>
                   </li>
                 ))}
@@ -259,15 +260,15 @@ const RiderDashboard = () => {
             )}
           </div>
 
-          <div className="bg-white rounded-2xl shadow-lg p-6">
+          <div className="bg-white rounded-2xl shadow-lg p-6 transition-all duration-300 hover:shadow-xl">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold text-green-800">Recent Deliveries</h2>
-              <FaCheckCircle className="text-green-600 text-2xl" />
+              <CheckCircle className="text-green-600 w-6 h-6" />
             </div>
             {Array.isArray(riderHistory) && riderHistory.length > 0 ? (
-              <ul className="space-y-4 pl-0">
+              <ul className="space-y-4">
                 {riderHistory.slice(0, 3).map((historyItem, index) => (
-                  <li key={index} className="bg-green-50 rounded-xl p-4 flex justify-between items-center">
+                  <li key={index} className="bg-green-50 rounded-xl p-4 flex justify-between items-center transition-all duration-300 hover:bg-green-100">
                     <div>
                       <span className="text-green-600 font-semibold">Order #{historyItem.Order_id}</span>
                       <p className="text-sm text-gray-600 mt-1">{historyItem.Order_date}</p>
@@ -284,8 +285,8 @@ const RiderDashboard = () => {
 
       {bikePopup && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl p-8 max-w-md w-full m-4">
-            <h2 className="text-2xl font-bold text-indigo-800 mb-4">Register Your Vehicle</h2>
+          <div className="bg-white rounded-2xl p-8 max-w-md w-full m-4 transition-all duration-300 transform hover:scale-105">
+            <h2 className="text-2xl font-bold text-purple-800 mb-4">Register Your Vehicle</h2>
             <p className="text-gray-600 mb-6">Please provide your bike's number plate to continue.</p>
             <form onSubmit={handleBikeRegistration} className="space-y-4">
               <div>
@@ -298,103 +299,97 @@ const RiderDashboard = () => {
                   value={bikeDetails.BikeNo || ""}
                   onChange={(e) => setBikeDetails((prev) => ({ ...prev, BikeNo: e.target.value }))}
                   placeholder="Enter your bike's number plate"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300"
                   required
                 />
               </div>
               <button
                 type="submit"
-                className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition duration-300"
+                className="w-full bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700 transition duration-300 flex items-center justify-center space-x-2"
               >
-                Submit
+                <span>Submit</span>
+                <Bike className="w-5 h-5" />
               </button>
             </form>
           </div>
         </div>
       )}
-{orderDetailPopup && (
-  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-    <div className="bg-white rounded-2xl shadow-lg w-full max-w-md m-4 overflow-hidden">
-      {/* Header */}
-      <div className="bg-purple-600 px-6 py-4 flex items-center justify-between">
-        <h2 className="text-xl font-bold text-white">Order Details</h2>
-        <button
-          onClick={() => {
-            analyzeOrder({});
-            setOrderDetailsPopup(false);
-          }}
-          className="text-white hover:text-purple-200 transition-colors"
-        >
-          <FaTimes className="text-xl" />
-        </button>
-      </div>
 
-      {/* Content */}
-      <form className="space-y-4 p-6">
-        <div>
-          <label
-            htmlFor="CustomerName"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
-            Customer Name
-          </label>
-          <input
-            id="CustomerName"
-            type="text"
-            value={analyzingOrder.Customer_Name}
-            readOnly
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-          />
+      {orderDetailPopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl shadow-lg w-full max-w-md m-4 overflow-hidden transition-all duration-300 transform hover:scale-105">
+            <div className="bg-purple-600 px-6 py-4 flex items-center justify-between">
+              <h2 className="text-xl font-bold text-white">Order Details</h2>
+              <button
+                onClick={() => {
+                  setOrderDetailsPopup(false);
+                }}
+                className="text-white hover:text-purple-200 transition-colors"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+
+            <form className="space-y-4 p-6">
+              <div>
+                <label
+                  htmlFor="CustomerName"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Customer Name
+                </label>
+                <input
+                  id="CustomerName"
+                  type="text"
+                  value={analyzingOrder.Customer_Name}
+                  readOnly
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300"
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="NearbyPoint"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Nearby Point
+                </label>
+                <input
+                  id="NearbyPoint"
+                  type="text"
+                  value={analyzingOrder.NearbyPoint}
+                  readOnly
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300"
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="PhoneNo"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Customer Mobile
+                </label>
+                <input
+                  id="PhoneNo"
+                  type="text"
+                  value={analyzingOrder.PhoneNo}
+                  readOnly
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300"
+                />
+              </div>
+
+              <button
+                className="bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition duration-300 text-sm sm:text-base w-full flex items-center justify-center space-x-2"
+                onClick={handleOrderDelivery}
+              >
+                <CheckCircle className="w-5 h-5" />
+                <span>Mark as Delivered</span>
+              </button>
+            </form>
+          </div>
         </div>
-
-        <div>
-          <label
-            htmlFor="NearbyPoint"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
-            Nearby Point
-          </label>
-          <input
-            id="NearbyPoint"
-            type="text"
-            value={analyzingOrder.NearbyPoint}
-            readOnly
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-          />
-        </div>
-
-        <div>
-          <label
-            htmlFor="PhoneNo"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
-            Customer Mobile
-          </label>
-          <input
-            id="PhoneNo"
-            type="text"
-            value={analyzingOrder.PhoneNo}
-            readOnly
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-          />
-        </div>
-
-        <button
-  className="bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition duration-300 text-sm sm:text-base"
-  onClick={handleOrderDelivery}
->
-  <div className="flex items-center space-x-2">
-    <FaCheckCircle />
-    <span>Mark as Delivered</span>
-  </div>
-</button>
-
-      </form>
-    </div>
-  </div>
-)}
-
-
+      )}
     </div>
   );
 };

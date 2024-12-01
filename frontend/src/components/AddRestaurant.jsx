@@ -70,7 +70,7 @@ const AddRestaurantPopup = ({ isOpen, onClose,fetchRestaurants}) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-opacity-60 flex items-center justify-center p-4 z-50 overflow-y-auto">
+    <div className="fixed inset-0 bg-opacity-60 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-y-auto">
       <div className="bg-white w-full max-w-md mx-auto rounded-xl shadow-2xl overflow-hidden animate-fade-in-up">
         <div className="bg-purple-600 px-6 py-4 flex justify-between items-center border-b border-purple-100">
           <h2 className="text-2xl font-bold text-white tracking-tight">Add Restaurant</h2>

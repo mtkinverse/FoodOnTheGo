@@ -119,7 +119,7 @@ const UserContextProvider = ({ children }) => {
             User_id: res.data.Rider_id,
             User_name: res.data.Rider_name,
             Email_address: res.data.Email_address,
-            phone_no: res.data.Phone_No,
+            phone_no: res.data.Phone_no,
             role: res.data.role,
             status: res.data.Available
           };

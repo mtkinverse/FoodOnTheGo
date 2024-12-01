@@ -12,6 +12,7 @@ import {
   FaTrash,
 } from "react-icons/fa";
 import { useAlertContext } from "../contexts/alertContext";
+import { X, Truck, User,Calendar, DollarSign, Hash, Users , MapPin ,ShoppingBag, Tag, CreditCard, Package, Clock, ChefHat, Percent, Edit2, Trash2  } from 'lucide-react';
 
 const DealsPopup = ({ setDealPopup,selectedDeal,setSelectedDeal }) => {
   const [dealType, setDealType] = useState(null);
@@ -153,306 +154,264 @@ const DealsPopup = ({ setDealPopup,selectedDeal,setSelectedDeal }) => {
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
-      <div className="bg-purple-600 px-6 py-4 flex items-center justify-between">
-        <h2 className="text-xl font-bold text-white">
-          {selectedDeal ? 'Update Promo' : 'Create New Promo'}
-        </h2>
-        {/* Close Button */}
-        <button
-          onClick={() => setDealPopup(false)}
-          className="text-white text-2xl hover:text-gray-200"
-        >
-          &times;
-        </button>
-      </div>
-      {!dealType ? (
-        <div className="p-6">
-          <h3 className="text-2xl font-bold text-gray-900 mb-6 text-center">
-            Select Deal Type
-          </h3>
-          <div className="flex flex-col space-y-4">
-            <button
-              onClick={() => setDealType("promo")}
-              className="py-2 px-4 rounded-md bg-purple-600 hover:bg-purple-700 text-white transition duration-200 w-full text-center"
-            >
-              Promo
-            </button>
-            <button
-              onClick={() => setDealType("discount")}
-              className="py-2 px-4 rounded-md bg-purple-600 hover:bg-purple-700 text-white transition duration-200 w-full text-center"
-            >
-              Discount
-            </button>
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
+        <div className="bg-purple-600 px-6 py-4 flex items-center justify-between">
+          <h2 className="text-xl font-bold text-white">
+            {selectedDeal ? 'Update Deal' : 'Create New Deal'}
+          </h2>
+          <button
+            onClick={() => setDealPopup(false)}
+            className="text-white hover:text-gray-200 transition-colors"
+          >
+            <X size={24} />
+          </button>
+        </div>
+        {!dealType ? (
+          <div className="p-6">
+            <h3 className="text-2xl font-bold text-gray-900 mb-6 text-center">
+              Select Deal Type
+            </h3>
+            <div className="flex flex-col space-y-4">
+              <button
+                onClick={() => setDealType("promo")}
+                className="py-3 px-4 rounded-lg bg-purple-600 hover:bg-purple-700 text-white transition duration-200 w-full text-center flex items-center justify-center space-x-2"
+              >
+                <Percent size={20} />
+                <span>Promo</span>
+              </button>
+              <button
+                onClick={() => setDealType("discount")}
+                className="py-3 px-4 rounded-lg bg-purple-600 hover:bg-purple-700 text-white transition duration-200 w-full text-center flex items-center justify-center space-x-2"
+              >
+                <DollarSign size={20} />
+                <span>Discount</span>
+              </button>
+            </div>
           </div>
-        </div>
-      ) : dealType === "promo" ? (
-        <div className="p-6">
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              if (selectedDeal) {
-                setSelectedDeal({ ...newpromo, Type: dealType });
-                handlePromoUpdate();
-              } else {
-                handlePromoSubmit();
-              }
-            }}
-          >
-            <div className="mb-4">
-              <label
-                htmlFor="promo_code"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Promo Code
-              </label>
-              <input
-                type="text"
-                id="promo_code"
-                value={newpromo.promo_code}
-                onChange={(e) =>
-                  setNewPromo((prev) => ({
-                    ...prev,
-                    promo_code: e.target.value,
-                  }))
+        ) : dealType === "promo" ? (
+          <div className="p-6">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (selectedDeal) {
+                  setSelectedDeal({ ...newpromo, Type: dealType });
+                  handlePromoUpdate();
+                } else {
+                  handlePromoSubmit();
                 }
-                className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                placeholder="CXY6728"
-              />
-            </div>
-  
-            <div className="mb-4">
-              <label
-                htmlFor="promo_value"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Promo Value (%)
-              </label>
-              <input
-                type="number"
-                id="promo_value"
-                value={newpromo.promo_value}
-                onChange={(e) =>
-                  setNewPromo((prev) => ({
-                    ...prev,
-                    promo_value: e.target.value,
-                  }))
+              }}
+            >
+              <div className="space-y-4">
+                <div>
+                  <label htmlFor="promo_code" className="block text-sm font-medium text-gray-700 mb-1">
+                    Promo Code
+                  </label>
+                  <div className="relative">
+                    <Hash className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+                    <input
+                      type="text"
+                      id="promo_code"
+                      value={newpromo.promo_code}
+                      onChange={(e) => setNewPromo((prev) => ({ ...prev, promo_code: e.target.value }))}
+                      className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-200"
+                      placeholder="CXY6728"
+                    />
+                  </div>
+                </div>
+                
+                <div>
+                  <label htmlFor="promo_value" className="block text-sm font-medium text-gray-700 mb-1">
+                    Promo Value (%)
+                  </label>
+                  <div className="relative">
+                    <Percent className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+                    <input
+                      type="number"
+                      id="promo_value"
+                      value={newpromo.promo_value}
+                      onChange={(e) => setNewPromo((prev) => ({ ...prev, promo_value: e.target.value }))}
+                      className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-200"
+                      placeholder="10"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label htmlFor="min_spend" className="block text-sm font-medium text-gray-700 mb-1">
+                    Minimum Spend
+                  </label>
+                  <div className="relative">
+                    <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+                    <input
+                      type="number"
+                      id="min_spend"
+                      value={newpromo.Min_Total}
+                      onChange={(e) => setNewPromo((prev) => ({ ...prev, Min_Total: e.target.value }))}
+                      className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-200"
+                      placeholder="250"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label htmlFor="start_date" className="block text-sm font-medium text-gray-700 mb-1">
+                    Start Date
+                  </label>
+                  <div className="relative">
+                    <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+                    <input
+                      type="date"
+                      id="start_date"
+                      value={newpromo.start_date}
+                      onChange={(e) => setNewPromo((prev) => ({ ...prev, start_date: e.target.value }))}
+                      className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-200"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label htmlFor="end_date" className="block text-sm font-medium text-gray-700 mb-1">
+                    End Date
+                  </label>
+                  <div className="relative">
+                    <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+                    <input
+                      type="date"
+                      id="end_date"
+                      value={newpromo.end_date}
+                      onChange={(e) => setNewPromo((prev) => ({ ...prev, end_date: e.target.value }))}
+                      className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-200"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label htmlFor="limit" className="block text-sm font-medium text-gray-700 mb-1">
+                    Usage Limit
+                  </label>
+                  <div className="relative">
+                    <Users className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+                    <input
+                      type="number"
+                      id="limit"
+                      name={selectedDeal ? 'usage_limit' : 'limit'}
+                      value={selectedDeal ? newpromo.usage_limit : newpromo.limit}
+                      onChange={(e) => setNewPromo((prev) => ({ ...prev, [e.target.name]: e.target.value }))}
+                      className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-200"
+                      placeholder="Enter usage limit"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-end space-x-3 mt-6">
+                <button
+                  type="button"
+                  className="bg-gray-200 text-gray-800 py-2 px-4 rounded-lg hover:bg-gray-300 transition duration-200"
+                  onClick={() => {
+                    setSelectedDeal(null);
+                    setDealType(null);
+                    setDealPopup(false);
+                  }}
+                >
+                  Close
+                </button>
+                <button
+                  type="submit"
+                  className="bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition duration-200"
+                >
+                  {selectedDeal ? 'Update' : 'Submit'}
+                </button>
+              </div>
+            </form>
+          </div>
+        ) : (
+          <div className="p-6">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (selectedDeal) {
+                  setSelectedDeal({ ...newDiscount, Type: dealType });
+                  handlePromoUpdate();
+                } else {
+                  handleDiscountSubmit();
                 }
-                className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                placeholder="10"
-              />
-            </div>
-  
-            <div className="mb-4">
-              <label
-                htmlFor="min_spend"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Minimum Spend
-              </label>
-              <input
-                type="number"
-                id="min_spend"
-                value={newpromo.Min_Total}
-                onChange={(e) =>
-                  setNewPromo((prev) => ({
-                    ...prev,
-                    Min_Total: e.target.value,
-                  }))
-                }
-                className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                placeholder="250"
-              />
-            </div>
-  
-            <div className="mb-4">
-              <label
-                htmlFor="start_date"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Start Date
-              </label>
-              <input
-                type="date"
-                id="start_date"
-                value={newpromo.start_date}
-                onChange={(e) =>
-                  setNewPromo((prev) => ({
-                    ...prev,
-                    start_date: e.target.value,
-                  }))
-                }
-                className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-500"
-              />
-            </div>
-  
-            <div className="mb-4">
-              <label
-                htmlFor="end_date"
-                className="block text-sm font-medium text-gray-700"
-              >
-                End Date
-              </label>
-              <input
-                type="date"
-                id="end_date"
-                value={newpromo.end_date}
-                onChange={(e) =>
-                  setNewPromo((prev) => ({
-                    ...prev,
-                    end_date: e.target.value,
-                  }))
-                }
-                className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-500"
-              />
-            </div>
-  
-            <div className="mb-4">
-              <label
-                htmlFor="limit"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Usage Limit
-              </label>
-              <input
-                type="number"
-                id="limit"
-                name={selectedDeal ? 'usage_limit' : 'limit'}
-                value={selectedDeal ? newpromo.usage_limit : newpromo.limit}
-                onChange={(e) =>
-                  setNewPromo((prev) => ({
-                    ...prev,
-                    [e.target.name]: e.target.value,
-                  }))
-                }
-                className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                placeholder="Enter usage limit"
-              />
-            </div>
-  
-            <div className="flex justify-end space-x-3">
-              <button
-                type="button"
-                className="bg-gray-300 text-gray-800 py-2 px-4 rounded-lg hover:bg-gray-400 transition duration-300"
-                onClick={() => {
-                  setSelectedDeal(null);
-                  setDealType(null);
-                  setDealPopup(false);
-                }}
-              >
-                Close
-              </button>
-              <button
-                type="submit"
-                className="bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition duration-300"
-              >
-                {selectedDeal ? 'Update' : 'Submit'}
-              </button>
-            </div>
-          </form>
-        </div>
-      ) : (
-        <div className="p-6">
-          {/* Discount-specific popup */}
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              if (selectedDeal) {
-                setSelectedDeal({ ...newDiscount, Type: dealType });
-                handlePromoUpdate();
-              } else {
-                handleDiscountSubmit();
-              }
-            }}
-          >
-            <div className="mb-4">
-              <label
-                htmlFor="discount_value"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Discount Value (%)
-              </label>
-              <input
-                type="number"
-                id="discount_value"
-                value={newDiscount.discount_value}
-                onChange={(e) =>
-                  setNewDiscount((prev) => ({
-                    ...prev,
-                    discount_value: e.target.value,
-                  }))
-                }
-                className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                placeholder="10"
-              />
-            </div>
-  
-            <div className="mb-4">
-              <label
-                htmlFor="start_date"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Start Date
-              </label>
-              <input
-                type="date"
-                id="start_date"
-                value={newDiscount.start_date}
-                onChange={(e) =>
-                  setNewDiscount((prev) => ({
-                    ...prev,
-                    start_date: e.target.value,
-                  }))
-                }
-                className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-500"
-              />
-            </div>
-  
-            <div className="mb-4">
-              <label
-                htmlFor="end_date"
-                className="block text-sm font-medium text-gray-700"
-              >
-                End Date
-              </label>
-              <input
-                type="date"
-                id="end_date"
-                value={newDiscount.end_date}
-                onChange={(e) =>
-                  setNewDiscount((prev) => ({
-                    ...prev,
-                    end_date: e.target.value,
-                  }))
-                }
-                className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-500"
-              />
-            </div>
-  
-            <div className="flex justify-end space-x-3">
-              <button
-                type="button"
-                className="bg-gray-300 text-gray-800 py-2 px-4 rounded-lg hover:bg-gray-400 transition duration-300"
-                onClick={() => {
-                  setSelectedDeal(null);
-                  setDealPopup(false);
-                }}
-              >
-                Close
-              </button>
-              <button
-                type="submit"
-                className="bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition duration-300"
-              >
-                {selectedDeal ? 'Update' : 'Submit'}
-              </button>
-            </div>
-          </form>
-        </div>
-      )}
+              }}
+            >
+              <div className="space-y-4">
+                <div>
+                  <label htmlFor="discount_value" className="block text-sm font-medium text-gray-700 mb-1">
+                    Discount Value (%)
+                  </label>
+                  <div className="relative">
+                    <Percent className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+                    <input
+                      type="number"
+                      id="discount_value"
+                      value={newDiscount.discount_value}
+                      onChange={(e) => setNewDiscount((prev) => ({ ...prev, discount_value: e.target.value }))}
+                      className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-200"
+                      placeholder="10"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label htmlFor="start_date" className="block text-sm font-medium text-gray-700 mb-1">
+                    Start Date
+                  </label>
+                  <div className="relative">
+                    <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+                    <input
+                      type="date"
+                      id="start_date"
+                      value={newDiscount.start_date}
+                      onChange={(e) => setNewDiscount((prev) => ({ ...prev, start_date: e.target.value }))}
+                      className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-200"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label htmlFor="end_date" className="block text-sm font-medium text-gray-700 mb-1">
+                    End Date
+                  </label>
+                  <div className="relative">
+                    <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+                    <input
+                      type="date"
+                      id="end_date"
+                      value={newDiscount.end_date}
+                      onChange={(e) => setNewDiscount((prev) => ({ ...prev, end_date: e.target.value }))}
+                      className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-200"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-end space-x-3 mt-6">
+                <button
+                  type="button"
+                  className="bg-gray-200 text-gray-800 py-2 px-4 rounded-lg hover:bg-gray-300 transition duration-200"
+                  onClick={() => {
+                    setSelectedDeal(null);
+                    setDealPopup(false);
+                  }}
+                >
+                  Close
+                </button>
+                <button
+                  type="submit"
+                  className="bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition duration-200"
+                >
+                  {selectedDeal ? 'Update' : 'Submit'}
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
+      </div>
     </div>
-  </div>
-  
   );
 };
 
@@ -845,263 +804,364 @@ const AdminDashboard = () => {
           </section>
         </div>
 
-        {deliveryDetails && viewdeliveryDetails && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-lg shadow-lg w-full max-w-lg p-6">
-              <h2 className="text-2xl font-bold text-gray-800 mb-4">
-                Order Delivery Details
-              </h2>
-              <div className="space-y-4">
-                <div className="text-gray-700">
-                  <strong>Rider ID:</strong> {deliveryDetails[0].rider_id}
-                </div>
-                <div className="text-gray-700">
-                  <strong>Rider Name:</strong> {deliveryDetails[0].rider_name}
-                </div>
-                <div className="text-gray-700">
-                  <strong>Address:</strong> {deliveryDetails[0].address}
-                </div>
-                <button
-                  className="mt-6 w-full bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 transition duration-300"
-                  onClick={() => {
-                    setDeliveryDetailsPopup(false);
-                    setDeliveryDetails(null);
-                  }}
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
 
-        {detailsPopup && selectedOrder && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-lg shadow-lg w-full max-w-lg p-6">
-              <h2 className="text-2xl font-bold text-gray-800 mb-4">
-                Order Details
-              </h2>
-              {selectedOrder.items && selectedOrder.items.length > 0 ? (
-                <>
-                  <ul className="space-y-4 mb-4">
-                    {selectedOrder.items.map((item, index) => (
-                      <li
-                        key={index}
-                        className="flex justify-between items-center border-b pb-2"
-                      >
-                        <div>
-                          <span className="font-semibold text-gray-700">
-                            {item.dish_name}
-                          </span>
-                          <p className="text-sm text-gray-600">
-                            Qty: {item.quantity}
-                          </p>
-                        </div>
-                        <span className="text-gray-700">
-                          Rs. {item.sub_total}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                  <div className="flex flex-col space-y-2 pt-4 border-t">
-                    {/* Promo Value */}
-                    {selectedOrder.promo_value !== "No Promo" && (
-                      <div className="flex justify-between text-lg font-semibold text-gray-800">
-                        <span>Promo applied:</span>
-                        <span>{selectedOrder.promo_value}%</span>
-                      </div>
-                    )}
-                    {/* Total Amount */}
-                    <div className="flex justify-between text-lg font-semibold text-gray-800">
-                      <span>Total</span>
-                      <span>Rs. {selectedOrder.total_amount}</span>
+{deliveryDetails && viewdeliveryDetails && (
+  <div className="fixed inset-0 bg-black/60 bg-opacity-40 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
+    <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all duration-300 ease-out scale-95 hover:scale-100">
+      {/* Header */}
+      <div className="bg-gradient-to-r from-purple-600 to-purple-800 text-white px-6 py-4 flex justify-between items-center">
+        <h2 className="text-2xl font-bold">Order Delivery Details</h2>
+        <button 
+          onClick={() => {
+            setDeliveryDetailsPopup(false);
+            setDeliveryDetails(null);
+          }}
+          className="text-white hover:text-gray-200 transition-colors duration-200"
+        >
+          <X size={24} />
+        </button>
+      </div>
+
+      {/* Content */}
+      <div className="p-6 space-y-6">
+        <div className="flex items-center space-x-4 text-gray-700">
+          <Truck size={24} className="text-indigo-500" />
+          <span className="font-medium">Rider ID:</span>
+          <span className="font-light text-gray-600 ml-auto">{deliveryDetails[0].rider_id}</span>
+        </div>
+        <div className="flex items-center space-x-4 text-gray-700">
+          <User size={24} className="text-indigo-500" />
+          <span className="font-medium">Rider Name:</span>
+          <span className="font-light text-gray-600 ml-auto">{deliveryDetails[0].rider_name}</span>
+        </div>
+        <div className="flex items-center space-x-4 text-gray-700">
+          <MapPin size={24} className="text-indigo-500" />
+          <span className="font-medium">Address:</span>
+          <span className="font-light text-gray-600 ml-auto">{deliveryDetails[0].address}</span>
+        </div>
+      </div>
+      
+      {/* Close Button */}
+      <div className="px-6 pb-6">
+        <button
+          className="w-full bg-gradient-to-r from-purple-500 to-purple-600 text-white py-3 px-6 rounded-xl shadow-md hover:from-indigo-600 hover:to-purple-700 transition-all duration-300 transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          onClick={() => {
+            setDeliveryDetailsPopup(false);
+            setDeliveryDetails(null);
+          }}
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
+
+{detailsPopup && selectedOrder && (
+  <div className="fixed inset-0 bg-black/60 bg-opacity-40 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
+    <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden transform transition-all duration-300 ease-out scale-95 hover:scale-100">
+      <div className="bg-gradient-to-r from-purple-600 to-purple-800 text-white px-6 py-4 flex justify-between items-center">
+        <h2 className="text-2xl font-bold flex items-center">
+          <ShoppingBag className="mr-2" size={24} />
+          Order Details
+        </h2>
+        <button 
+          onClick={() => setDetailsPopup(false)}
+          className="text-white hover:text-gray-200 transition-colors duration-200"
+          aria-label="Close details"
+        >
+          <X size={24} />
+        </button>
+      </div>
+      
+      <div className="p-6">
+        {selectedOrder.items && selectedOrder.items.length > 0 ? (
+          <>
+            <ul className="space-y-4 mb-6">
+              {selectedOrder.items.map((item, index) => (
+                <li
+                  key={index}
+                  className="flex justify-between items-center border-b border-gray-200 pb-4"
+                >
+                  <div className="flex items-start">
+                    <div className="bg-purple-100 rounded-full p-2 mr-3">
+                      <ShoppingBag className="text-indigo-600" size={20} />
+                    </div>
+                    <div>
+                      <span className="font-semibold text-gray-800">
+                        {item.dish_name}
+                      </span>
+                      <p className="text-sm text-gray-600">
+                        Qty: {item.quantity}
+                      </p>
                     </div>
                   </div>
-                </>
-              ) : (
-                <p className="text-gray-500 italic">No items in this order.</p>
+                  <span className="text-gray-700 font-medium">
+                    Rs. {item.sub_total}
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <div className="space-y-4 pt-4 border-t border-gray-200">
+              {selectedOrder.promo_value !== "No Promo" && (
+                <div className="flex justify-between items-center text-lg">
+                  <span className="font-medium text-gray-700 flex items-center">
+                    <Tag className="mr-2 text-green-500" size={20} />
+                    Promo applied:
+                  </span>
+                  <span className="font-semibold text-green-600">{selectedOrder.promo_value}% OFF</span>
+                </div>
               )}
-              <button
-                className="mt-6 w-full bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition duration-300"
-                onClick={() => setDetailsPopup(false)}
-              >
-                Close
-              </button>
+              <div className="flex justify-between items-center text-xl">
+                <span className="font-bold text-gray-800 flex items-center">
+                  <CreditCard className="mr-2 text-purple-600" size={24} />
+                  Total
+                </span>
+                <span className="font-bold text-purple-600">Rs. {selectedOrder.total_amount}</span>
+              </div>
             </div>
-          </div>
+          </>
+        ) : (
+          <p className="text-gray-500 italic flex items-center justify-center h-32">
+            <ShoppingBag className="mr-2 text-gray-400" size={24} />
+            No items in this order.
+          </p>
         )}
+      </div>
 
-        {managePopup && selectedOrder && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
-              <h2 className="text-2xl font-bold text-gray-800 mb-4">
-                Manage Order
-              </h2>
-              <div className="mb-4">
-                <p>
-                  <strong>Order ID:</strong> {selectedOrder.order_id}
-                </p>
-                <p>
-                  <strong>Address:</strong> {selectedOrder.address}
-                </p>
-                <p>
-                  <strong>Current Status:</strong> {selectedOrder.status}
-                </p>
-              </div>
-              <button
-                className="w-full bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition duration-300"
-                onClick={() => handleUpdateStatus(selectedOrder, "Preparing")}
-              >
-                Change Status to Preparing
-              </button>
-              <button
-                className="mt-4 w-full bg-gray-300 text-gray-800 py-2 px-4 rounded-lg hover:bg-gray-400 transition duration-300"
-                onClick={() => toggleManagePopup(false)}
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        )}
+      <div className="px-6 pb-6">
+        <button
+          className="w-full bg-gradient-to-r from-purple-600 to-purple-700 text-white py-3 px-6 rounded-xl shadow-md hover:from-indigo-600 hover:to-purple-700 transition-all duration-300 transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          onClick={() => setDetailsPopup(false)}
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+)}
 
-        {dispatchPopup && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
-              <h2 className="text-2xl font-bold text-gray-800 mb-4">
-                Dispatch Order
-              </h2>
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Select Rider
-                </label>
-                <select
-                  value={selectedRider ? selectedRider.rider_id : ""}
-                  onChange={(e) => {
-                    const rider = riders.find(
-                      (r) => r.rider_id === Number(e.target.value)
-                    );
-                    setSelectedRider(rider);
-                  }}
-                  className="w-full p-2 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                >
-                  <option value="">Select a Rider</option>
-                  {riders.map((rider) => (
-                    <option key={rider.rider_id} value={rider.rider_id}>
-                      {rider.rider_name} - Bike no {rider.bikeNo}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="flex justify-end space-x-3">
-                <button
-                  className="bg-gray-300 text-gray-800 py-2 px-4 rounded-lg hover:bg-gray-400 transition duration-300"
-                  onClick={() => {
-                    toggleDispatchPopup(false);
-                    setSelectedRider(null);
-                  }}
-                >
-                  Cancel
-                </button>
-                <button
-                  className="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed"
-                  onClick={handleDispatch}
-                  disabled={!selectedRider}
-                >
-                  Dispatch Order
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+{managePopup && selectedOrder && (
+  <div className="fixed inset-0 bg-black/60 bg-opacity-40 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
+    <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all duration-300 ease-out scale-95 hover:scale-100">
+      <div className="bg-gradient-to-r from-purple-600 to-purple-800 text-white px-6 py-4 flex justify-between items-center">
+        <h2 className="text-2xl font-bold flex items-center">
+          <Package className="mr-2" size={24} />
+          Manage Order
+        </h2>
+        <button 
+          onClick={() => toggleManagePopup(false)}
+          className="text-white hover:text-gray-200 transition-colors duration-200"
+          aria-label="Close manage order"
+        >
+          <X size={24} />
+        </button>
+      </div>
+      
+      <div className="p-6 space-y-4">
+        <div className="space-y-2">
+          <p className="flex items-center text-gray-700">
+            <Package className="mr-2 text-purple-600" size={20} />
+            <strong className="mr-2">Order ID:</strong> {selectedOrder.order_id}
+          </p>
+          <p className="flex items-center text-gray-700">
+            <MapPin className="mr-2 text-purple-600" size={20} />
+            <strong className="mr-2">Address:</strong> {selectedOrder.address}
+          </p>
+          <p className="flex items-center text-gray-700">
+            <Clock className="mr-2 text-purple-600" size={20} />
+            <strong className="mr-2">Current Status:</strong> 
+            <span className="bg-purple-100 text-purple-800 px-2 py-1 rounded-full text-sm font-medium">
+              {selectedOrder.status}
+            </span>
+          </p>
+        </div>
+        
+        <button
+          className="w-full bg-gradient-to-r from-purple-600 to-purple-800 text-white py-3 px-6 rounded-xl shadow-md hover:from-purple-700 hover:to-purple-900 transition-all duration-300 transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 flex items-center justify-center"
+          onClick={() => handleUpdateStatus(selectedOrder, "Preparing")}
+        >
+          <ChefHat className="mr-2" size={20} />
+          Change Status to Preparing
+        </button>
+        
+        <button
+          className="w-full bg-gray-100 text-gray-800 py-3 px-6 rounded-xl hover:bg-gray-200 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 flex items-center justify-center"
+          onClick={() => toggleManagePopup(false)}
+        >
+          <X className="mr-2" size={20} />
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+      {dispatchPopup && (
+  <div className="fixed inset-0 bg-black/60 bg-opacity-40 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
+    <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all duration-300 ease-out scale-95 hover:scale-100">
+      <div className="bg-gradient-to-r from-purple-600 to-purple-800 text-white px-6 py-4 flex justify-between items-center">
+        <h2 className="text-2xl font-bold flex items-center">
+          <Truck className="mr-2" size={24} />
+          Dispatch Order
+        </h2>
+        <button 
+          onClick={() => {
+            toggleDispatchPopup(false);
+            setSelectedRider(null);
+          }}
+          className="text-white hover:text-gray-200 transition-colors duration-200"
+          aria-label="Close dispatch popup"
+        >
+          <X size={24} />
+        </button>
+      </div>
+      
+      <div className="p-6 space-y-6">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Select Rider
+          </label>
+          <select
+            value={selectedRider ? selectedRider.rider_id : ""}
+            onChange={(e) => {
+              const rider = riders.find(
+                (r) => r.rider_id === Number(e.target.value)
+              );
+              setSelectedRider(rider);
+            }}
+            className="w-full p-3 border border-gray-300 rounded-xl bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-200"
+          >
+            <option value="">Select a Rider</option>
+            {riders.map((rider) => (
+              <option key={rider.rider_id} value={rider.rider_id}>
+                {rider.rider_name} - Bike no {rider.bikeNo}
+              </option>
+            ))}
+          </select>
+        </div>
+        
+        <div className="flex justify-end space-x-3">
+          <button
+            className="bg-gray-100 text-gray-800 py-2 px-4 rounded-xl hover:bg-gray-200 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+            onClick={() => {
+              toggleDispatchPopup(false);
+              setSelectedRider(null);
+            }}
+          >
+            Cancel
+          </button>
+          <button
+            className="bg-gradient-to-r from-purple-600 to-purple-800 text-white py-2 px-4 rounded-xl shadow-md hover:from-purple-700 hover:to-purple-900 transition-all duration-300 transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+            onClick={handleDispatch}
+            disabled={!selectedRider}
+          >
+            Dispatch Order
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
         {/* Trigger the deals popup */}
         {showDealsPop && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg shadow-lg w-full max-w-lg p-6">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-2xl font-semibold">Current Deals</h2>
-                <button
-                  className="text-2xl text-gray-600 hover:text-gray-800"
-                  onClick={() => {
-                    setShowDeals(false);
-                  }}
-                >
-                  &times; {/* Close button (×) */}
-                </button>
+  <div className="fixed inset-0 bg-black/60 bg-opacity-40 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
+    <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden transform transition-all duration-300 ease-out scale-95 hover:scale-100">
+      <div className="bg-gradient-to-r from-purple-600 to-purple-800 text-white px-6 py-4 flex justify-between items-center">
+        <h2 className="text-2xl font-bold flex items-center">
+          <Tag className="mr-2" size={24} />
+          Current Deals
+        </h2>
+        <button 
+          onClick={() => setShowDeals(false)}
+          className="text-white hover:text-gray-200 transition-colors duration-200"
+          aria-label="Close deals popup"
+        >
+          <X size={24} />
+        </button>
+      </div>
+      
+      <div className="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
+        {availablePromos.length > 0 && (
+          <div className="space-y-4">
+            <h3 className="text-xl font-semibold flex items-center">
+              <Tag className="mr-2 text-purple-600" size={20} />
+              Active Promos
+            </h3>
+            {availablePromos.map((promo) => (
+              <div
+                key={promo.promo_id}
+                className="flex justify-between items-center p-4 border border-gray-200 rounded-xl hover:shadow-md transition-all duration-200"
+              >
+                <div>
+                  <span className="font-semibold text-purple-700">{promo.promo_code}</span>
+                  <p className="text-sm text-gray-600 flex items-center mt-1">
+                    <Percent className="mr-1" size={16} />
+                    Discount: {promo.promo_value}%
+                  </p>
+                </div>
+                <div className="flex space-x-2">
+                  <button
+                    onClick={() => updateDeal(promo.promo_id, 'promo')}
+                    className="text-blue-500 hover:text-blue-700 transition-colors duration-200"
+                    aria-label="Edit promo"
+                  >
+                    <Edit2 size={20} />
+                  </button>
+                  <button
+                    onClick={() => handleDelete(promo.promo_id, "promo")}
+                    className="text-red-500 hover:text-red-700 transition-colors duration-200"
+                    aria-label="Delete promo"
+                  >
+                    <Trash2 size={20} />
+                  </button>
+                </div>
               </div>
-
-              <div className="space-y-4">
-                {/* Display Promos */}
-                {availablePromos.length > 0 && (
-                  <div>
-                    <h3 className="text-xl font-semibold mb-2">
-                      Active Promos
-                    </h3>
-                    {availablePromos.map((promo) => (
-                      <div
-                        key={promo.promo_id}
-                        className="flex justify-between items-center p-4 border-b"
-                      >
-                        <div>
-                          <span className="font-semibold">
-                            {promo.promo_code}
-                          </span>
-                          <p className="text-sm text-gray-600">
-                            Discount: {promo.promo_value}%
-                          </p>
-                        </div>
-                        <div className="flex space-x-2">
-                          <FaEdit
-                            className="text-blue-500 cursor-pointer"
-                            onClick={() => updateDeal(promo.promo_id, 'promo')}
-                          />
-                          <FaTrash
-                            className="text-red-500 cursor-pointer"
-                            onClick={() =>
-                              handleDelete(promo.promo_id, "promo")
-                            }
-                          />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                {/* Display Discounts */}
-                {availableDiscount.length > 0 && (
-                  <div>
-                    <h3 className="text-xl font-semibold mb-2">
-                      Active Discount
-                    </h3>
-                    {availableDiscount.map((discount) => (
-                      <div
-                        key={discount.discount_id}
-                        className="flex justify-between items-center p-4 border-b"
-                      >
-                        <div>
-                          <p className="text-sm text-gray-600">
-                            Discount: {discount.discount_value}%
-                          </p>
-                        </div>
-                        <div className="flex space-x-2">
-                          <FaEdit
-                            className="text-blue-500 cursor-pointer"
-                            onClick={() => updateDeal(discount.discount_id, 'discount')}
-                          />
-                          <FaTrash
-                            className="text-red-500 cursor-pointer"
-                            onClick={() =>
-                              handleDelete(discount.discount_id, "discount")
-                            }
-                          />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
+            ))}
           </div>
         )}
+
+        {availableDiscount.length > 0 && (
+          <div className="space-y-4">
+            <h3 className="text-xl font-semibold flex items-center">
+              <Percent className="mr-2 text-purple-600" size={20} />
+              Active Discount
+            </h3>
+            {availableDiscount.map((discount) => (
+              <div
+                key={discount.discount_id}
+                className="flex justify-between items-center p-4 border border-gray-200 rounded-xl hover:shadow-md transition-all duration-200"
+              >
+                <div>
+                  <p className="text-sm text-gray-600 flex items-center">
+                    <Percent className="mr-1" size={16} />
+                    Discount: {discount.discount_value}%
+                  </p>
+                </div>
+                <div className="flex space-x-2">
+                  <button
+                    onClick={() => updateDeal(discount.discount_id, 'discount')}
+                    className="text-blue-500 hover:text-blue-700 transition-colors duration-200"
+                    aria-label="Edit discount"
+                  >
+                    <Edit2 size={20} />
+                  </button>
+                  <button
+                    onClick={() => handleDelete(discount.discount_id, "discount")}
+                    className="text-red-500 hover:text-red-700 transition-colors duration-200"
+                    aria-label="Delete discount"
+                  >
+                    <Trash2 size={20} />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+)}
       </div>
     </div>
   );

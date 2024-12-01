@@ -419,7 +419,9 @@ const RestaurantMenu = () => {
                     />
                   )}
                   <button
-                    className="flex-shrink-0 w-7 h-7 flex items-center justify-center bg-white border border-gray-200 rounded-full hover:border-purple-500 transition-colors group"
+                    className={`flex-shrink-0 w-7 h-7 flex items-center justify-center bg-white border border-gray-200 rounded-full hover:border-purple-500 transition-colors group ${
+                      !loggedIn ? "cursor-not-allowed bg-red-500" : ""
+                    }`}
                     aria-label={`Add ${item.Dish_Name} to cart`}
                     disabled={!loggedIn}
                     onClick={() => handleAddToCart(item)}
