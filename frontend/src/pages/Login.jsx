@@ -172,9 +172,11 @@ useEffect(() => {
 
           <div className="text-sm text-center">
             <span className="text-gray-600">Don't have an account? </span>
-            <a href="/register" className="font-medium text-purple-600 hover:text-purple-500">
+            <button onClick={()=>{
+              navigate('/register');
+            }} className="font-medium text-purple-600 hover:text-purple-500">
               Sign up
-            </a>
+            </button>
           </div>
         </div>
       </div>

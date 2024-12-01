@@ -738,7 +738,7 @@ const Navbar = () => {
             {!loggedIn && (
               <NavLink
                 to="/login"
-                className="inline-flex items-center px-4 py-2 border border-purple-600 rounded-md text-sm font-medium text-purple-600 hover:bg-purple-50 hover:text-purple-700 transition duration-300"
+                className="inline-flex items-center no-underline px-4 py-2 border border-purple-600 rounded-md text-sm font-medium text-purple-600 hover:bg-purple-50 hover:text-purple-700 transition duration-300"
               >
                 Login
               </NavLink>

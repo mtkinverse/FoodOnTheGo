@@ -225,9 +225,9 @@ const Register = () => {
 
           <div className="text-sm text-center">
             <span className="text-gray-600">Already have an account? </span>
-            <a href="/login" className="font-medium text-purple-600 hover:text-purple-500">
+            <button onClick={()=>{ navigate('/login')}} className="font-medium text-purple-600 hover:text-purple-500">
               Sign in
-            </a>
+            </button>
           </div>
         </div>
       </div>
