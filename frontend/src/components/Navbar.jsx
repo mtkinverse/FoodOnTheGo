@@ -728,7 +728,7 @@ const Navbar = () => {
                   className={({ isActive }) =>
                     `${
                       isActive ? "font-bold text-purple-700" : ""
-                    } text-sm font-medium text-purple-600 hover:text-purple-700 transition duration-300`
+                    } text-sm no-underline font-medium hover:border-b hover:transition-all hover:px-2 hover:duration-300 border-purple-700  text-purple-600 hover:text-purple-700 transition-all duration-300`
                   }
                 >
                   {item.label}

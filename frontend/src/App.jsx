@@ -59,7 +59,7 @@ const router = createBrowserRouter(
 
  function App() {
   return (
-    <div className="min-h-screen w-full bg-gray-50 flex flex-col">
+    <div className="min-h-screen w-full bg-purple-50 flex flex-col">
       
         <RouterProvider router={router}/>
 

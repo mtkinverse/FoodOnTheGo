@@ -75,26 +75,30 @@ const Restaurants = () => {
         )}
 
         {/* All Restaurants Section */}
-        <div className="bg-white rounded-xl shadow-md p-6">
-          <div className="flex items-center mb-6 space-x-3">
-            <Store className="text-purple-600" size={34} />
-            <h1 className="text-3xl font-bold text-gray-800">All Restaurants</h1>
-          </div>
+        <div className="bg-white rounded-xl shadow-md p-6 w-100%">
+          
+          <div className="py-2">
 
-          <SearchBar onSearch={handleSearch} />
+              <div className="flex items-center justify-center py-6 space-x-3">
+                <Store className="text-purple-600" size={34} />
+                <h1 className="text-3xl font-bold text-gray-800">All Restaurants</h1>
+              </div>
+              <SearchBar onSearch={handleSearch} />
+
+          </div>
           
           {isLoading ? (
-            <div className="flex justify-center items-center min-h-[200px]">
+            <div className="flex justify-center items-center min-h-[200px] w-full">
               <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-pink-500"></div>
             </div>
           ) : filteredRestaurants.length === 0 ? (
-            <div className="bg-gray-100 rounded-lg p-8 text-center">
+            <div className="bg-gray-100 rounded-lg p-8 text-center w-full">
               <p className="text-xl text-gray-600">
                 No restaurants found. Please try a different search term.
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 py-10">
               {filteredRestaurants.map((restaurant) => (
                 <RestaurantCard
                   key={restaurant.Restaurant_id}

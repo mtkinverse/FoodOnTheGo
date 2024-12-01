@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FaStar, FaInfoCircle, FaSearch, FaPlus, FaTag,FaTimes } from "react-icons/fa";
+import { FaStar, FaInfoCircle, FaSearch, FaPlus, FaTag, FaTimes } from "react-icons/fa";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { useCartContext } from "../contexts/cartContext";
@@ -20,8 +20,8 @@ const RestaurantMenu = () => {
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
-  const [reviews,setReviews] = useState([]);
-  const [reviewsPopup,setReviewspop] = useState(false);
+  const [reviews, setReviews] = useState([]);
+  const [reviewsPopup, setReviewspop] = useState(false);
 
   useEffect(() => {
     const fetchRestaurantData = async () => {
@@ -33,7 +33,7 @@ const RestaurantMenu = () => {
 
         const menuResponse = await axios.get(`/api/menu/${restaurant_id}`);
         setMenuItems(menuResponse.data);
-        
+
         const reviewsResponse = await axios.get(`/api/getReviews/${restaurant_id}`);
         setReviews(reviewsResponse.data);
 
@@ -117,152 +117,158 @@ const RestaurantMenu = () => {
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
+
       {/* Restaurant Header */}
-      <div className="flex flex-col sm:flex-row gap-4 items-start mb-6">
-        <img
-          src={restaurant.Restaurant_Image}
-          alt={restaurant.Restaurant_Name}
-          className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg object-cover bg-gray-100"
-        />
-        <div className="flex-1 min-w-0">
-          <h1 className="text-lg sm:text-xl font-bold mb-1 truncate">
-            {restaurant.Restaurant_Name}
-          </h1>
-          <div className="text-xs sm:text-sm text-purple-500 mb-1 truncate">
-            {restaurant.Address}
-          </div>
-          <div className="flex items-center gap-2 text-xs sm:text-sm">
-            <div className="flex items-center">
-              <FaStar className="text-yellow-400 w-3 h-3 mr-1" />
-              <span className="font-semibold">{restaurant.Rating}</span>
-              <span className="text-gray-500 ml-1">
-                ({Math.floor(restaurant.review_count)}+)
-              </span>
-            </div>
-            <button className="text-gray-600 flex items-center hover:text-gray-800"
-              onClick={() => setReviewspop(true)}
-            >
-              <FaInfoCircle className="w-3 h-3 mr-1" />
-              <span>Reviews</span>
-            </button>
-          </div>
-        </div>
-      </div>
-       
-      {
-  reviewsPopup && (
-    <div className="fixed inset-0 z-50 flex justify-center items-center backdrop-blur-sm bg-black/40 p-4">
-      {/* Popup Card */}
-      <div className="bg-white rounded-2xl shadow-2xl w-full sm:w-4/5 lg:w-[700px] max-h-[90vh] flex flex-col overflow-hidden relative">
-        {/* Popup Header */}
-        <div className="bg-purple-500 text-white py-3 px-6 rounded-t-lg flex justify-between items-center">
-          <h2 className="text-xl font-semibold">Customer Reviews</h2>
-          
-          {/* Close Button */}
-          <button
-            className="text-white hover:text-purple-200 transition-colors"
-            onClick={() => setReviewspop(false)}
-          >
-            <FaTimes size={24} />
-          </button>
-        </div>
-
-        {/* Reviews Section */}
-        <div className="flex-grow overflow-y-auto p-6 space-y-4 bg-purple-50/50">
-          {Array.isArray(reviews) && reviews.length > 0 ? (
-            reviews.map((review, index) => (
-              <div 
-                key={index} 
-                className="bg-purple-50 border border-purple-100 rounded-xl shadow-md hover:shadow-lg hover:bg-purple-200 transition-shadow p-4 flex items-start space-x-4"
-              >
-                {/* Left Side - Review Content */}
-                <div className="flex-grow space-y-3">
-                  {/* Review Header with Rating */}
-                  <div className="flex justify-between items-center">
-                    <div className="flex items-center space-x-1">
-                      {[1, 2, 3, 4, 5].map((star) => {
-                        const starValue = review.Rating;
-                        
-                        // Full star
-                        if (star <= Math.floor(starValue)) {
-                          return (
-                            <FaStar 
-                              key={star} 
-                              className="w-5 h-5 text-yellow-400" 
-                            />
-                          );
-                        }
-                        
-                        // Half star
-                        if (star === Math.ceil(starValue) && starValue % 1 !== 0) {
-                          return (
-                            <div key={star} className="relative">
-                              <FaStar className="w-5 h-5 text-gray-300 absolute" />
-                              <FaStar 
-                                className="w-5 h-5 text-yellow-400 overflow-hidden absolute" 
-                                style={{
-                                  clipPath: 'polygon(0 0, 50% 0, 50% 100%, 0 100%)'
-                                }} 
-                              />
-                            </div>
-                          );
-                        }
-                        
-                        // Empty star
-                        return (
-                          <FaStar 
-                            key={star} 
-                            className="w-5 h-5 text-gray-300" 
-                          />
-                        );
-                      })}
-                      <span className="text-sm text-gray-700 font-medium ml-2">
-                        {review.Rating}/5
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Review Description */}
-                  {review.Review_Description && (
-                    <p className="text-gray-600 text-sm leading-relaxed">
-                      {review.Review_Description}
-                    </p>
-                  )}
-                </div>
-
-                {/* Right Side - Customer Name */}
-                <div className="w-40 text-right">
-                  <p className="text-sm text-gray-500 font-medium">
-                    -- {review.customer_name }
-                  </p>
-                </div>
-              </div>
-            ))
-          ) : (
-            <div className="text-center py-12 text-gray-500 bg-white rounded-xl">
-              <p className="text-lg">No reviews available yet.</p>
-              <p className="text-sm mt-2">Be the first to share your experience!</p>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  )
-}
-
-      {/* Search Bar */}
-      <div className="mb-4">
-        <div className="relative">
-          <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
-          <input
-            type="text"
-            placeholder="Search in menu"
-            className="w-full pl-10 pr-4 py-2 text-sm bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+      <div>
+        <div className="flex flex-col sm:flex-row gap-4 items-start mb-6">
+          <img
+            src={restaurant.Restaurant_Image}
+            alt={restaurant.Restaurant_Name}
+            className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg object-cover bg-gray-100"
           />
+          <div className="flex-1 min-w-0">
+            <h1 className="text-lg sm:text-xl font-bold mb-1 truncate">
+              {restaurant.Restaurant_Name}
+            </h1>
+            <div className="text-xs sm:text-sm text-purple-500 mb-1 truncate">
+              {restaurant.Address}
+            </div>
+            <div className="flex items-center gap-2 text-xs sm:text-sm">
+              <div className="flex items-center">
+                <FaStar className="text-yellow-400 w-3 h-3 mr-1" />
+                <span className="font-semibold">{restaurant.Rating}</span>
+                <span className="text-gray-500 ml-1">
+                  ({Math.floor(restaurant.review_count)}+)
+                </span>
+              </div>
+              <button className="text-gray-600 flex items-center hover:text-gray-800"
+                onClick={() => setReviewspop(true)}
+              >
+                <FaInfoCircle className="w-3 h-3 mr-1" />
+                <span>Reviews</span>
+              </button>
+            </div>
+          </div>
         </div>
+
+        {/* Search Bar */}
+        <div className="mb-4">
+          <div className="relative">
+            <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+            <input
+              type="text"
+              placeholder="Search in menu"
+              className="w-full pl-10 pr-4 py-2 text-sm bg-white rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+        </div>
+
+
+
       </div>
+
+      {
+        reviewsPopup && (
+          <div className="fixed inset-0 z-50 flex justify-center items-center backdrop-blur-sm bg-black/40 p-4">
+            {/* Popup Card */}
+            <div className="bg-white rounded-2xl shadow-2xl w-full sm:w-4/5 lg:w-[700px] max-h-[90vh] flex flex-col overflow-hidden relative">
+              {/* Popup Header */}
+              <div className="bg-purple-500 text-white py-3 px-6 rounded-t-lg flex justify-between items-center">
+                <h2 className="text-xl font-semibold">Customer Reviews</h2>
+
+                {/* Close Button */}
+                <button
+                  className="text-white hover:text-purple-200 transition-colors"
+                  onClick={() => setReviewspop(false)}
+                >
+                  <FaTimes size={24} />
+                </button>
+              </div>
+
+              {/* Reviews Section */}
+              <div className="flex-grow overflow-y-auto p-6 space-y-4 bg-purple-50/50">
+                {Array.isArray(reviews) && reviews.length > 0 ? (
+                  reviews.map((review, index) => (
+                    <div
+                      key={index}
+                      className="bg-purple-50 border border-purple-100 rounded-xl shadow-md hover:shadow-lg hover:bg-purple-200 transition-shadow p-4 flex items-start space-x-4"
+                    >
+                      {/* Left Side - Review Content */}
+                      <div className="flex-grow space-y-3">
+                        {/* Review Header with Rating */}
+                        <div className="flex justify-between items-center">
+                          <div className="flex items-center space-x-1">
+                            {[1, 2, 3, 4, 5].map((star) => {
+                              const starValue = review.Rating;
+
+                              // Full star
+                              if (star <= Math.floor(starValue)) {
+                                return (
+                                  <FaStar
+                                    key={star}
+                                    className="w-5 h-5 text-yellow-400"
+                                  />
+                                );
+                              }
+
+                              // Half star
+                              if (star === Math.ceil(starValue) && starValue % 1 !== 0) {
+                                return (
+                                  <div key={star} className="relative">
+                                    <FaStar className="w-5 h-5 text-gray-300 absolute" />
+                                    <FaStar
+                                      className="w-5 h-5 text-yellow-400 overflow-hidden absolute"
+                                      style={{
+                                        clipPath: 'polygon(0 0, 50% 0, 50% 100%, 0 100%)'
+                                      }}
+                                    />
+                                  </div>
+                                );
+                              }
+
+                              // Empty star
+                              return (
+                                <FaStar
+                                  key={star}
+                                  className="w-5 h-5 text-gray-300"
+                                />
+                              );
+                            })}
+                            <span className="text-sm text-gray-700 font-medium ml-2">
+                              {review.Rating}/5
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Review Description */}
+                        {review.Review_Description && (
+                          <p className="text-gray-600 text-sm leading-relaxed">
+                            {review.Review_Description}
+                          </p>
+                        )}
+                      </div>
+
+                      {/* Right Side - Customer Name */}
+                      <div className="w-40 text-right">
+                        <p className="text-sm text-gray-500 font-medium">
+                          -- {review.customer_name}
+                        </p>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-12 text-gray-500 bg-white rounded-xl">
+                    <p className="text-lg">No reviews available yet.</p>
+                    <p className="text-sm mt-2">Be the first to share your experience!</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )
+      }
 
       {/* Category Tabs */}
       <div className="w-full mb-6 -mx-4 px-4 overflow-x-auto scrollbar-hide">
@@ -270,11 +276,10 @@ const RestaurantMenu = () => {
           {categories.map((category, index) => (
             <button
               key={index}
-              className={`flex-shrink-0 px-3 py-1 rounded-full text-xs font-medium transition-colors whitespace-nowrap ${
-                selectedCategory === category
+              className={`flex-shrink-0 px-3 py-1 rounded-full text-xs font-medium transition-colors whitespace-nowrap ${selectedCategory === category
                   ? "bg-purple-500 text-white"
-                  : "bg-gray-100 text-gray-800 hover:bg-purple-200"
-              }`}
+                  : "bg-gray-50 text-gray-800 hover:bg-purple-200"
+                }`}
               onClick={() => setSelectedCategory(category)}
             >
               {category}
@@ -293,7 +298,7 @@ const RestaurantMenu = () => {
             {deals.map((deal, index) => (
               <div
                 key={index}
-                className="bg-purple-50 shadow-sm rounded-lg p-3 border border-gray-200 hover:bg-purple-200 hover:scale-105 transform transition-all duration-300 ease-in-out"
+                className="bg-white shadow-sm rounded-lg p-3 border border-gray-200 hover:bg-purple-200 hover:scale-105 transform transition-all duration-300 ease-in-out"
               >
                 <div className="flex flex-col gap-1">
                   <div className="bg-gradient-to-r from-purple-500 to-purple-700 text-white px-2 py-1 rounded-full text-xs font-semibold inline-flex items-center gap-1 w-fit">
@@ -322,7 +327,7 @@ const RestaurantMenu = () => {
             {items.map((item, index) => (
               <div
                 key={index}
-                className="flex justify-between items-start bg-purple-50 p-3 rounded-lg border border-gray-100 transition-all duration-300 ease-in-out 
+                className="flex justify-between items-start bg-white p-3 rounded-lg border border-gray-100 transition-all duration-300 ease-in-out 
           hover:border-purple-300 hover:bg-purple-200 hover:shadow-lg hover:scale-105"
               >
                 <div className="flex-1 min-w-0 pr-2 my-2">
@@ -338,7 +343,7 @@ const RestaurantMenu = () => {
 
                     {/* Display discounted price if it exists */}
                     {item.discounted_price &&
-                    item.discounted_price < item.Item_Price ? (
+                      item.discounted_price < item.Item_Price ? (
                       <span className="text-purple-500 font-semibold text-xs">
                         Rs. {item.discounted_price.toFixed(2)}
                       </span>
