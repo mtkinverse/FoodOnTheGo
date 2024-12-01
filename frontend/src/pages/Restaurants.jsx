@@ -54,9 +54,9 @@ const Restaurants = () => {
         {/* Order Again Section */}
         {loggedIn && Array.isArray(orderAgain) && orderAgain.length > 0 && (
           <div className="mb-12 bg-white rounded-xl shadow-md p-6">
-            <div className="flex items-center mb-6 space-x-3">
+            <div className="flex items-center justify-center py-6 space-x-3">
               <Repeat className="text-purple-600" size={24} />
-              <h2 className="text-2xl font-bold text-gray-800">Order Again</h2>
+              <h2 className="text-3xl font-bold text-gray-800">Order Again</h2>
             </div>
             <div className="w-full overflow-x-auto">
               <div className="grid grid-flow-col auto-cols-max gap-6 pb-4">

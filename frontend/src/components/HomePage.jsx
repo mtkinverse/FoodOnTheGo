@@ -72,12 +72,19 @@ const HomePage = () => {
     </>
   );
 };
-
 const FeatureCard = ({ icon, title, description }) => (
-  <div className="flex flex-col items-center text-center">
-    <div className="mb-4">{icon}</div>
-    <h3 className="text-2xl font-semibold text-purple-800 mb-2">{title}</h3>
-    <p className="text-purple-600">{description}</p>
+  <div className="flex flex-col items-center text-center bg-purple-50 p-4 rounded-lg shadow-md transform transition-all duration-300 hover:shadow-lg hover:scale-105 hover:bg-purple-100">
+    <div className="mb-4 text-purple-700 text-4xl">{icon}</div>
+
+    {/* Title */}
+    <h3 className="text-2xl font-semibold text-purple-800 mb-2 transition-colors duration-300 hover:text-purple-900">
+      {title}
+    </h3>
+
+    {/* Description */}
+    <p className="text-purple-600 transition-colors duration-300 hover:text-purple-700">
+      {description}
+    </p>
   </div>
 );
 

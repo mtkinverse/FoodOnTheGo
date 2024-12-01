@@ -111,19 +111,19 @@ module.exports.registerUser = (req, res) => {
     switch (role) {
         case 'Customer':
             registerCustomer(req, res, (err) => {
-                if (err) return res.status(500).json({ message: 'Registration failed for Customer', error: err.message });
+                if (err) return res.status(500).json({ message: err.message });
                 return res.status(200).json({ message: 'Customer registered successfully' });
             });
             break;
         case 'Restaurant_Owner':
             registerOwner(req, res, (err) => {
-                if (err) return res.status(500).json({ message: 'Registration failed for Owner', error: err.message });
+                if (err) return res.status(500).json({ message: err.message });
                 return res.status(200).json({ message: 'Owner registered successfully' });
             });
             break;
         case 'Delivery_Rider':
             registerRider(req, res, (err) => {
-                if (err) return res.status(500).json({ message: 'Registration failed for Rider', error: err.message });
+                if (err) return res.status(500).json({ message: err.message });
                 return res.status(200).json({ message: 'Rider registered successfully' });
             });
             break;
