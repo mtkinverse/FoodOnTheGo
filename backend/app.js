@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors'); 
 const path = require('path')
@@ -36,6 +37,6 @@ const imagesPath = path.join(__dirname, 'images')
 app.use('/images', express.static(imagesPath))
 
 // Start server
-app.listen(8800, () => {
+app.listen(process.env.PORT, () => {
   console.log('Listening on port 8800');
 });
