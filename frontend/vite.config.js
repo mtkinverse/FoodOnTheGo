@@ -6,7 +6,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:8800',
+        target: 'https://foodgo-backend-94833a018ab4.herokuapp.com',
         rewrite: (path) => path.replace(/^\/api/, ''), // Keeps this to forward requests to backend
       },
     },

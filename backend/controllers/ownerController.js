@@ -19,7 +19,7 @@ module.exports.deleteRestaurant = (req,res) => {
             }
         })
      }
-         const q = 'DELETE from restaurant where restaurant_id = ? ';
+         const q = 'DELETE from Restaurant where restaurant_id = ? ';
          db.query(q,[restaurant_id],(err,result) => {
             if(err){
                 console.log('err' ,err.message);
@@ -33,8 +33,8 @@ module.exports.getRestaurant = (req,res) => {
     const restaurant_id = req.params.id;
     
     q = `
-       SELECT * from restaurant r
-       join locations l
+       SELECT * from Restaurant r
+       join Locations l
        on r.location_id = l.location_id
        where r.restaurant_id = ?
     `
@@ -59,7 +59,7 @@ module.exports.addAdmin = (req, res) => {
 
     const salt = bcrypt.genSaltSync(10);
     const hash = bcrypt.hashSync(Account_Password, salt);
-    const admin_q = 'INSERT INTO restaurant_admin (Location_id,Admin_name,email_address,account_password,phone_no) VALUES(?,?,?,?,?)';
+    const admin_q = 'INSERT INTO Restaurant_Admin (Location_id,Admin_name,email_address,account_password,phone_no) VALUES(?,?,?,?,?)';
 
     db.query(admin_q, [Location_id, Admin_Name, Email_address, hash, Phone_no], (err, result) => {
         if (err) {
@@ -67,7 +67,7 @@ module.exports.addAdmin = (req, res) => {
             return res.status(500).json({ error: 'Database query failed', details: err.message });
         }
         const admin_id = result.insertId;
-        const set_q = 'UPDATE restaurant SET r_admin = ? where restaurant_id = ?';
+        const set_q = 'UPDATE Restaurant SET r_admin = ? where restaurant_id = ?';
         db.query(set_q, [admin_id, restaurant_id], (err1, result1) => {
             if (err1) {
                 console.log('updating error');
@@ -83,8 +83,8 @@ module.exports.getOwnedRestaurants = (req, res) => {
     const { owner_id } = req.query;
     
     const query =
-        `select * from restaurant r
-          join locations loc
+        `select * from Restaurant r
+          join Locations loc
           on r.location_id = loc.location_id
           where r.owner_id = ?`;
 
@@ -144,7 +144,7 @@ module.exports.addMenuItem = (req, res) => {
         return res.status(400).json({ error: 'Image file is required' });
     }
 
-    const insert_query = 'INSERT INTO menu_items (Dish_Name, Item_Price, Item_image, Cuisine,category, Menu_id) VALUES (?, ?, ?, ?,?, ?)';
+    const insert_query = 'INSERT INTO Menu_Items (Dish_Name, Item_Price, Item_image, Cuisine,category, Menu_id) VALUES (?, ?, ?, ?,?, ?)';
 
     db.query(insert_query, [name, price, Item_image, cuisine,category, menu_id], (err, menuResult) => {
         if (err) {
@@ -161,7 +161,7 @@ module.exports.deleteMenu = (req, res) => {
     
     const restaurant_id = req.params.id;
 
-    const checkQuery = 'SELECT menu_id FROM restaurant WHERE restaurant_id = ?';
+    const checkQuery = 'SELECT menu_id FROM Restaurant WHERE restaurant_id = ?';
 
     db.query(checkQuery, [restaurant_id], (err, results) => {
         if (err) {
@@ -176,7 +176,7 @@ module.exports.deleteMenu = (req, res) => {
 
         const menu_id = results[0].menu_id;
 
-        const updateRestaurantQuery = 'UPDATE restaurant SET menu_id = NULL WHERE restaurant_id = ?';
+        const updateRestaurantQuery = 'UPDATE Restaurant SET menu_id = NULL WHERE restaurant_id = ?';
 
         db.query(updateRestaurantQuery, [restaurant_id], (err, updateResult) => {
             if (err) {
@@ -186,7 +186,7 @@ module.exports.deleteMenu = (req, res) => {
 
             
 
-            const deleteMenuQuery = 'DELETE FROM menu WHERE menu_id = ?';
+            const deleteMenuQuery = 'DELETE FROM Menu WHERE menu_id = ?';
 
             db.query(deleteMenuQuery, [menu_id], (err, deleteResult) => {
                 if (err) {
@@ -207,7 +207,7 @@ module.exports.updateTimings = (req, res) => {
     restaurant_id = req.params.id;
     const { OpensAt, ClosesAt } = req.body;
     
-    updateQuery = 'UPDATE restaurant set OpensAt = ?, ClosesAt =? WHERE Restaurant_id = ?';
+    updateQuery = 'UPDATE Restaurant set OpensAt = ?, ClosesAt =? WHERE Restaurant_id = ?';
 
     db.query(updateQuery, [OpensAt, ClosesAt, restaurant_id], (err, result) => {
         if (err) {
@@ -298,7 +298,7 @@ module.exports.addLocation = (req, res) => {
 
 module.exports.getLocations = (req, res) => {
     const restaurant_id = req.params.id;
-    query = 'SELECT * from locations where restaurant_id = ?';
+    query = 'SELECT * from Locations where restaurant_id = ?';
 
     db.query(query, [restaurant_id], (err, result) => {
         if (err) {
@@ -403,7 +403,7 @@ module.exports.updateAdmin = (req, res) => {
     const { Admin_Name, Email_address, Phone_no, Account_Password, newPassword, Location_id } = req.body.adminData;
 
 
-    const check = 'select * from restaurant_admin where location_id = ?';
+    const check = 'select * from Restaurant_Admin where location_id = ?';
     db.query(check, [Location_id], (err, result) => {
         
         

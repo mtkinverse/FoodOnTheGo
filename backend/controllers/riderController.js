@@ -3,7 +3,7 @@ const db = require('../db');
 
 module.exports.getMyTips = (req, res) => {
     const rider_id = req.params.id;
-      const q = 'SELECT tips FROM rider_tips WHERE rider_id = ? AND DATE(tip_date) = CURRENT_DATE';
+      const q = 'SELECT tips FROM Rider_Tips WHERE rider_id = ? AND DATE(tip_date) = CURRENT_DATE';
   
     db.query(q, [rider_id], (err, result) => {
       if (err) {
@@ -22,7 +22,7 @@ module.exports.getMyTips = (req, res) => {
   
 module.exports.updateStatus =(req,res) => {
     
-    const q = 'UPDATE delivery_rider set available = ? where rider_id = ?';
+    const q = 'UPDATE Delivery_Rider set available = ? where rider_id = ?';
     db.query(q,[req.body.status,req.params.id,],(err,result) => {
         if(err){
             console.log('error ',err.message);
@@ -53,9 +53,9 @@ module.exports.getRestaurantInfo = (req,res) => {
     const rider_id = req.params.id;
     const q =  `
       SELECT r.restaurant_name,l.address,l.location_id 
-      from delivery_rider d 
-      join restaurant r on d.restaurant_id = r.restaurant_id
-      join locations l on r.location_id = l.location_id
+      from Delivery_Rider d 
+      join Restaurant r on d.restaurant_id = r.restaurant_id
+      join Locations l on r.location_id = l.location_id
       where d.rider_id = ?
     `
 

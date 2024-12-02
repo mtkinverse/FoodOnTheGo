@@ -4,8 +4,8 @@ module.exports.deleteDeal = (req, res) => {
     const deal_id = req.params.id;
     const { Type, location_id } = req.body;
     let q;
-    if (Type === 'promo') q = `Delete from promos where promo_id =? `;
-    else q = 'Delete from discount where discount_id = ?';
+    if (Type === 'promo') q = `Delete from Promos where promo_id =? `;
+    else q = 'Delete from Discount where discount_id = ?';
 
     db.query(q, [deal_id], (err, result) => {
         if (err) {
@@ -41,7 +41,7 @@ module.exports.updateDeal = (req, res) => {
 module.exports.getDeals = (req, res) => {
     const location_id = req.params.id;
 
-    const restaurantQuery = 'SELECT restaurant_id FROM restaurant WHERE location_id = ?';
+    const restaurantQuery = 'SELECT restaurant_id FROM Restaurant WHERE location_id = ?';
     
     db.query(restaurantQuery, [location_id], (err, restaurantResult) => {
         if (err) {
@@ -55,14 +55,14 @@ module.exports.getDeals = (req, res) => {
 
         const restaurant_id = restaurantResult[0].restaurant_id;
 
-        const promosQuery = 'SELECT * FROM promos WHERE restaurant_id = ? AND start_date <= CURRENT_DATE AND end_date >= CURRENT_DATE';
+        const promosQuery = 'SELECT * FROM Promos WHERE restaurant_id = ? AND start_date <= CURRENT_DATE AND end_date >= CURRENT_DATE';
         db.query(promosQuery, [restaurant_id], (err, promosResult) => {
             if (err) {
                 console.error("Error fetching promos:", err);
                 return res.status(500).send("Internal Server Error");
             }
 
-            const discountsQuery = 'SELECT * FROM discount WHERE restaurant_id = ? AND start_date <= CURRENT_DATE AND end_date >= CURRENT_DATE';
+            const discountsQuery = 'SELECT * FROM Discount WHERE restaurant_id = ? AND start_date <= CURRENT_DATE AND end_date >= CURRENT_DATE';
             db.query(discountsQuery, [restaurant_id], (err, discountsResult) => {
                 if (err) {
                     console.error("Error fetching discounts:", err);
@@ -82,7 +82,7 @@ module.exports.AddDiscount = (req, res) => {
     const location_id = req.params.id;
     const { discount_value, start_date, end_date } = req.body;
 
-    const queryRestaurant = 'SELECT restaurant_id FROM restaurant WHERE location_id = ?';
+    const queryRestaurant = 'SELECT restaurant_id FROM Restaurant WHERE location_id = ?';
     db.query(queryRestaurant, [location_id], (err, result) => {
         if (err || result.length === 0) {
             const message = err ? 'Error fetching restaurant data' : 'No restaurant found for the given location ID';
@@ -92,7 +92,7 @@ module.exports.AddDiscount = (req, res) => {
         const restaurant_id = result[0].restaurant_id;
 
         const queryActiveDiscount = `
-            SELECT * FROM discount 
+            SELECT * FROM Discount 
             WHERE restaurant_id = ? AND start_date <= CURRENT_DATE AND end_date >= CURRENT_DATE
         `;
         db.query(queryActiveDiscount, [restaurant_id], (err2, activeDiscounts) => {
@@ -108,7 +108,7 @@ module.exports.AddDiscount = (req, res) => {
             }
 
             const insertDiscount = `
-                INSERT INTO discount (restaurant_id, discount_value, start_date, end_date)
+                INSERT INTO Discount (restaurant_id, discount_value, start_date, end_date)
                 VALUES (?, ?, ?, ?);
             `;
             db.query(insertDiscount, [restaurant_id, discount_value, start_date, end_date], (err3, result1) => {
@@ -132,7 +132,7 @@ module.exports.AddPromo = (req, res) => {
     const location_id = req.params.id;
     const { promo_code, promo_value, start_date, end_date, limit, Min_Total } = req.body;
     
-    const q = 'SELECT restaurant_id from restaurant where location_id = ? ';
+    const q = 'SELECT restaurant_id from Restaurant where location_id = ? ';
 
     db.query(q, [location_id], (err, result) => {
         if (err) {
@@ -160,8 +160,8 @@ module.exports.AddPromo = (req, res) => {
 module.exports.getRiders = (req, res) => {
     const location_id = req.params.id;
     const q = `
-       SELECT d.rider_id,d.rider_name,d.available ,d.bikeNo from delivery_rider d
-       join restaurant r on d.restaurant_id = d.restaurant_id
+       SELECT d.rider_id,d.rider_name,d.available ,d.bikeNo from Delivery_Rider d
+       join Restaurant r on d.restaurant_id = d.restaurant_id
        where r.location_id = ? and d.Available = true;
     `;
 
@@ -184,12 +184,12 @@ module.exports.getOrders = (req, res) => {
        SELECT o.order_id, o.total_amount, o.order_status, TIME(o.order_time) AS order_time, o.promo_id, 
               p.promo_value, mm.dish_name, i.quantity, i.price * i.quantity AS sub_total, 
               d.address, o.delivered_by_id
-       FROM orders o 
-       JOIN deliveryaddress d ON o.address_id = d.address_id
-       JOIN restaurant r ON r.restaurant_id = o.restaurant_id
-       JOIN ordered_items i ON i.order_id = o.order_id
-       JOIN menu_items mm ON i.item_id = mm.item_id
-       LEFT JOIN promos p ON o.promo_id = p.promo_id  -- Using LEFT JOIN to include orders with no promo
+       FROM Orders o 
+       JOIN DeliveryAddress d ON o.address_id = d.address_id
+       JOIN Restaurant r ON r.restaurant_id = o.restaurant_id
+       JOIN Ordered_Items i ON i.order_id = o.order_id
+       JOIN Menu_Items mm ON i.item_id = mm.item_id
+       LEFT JOIN Promos p ON o.promo_id = p.promo_id  -- Using LEFT JOIN to include orders with no promo
        WHERE r.location_id = ? 
        AND o.order_status IN ('Placed', 'Preparing', 'Out for delivery');
     `;
@@ -238,7 +238,7 @@ module.exports.updateOrderStatus = (req, res) => {
     const order_id = req.params.id;
     const status = req.body.status;
     
-    const q = 'UPDATE orders SET order_status = ? where order_id = ?';
+    const q = 'UPDATE Orders SET order_status = ? where order_id = ?';
 
     db.query(q, [status, order_id], (err, result) => {
         if (err) {
@@ -262,7 +262,7 @@ module.exports.dispatchOrder = (req, res) => {
         }
 
         // Step 2: Fetch the rider's tip for the specific order
-        const getTipQuery = 'SELECT rider_tip FROM Orders WHERE order_id = ?';
+        const getTipQuery = 'SELECT Rider_Tips FROM Orders WHERE order_id = ?';
         db.query(getTipQuery, [order_id], (err1, res1) => {
             if (err1) {
                 console.log("Error fetching rider tip:", err1);
@@ -312,9 +312,9 @@ module.exports.getDeliveryDetails = (req, res) => {
     
 
     const q = `SELECT r.rider_id,r.rider_name,d.address
-               from orders o join deliveryaddress d
+               from Orders o join DeliveryAddress d
                on o.address_id = d.address_id
-               join delivery_rider r on r.rider_id = o.delivered_by_id
+               join Delivery_Rider r on r.rider_id = o.delivered_by_id
                where order_id = ?
                `;
     db.query(q, [order_id], (err, result) => {

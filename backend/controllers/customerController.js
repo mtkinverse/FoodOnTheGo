@@ -5,8 +5,8 @@ module.exports.orderAgain = (req, res) => {
 
     const q = `
       SELECT r.*, loc.*, d.discount_value
-      FROM restaurant r
-      JOIN locations loc ON r.location_id = loc.location_id
+      FROM Restaurant r
+      JOIN Locations loc ON r.location_id = loc.location_id
       LEFT JOIN Discount d ON d.restaurant_id = r.restaurant_id 
       JOIN (
         SELECT DISTINCT restaurant_id
@@ -31,7 +31,7 @@ module.exports.orderAgain = (req, res) => {
         data.forEach((restaurant) => {
             const reviewCountQuery = `
               SELECT COUNT(*) AS review_count
-              FROM orders
+              FROM Orders
               WHERE restaurant_id = ? AND review_id IS NOT NULL
             `;
 
@@ -59,7 +59,7 @@ module.exports.verifyPromo = (req, res) => {
     const promo_code = req.query.promo_code;
     const user_id = req.query.user_id;
 
-    const q = 'SELECT restaurant_id FROM restaurant WHERE menu_id = ?';
+    const q = 'SELECT restaurant_id FROM Restaurant WHERE menu_id = ?';
 
     db.query(q, [menu_id], (err, result) => {
         if (err) {
@@ -75,7 +75,7 @@ module.exports.verifyPromo = (req, res) => {
         const restaurant_id = result[0].restaurant_id;
         const qq = `
             SELECT * 
-            FROM promos 
+            FROM Promos 
             WHERE promo_code = ? 
               AND restaurant_id = ? 
               AND end_date >= CURRENT_DATE
@@ -96,7 +96,7 @@ module.exports.verifyPromo = (req, res) => {
             const usage_limit = result1[0].usage_limit;
             const qqq = `
                 SELECT count(order_id) as num_orders 
-                FROM orders 
+                FROM Orders 
                 WHERE customer_id = ? 
                   AND promo_id = ?
             `;
@@ -124,7 +124,7 @@ module.exports.verifyPromo = (req, res) => {
 
 module.exports.getPromos = (req,res) => {
     const restaurant_id = req.params.id;
-    const q = 'SELECT * from promos where restaurant_id = ? and start_date <= CURRENT_DATE and end_date >= CURRENT_DATE ';
+    const q = 'SELECT * from Promos where restaurant_id = ? and start_date <= CURRENT_DATE and end_date >= CURRENT_DATE ';
 
     db.query(q,[restaurant_id,'active'],(err,result) => {
         if(err){
@@ -138,7 +138,7 @@ module.exports.reviewOrder = (req,res) => {
 
     const order_id = req.params.id;
    const {rating,description} = req.body;
-   const q = 'INSERT INTO order_review (rating,Review_Description) VALUES(?,?)';
+   const q = 'INSERT INTO Order_Review (rating,Review_Description) VALUES(?,?)';
 
    db.beginTransaction(() =>{
 
@@ -149,7 +149,7 @@ module.exports.reviewOrder = (req,res) => {
           return res.status(400).json({error : err.message});
         }
         //set order review here;
-        const qq = 'UPDATE orders set review_id = ? where order_id = ?';
+        const qq = 'UPDATE Orders set review_id = ? where order_id = ?';
         db.query(qq,[result.insertId,order_id],(err1,result1) => {
           if(err1){
               console.log('err1',err1.message);
@@ -172,8 +172,8 @@ module.exports.getLastOrder  = (req,res) =>{
     const customer_id = req.params.id;
     const q = ` 
        SELECT o.order_id,r.restaurant_name,r.restaurant_id,o.review_id
-       from orders o join customer c on o.customer_id = c.customer_id
-       join restaurant r on o.restaurant_id = r.restaurant_id
+       from Orders o join customer c on o.customer_id = c.customer_id
+       join Restaurant r on o.restaurant_id = r.restaurant_id
        where c.customer_id = ? and o.Review_id IS NULL
        order by o.order_time
        LIMIT 1;
@@ -192,7 +192,7 @@ module.exports.PlaceOrder = (req, res) => {
     const { Customer_id, Menu_Id, Address, NearbyPoint, items, total_amount, promo_id, riderTip } = req.body;
 
 
-    const q1 = 'SELECT Restaurant_id FROM restaurant WHERE menu_id = ?';
+    const q1 = 'SELECT Restaurant_id FROM Restaurant WHERE menu_id = ?';
     db.beginTransaction(()=>{
 
         db.query(q1, [Menu_Id], (err, restaurantResult) => {
@@ -226,7 +226,7 @@ module.exports.PlaceOrder = (req, res) => {
                     }
     
     
-                    const itemInsertQuery = 'INSERT INTO ordered_items (order_id, item_id, quantity, price) VALUES (?, ?, ?, ?)';
+                    const itemInsertQuery = 'INSERT INTO Ordered_Items (order_id, item_id, quantity, price) VALUES (?, ?, ?, ?)';
                     items.forEach((item, index) => {
                         const priceToUse = item.discounted_price && item.discounted_price < item.Item_Price
                             ? item.discounted_price
@@ -238,7 +238,7 @@ module.exports.PlaceOrder = (req, res) => {
                             }
     
                             if (index === items.length - 1) {
-                                const updateOrderQuery = 'UPDATE orders SET promo_id = ?, total_amount = ?, rider_tip = ? WHERE order_id = ?';
+                                const updateOrderQuery = 'UPDATE Orders SET promo_id = ?, total_amount = ?, rider_tip = ? WHERE order_id = ?';
                                 db.query(updateOrderQuery, [promo_id, total_amount, riderTip, Order_id], (err) => {
                                     if (err) {
                                         console.error('Error updating order:', err);
@@ -291,11 +291,11 @@ module.exports.getAllOrders = (req, res) => {
         oo.quantity,
         oo.price,  -- Price from ordered_items
         oo.price * oo.quantity AS sub_total -- Calculate sub_total using item_price from ordered_items
-      FROM orders o 
-      JOIN deliveryaddress d ON o.address_id = d.address_id
-      JOIN restaurant r ON o.restaurant_id = r.restaurant_id
-      JOIN ordered_items oo ON o.order_id = oo.order_id        
-      JOIN menu_items i ON oo.item_id = i.item_id  -- Join with menu_items to get dish_name
+      FROM Orders o 
+      JOIN DeliveryAddress d ON o.address_id = d.address_id
+      JOIN Restaurant r ON o.restaurant_id = r.restaurant_id
+      JOIN Ordered_Items oo ON o.order_id = oo.order_id        
+      JOIN Menu_Items i ON oo.item_id = i.item_id  -- Join with menu_items to get dish_name
       WHERE o.customer_id = ?
       ORDER BY order_date DESC;
 

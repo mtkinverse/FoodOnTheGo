@@ -64,7 +64,7 @@ function registerCustomer(req,res) {
 
 function registerOwner(req,res) {
     
-    const q = 'SELECT * FROM Restaurant_owner WHERE email_address = ? or phone_no = ?';
+    const q = 'SELECT * FROM Restaurant_Owner WHERE email_address = ? or phone_no = ?';
 
     db.query(q, [req.body.email,req.body.phoneNo], (err, data) => {
         if (err) return res.status(500).json(err);
@@ -73,7 +73,7 @@ function registerOwner(req,res) {
         const salt = bcrypt.genSaltSync(10);
         const hash = bcrypt.hashSync(req.body.password, salt);
         
-        const qInsert = "INSERT INTO Restaurant_owner (Owner_name,Email_address,Account_Password,Phone_no) VALUES (?, ?, ?, ?)";
+        const qInsert = "INSERT INTO Restaurant_Owner (Owner_name,Email_address,Account_Password,Phone_no) VALUES (?, ?, ?, ?)";
         const values = [req.body.name,req.body.email, hash,req.body.phoneNo];
         
         db.query(qInsert, values, (err, data) => {
@@ -134,7 +134,6 @@ module.exports.loginUser = (req, res) => {
     
     
     const role = req.body.role;
-    
     const q = `SELECT * FROM ${role} WHERE Email_address = ?`;
 
     db.query(q, [req.body.email], (err, data) => {
@@ -159,7 +158,7 @@ module.exports.loginUser = (req, res) => {
         
 
         const token = jwt.sign(
-            { id: role === 'Customer' ? user.Customer_id : role == 'Restaurant_owner' ? user.Owner_id : role == 'Restaurant_Admin' ? user.Admin_id : user.Rider_id }, 
+            { id: role === 'Customer' ? user.Customer_id : role == 'Restaurant_Owner' ? user.Owner_id : role == 'Restaurant_Admin' ? user.Admin_id : user.Rider_id }, 
              process.env.JWT_SECRET, 
             { expiresIn: 600 }
         );
