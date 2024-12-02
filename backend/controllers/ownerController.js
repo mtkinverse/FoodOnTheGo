@@ -4,6 +4,108 @@ const fs = require('fs');
 const bcrypt = require('bcryptjs');
 const e = require('express');
 
+module.exports.getStats = (req, res) => {
+    const restaurant_id = req.params.id;
+
+    // Object to hold all statistics
+    const stats = {};
+
+    // Query 1: Get average weekly orders
+    const weeklyOrdersQuery = `
+        SELECT 
+            COUNT(*) / 7 AS average_daily_orders 
+        FROM 
+            orders 
+        WHERE 
+            restaurant_id = ?
+            AND DATE(order_time) >= DATE_SUB(CURDATE(), INTERVAL 1 WEEK);
+    `;
+
+    db.query(weeklyOrdersQuery, [restaurant_id], (err, weeklyOrdersResult) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ success: false, message: "Error retrieving weekly orders." });
+        }
+
+        stats.average_daily_orders = Math.ceil(weeklyOrdersResult[0]?.average_daily_orders);
+
+        // Query 2: Get weekly earnings
+        const weeklyEarningsQuery = `
+            SELECT 
+                SUM(total_amount) AS weekly_earnings 
+            FROM 
+                orders 
+            WHERE 
+                restaurant_id = ?
+                AND DATE(order_time) >= DATE_SUB(CURDATE(), INTERVAL 1 WEEK);
+        `;
+
+        db.query(weeklyEarningsQuery, [restaurant_id], (err, weeklyEarningsResult) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).json({ success: false, message: "Error retrieving weekly earnings." });
+            }
+
+            stats.weekly_earnings = weeklyEarningsResult[0]?.weekly_earnings || 0;
+
+            // Query 3: Get average orders per day
+            const dailyOrdersQuery = `
+                SELECT 
+                    COUNT(*) / COUNT(DISTINCT DATE(order_time)) AS average_orders_per_day 
+                FROM 
+                    orders 
+                WHERE 
+                    restaurant_id = ?;
+            `;
+
+            db.query(dailyOrdersQuery, [restaurant_id], (err, dailyOrdersResult) => {
+                if (err) {
+                    console.error(err);
+                    return res.status(500).json({ success: false, message: "Error retrieving daily orders." });
+                }
+
+                stats.average_orders_per_day = Math.ceil(dailyOrdersResult[0]?.average_orders_per_day);
+
+                // Query 4: Get most popular item
+                const popularItemQuery = `
+                    SELECT 
+                        mi.dish_name, COUNT(oo.item_id) AS order_count 
+                    FROM 
+                        ordered_items oo
+                    JOIN 
+                        orders o ON o.restaurant_id = ?
+                    JOIN 
+                        menu_items mi ON oo.item_id = mi.item_id
+                    WHERE 
+                        mi.menu_id = (SELECT menu_id FROM restaurant WHERE restaurant_id = ?)
+                    GROUP BY 
+                        mi.dish_name 
+                    ORDER BY 
+                        order_count DESC 
+                    LIMIT 1;
+                `;
+
+                db.query(popularItemQuery, [restaurant_id, restaurant_id], (err, popularItemResult) => {
+                    if (err) {
+                        console.error(err);
+                        return res.status(500).json({ success: false, message: "Error retrieving popular item." });
+                    }
+
+                    stats.most_popular_item = popularItemResult[0]?.dish_name || "No data available";
+
+                    // All queries completed, return the final stats
+                    console.log(stats);
+                    return res.status(200).json({
+                        success: true,
+                        stats,
+                    });
+                });
+            });
+        });
+    });
+};
+
+
 module.exports.deleteRestaurant = (req,res) => {
      const restaurant_id = req.params.id;
      const {Restaurant_Image} = req.body;

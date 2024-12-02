@@ -8,13 +8,14 @@ import {
   Plus,
   Settings,
   ChevronRight,
+  Info
 } from "lucide-react";
 import { useUserContext } from "../contexts/userContext";
 import { useNavigate } from "react-router-dom";
 import AddRestaurantPopup from "../components/AddRestaurant";
 import ManageRestaurant from "../components/ManageRestaurant"; // Import ManageRestaurant
 import { useAlertContext } from "../contexts/alertContext";
-
+import { StatsPopup } from "../components/StatsPopup";
 const OwnedRestaurants = () => {
   const { setAlert } = useAlertContext();
 
@@ -25,6 +26,8 @@ const OwnedRestaurants = () => {
   const [isManageOpen, setIsManageOpen] = useState(false); // State to handle ManageRestaurant pop-up
   const [currentRestaurant, setCurrentRestaurant] = useState(null); // Store current restaurant data
   const { loggedIn, userData } = useUserContext();
+  const [statisticPopup,setIsStatsOpen] = useState(false);
+
   const navigate = useNavigate();
 
   const fetchRestaurants = async () => {
@@ -139,21 +142,29 @@ const OwnedRestaurants = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {restaurants.map((restaurant) => (
             <div
-              key={restaurant.Restaurant_id}
-              className="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden"
-            >
-              <div className="relative h-48 overflow-hidden">
-                <img
-                  src={restaurant.Restaurant_Image || "/default-restaurant.jpg"}
-                  alt={restaurant.Restaurant_Name}
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                <h3 className="absolute bottom-4 left-4 text-xl font-semibold text-white">
-                  {restaurant.Restaurant_Name}
-                </h3>
-              </div>
-
+            key={restaurant.Restaurant_id}
+            className="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden"
+          >
+            <div className="relative h-48 overflow-hidden">
+              <img
+                src={restaurant.Restaurant_Image || "/default-restaurant.jpg"}
+                alt={restaurant.Restaurant_Name}
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+              <h3 className="absolute bottom-4 left-4 text-xl font-semibold text-white">
+                {restaurant.Restaurant_Name}
+              </h3>
+              <button
+                onClick={() => {
+                  setCurrentRestaurant(restaurant);
+                  setIsStatsOpen(true);
+                }}
+                className="absolute top-4 right-4 bg-white/80 p-2 rounded-full hover:bg-white transition-colors duration-200"
+              >
+                <Info className="w-5 h-5 text-indigo-500" />
+              </button>
+            </div>
               <div className="p-6 space-y-4">
                 <div className="space-y-3">
                   <div className="flex items-center text-gray-600">
@@ -204,6 +215,14 @@ const OwnedRestaurants = () => {
             </div>
           ))}
         </div>
+        
+        {
+          statisticPopup &&
+            <StatsPopup 
+            setIsStatsOpen = {setIsStatsOpen}
+               restaurant={currentRestaurant}
+            />
+        }
 
         {deleteRestaurantpop && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
