@@ -17,46 +17,57 @@ module.exports.getReviews = (req,res) => {
       return res.status(200).json(result.reverse());
     })
 }
-
 module.exports.getRestaurants = (req, res) => {
   const q = `
-   SELECT * 
+   SELECT 
+     r.*, 
+     loc.*, 
+     d.discount_value, 
+     d.start_date AS discount_start_date,
+     d.end_date AS discount_end_date
    FROM restaurant r
    JOIN locations loc ON r.location_id = loc.location_id
    LEFT JOIN Discount d ON d.restaurant_id = r.restaurant_id
-   WHERE d.start_date <= CURRENT_TIMESTAMP AND d.end_date >= CURRENT_TIMESTAMP;
-`;
+     AND d.start_date <= CURRENT_TIMESTAMP 
+     AND d.end_date >= CURRENT_TIMESTAMP;
+  `;
 
-db.query(q,[], (err, data) => {
-  if (err) {
-    return res.status(500).json({ error: 'Database query failed', details: err.message });
-  }
+  db.query(q, [], (err, data) => {
+    if (err) {
+      return res.status(500).json({ error: 'Database query failed', details: err.message });
+    }
 
-  const restaurantsWithReviewCount = [];
+    const restaurantsWithReviewCount = [];
+    let processedCount = 0;
 
-  let processedCount = 0;
-  data.forEach((restaurant, index) => {
-    const reviewCountQuery = `
-      SELECT COUNT(o.review_id) AS review_count
-      FROM orders o
-      WHERE o.restaurant_id = ? AND o.review_id IS NOT NULL
-    `;
-    
-    db.query(reviewCountQuery, [restaurant.restaurant_id], (err, reviewData) => {
-      if (err) {
-        return res.status(500).json({ error: 'Failed to fetch review count', details: err.message });
-      }
+    data.forEach((restaurant, index) => {
+      const reviewCountQuery = `
+        SELECT COUNT(o.review_id) AS review_count
+        FROM orders o
+        WHERE o.restaurant_id = ? AND o.review_id IS NOT NULL
+      `;
 
-      restaurant.review_count = reviewData[0]?.review_count || 0;
-      restaurantsWithReviewCount.push(restaurant);
-      processedCount++;
-      if (processedCount === data.length) {
-        return res.status(200).json(restaurantsWithReviewCount);
-      }
+      db.query(reviewCountQuery, [restaurant.restaurant_id], (err, reviewData) => {
+        if (err) {
+          return res.status(500).json({ error: 'Failed to fetch review count', details: err.message });
+        }
+
+        // Attach the review count to the restaurant object
+        restaurant.review_count = reviewData[0]?.review_count || 0;
+
+        // Push the restaurant with its discount value and review count
+        restaurantsWithReviewCount.push(restaurant);
+        processedCount++;
+
+        // When all restaurants are processed, return the response
+        if (processedCount === data.length) {
+          return res.status(200).json(restaurantsWithReviewCount);
+        }
+      });
     });
   });
-});
 };
+
 
 
 module.exports.getSpecificRestaurant = (req, res) => {
