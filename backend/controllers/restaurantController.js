@@ -84,8 +84,8 @@ module.exports.getSpecificRestaurant = (req, res) => {
          AND o.review_id IS NOT NULL) AS review_count 
     FROM restaurant r
     JOIN locations l ON r.location_id = l.location_id
-    LEFT JOIN Discount d ON d.restaurant_id = r.restaurant_id
-    WHERE r.Restaurant_id = ?  AND d.start_date <= CURRENT_TIMESTAMP AND d.end_date >= CURRENT_TIMESTAMP;
+    LEFT JOIN Discount d ON d.restaurant_id = r.restaurant_id AND d.start_date <= CURRENT_TIMESTAMP AND d.end_date >= CURRENT_TIMESTAMP
+    WHERE r.Restaurant_id = ? ;
 `;
 
 
