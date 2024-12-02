@@ -16,16 +16,15 @@ const userAuthentication = require('./middlewares/userAuthentication');
 const app = express();
 
 // CORS setup
-app.use(cors({
-  origin: process.env.FRONTEND_URL,  // Use the frontend URL from the .env
-  credentials: true,  // Allow cookies and credentials
-}));
+
+const cors = require('cors');
+app.use(cors({ origin: 'http://127.0.0.1:5173' }));
 
 app.use(express.json());
 app.use(cookieParser());
 
 // Use the authentication middleware globally if needed
-app.use(userAuthentication);
+//app.use(userAuthentication);
 
 // Route setup
 app.use('/', userRoutes);
