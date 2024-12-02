@@ -5,8 +5,8 @@ module.exports.getTopRestaurants = (req, res) => {
   const q = `
     SELECT * FROM restaurant r 
     JOIN locations loc ON r.location_id = loc.location_id
-    LEFT JOIN Discount d ON d.restaurant_id = r.restaurant_id
-    WHERE r.rating >= ? AND d.start_date <= CURRENT_TIMESTAMP AND d.end_date >= CURRENT_TIMESTAMP
+    LEFT JOIN Discount d ON d.restaurant_id = r.restaurant_id AND d.start_date <= CURRENT_TIMESTAMP AND d.end_date >= CURRENT_TIMESTAMP
+    WHERE r.rating >= ? 
     ORDER BY r.rating DESC
   `;
 
