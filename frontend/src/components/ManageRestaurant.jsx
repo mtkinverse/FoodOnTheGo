@@ -47,7 +47,7 @@ const ManageRestaurant = ({
     try {
       const response = await axios.get(`/api/menu/${restaurant.Restaurant_id}`);
       setMenuItems(response.data);
-      console.log("menu items received: ", menuItems);
+      
     } catch (err) {
       setError("Failed to fetch menu items.");
     }
@@ -70,7 +70,7 @@ const ManageRestaurant = ({
 
       setMenuItems(temp.filter((ele) => ele.Item_id != item_id));
     } catch (err) {
-      console.log("Error deleting menu items");
+      
     }
   };
 
@@ -83,7 +83,7 @@ const ManageRestaurant = ({
   });
   const [updateItemPopup, setPopup] = useState(false);
   const handleUpdateItemClick = (item) => {
-    console.log("received item : ", item);
+    
     setUpdated(item);
     setPopup(true);
   };
@@ -91,13 +91,13 @@ const ManageRestaurant = ({
   const handleupdatedItemChange = (e) => {
     const { name, value } = e.target;
     if (name === "image") {
-      console.log("image updated");
+      
       setUpdated((prevValues) => ({
         ...prevValues,
         image: e.target.files[0],
       }));
     } else {
-      console.log("value updated");
+      
       setUpdated((prevValues) => ({
         ...prevValues,
         [name]: value,
@@ -107,8 +107,8 @@ const ManageRestaurant = ({
 
   const submitUpdatedItem = async (e) => {
     e.preventDefault();
-    console.log("sending req");
-    console.log(updatedItem);
+    
+    
 
     const formData = new FormData();
 
@@ -147,7 +147,7 @@ const ManageRestaurant = ({
         })
       );
 
-      console.log("Item updated successfully", res.data);
+      
       setPopup(false);
       setUpdated({});
     } catch (err) {
@@ -175,7 +175,7 @@ const ManageRestaurant = ({
       Contact_No: locationData.contactNo,
     };
     try {
-      console.log("sending data ", req);
+      
       const response = await axios.post(
         "/api/addLocation/",
         JSON.stringify(req),
@@ -215,7 +215,7 @@ const ManageRestaurant = ({
   const handleTimingSubmit = async (e) => {
     e.preventDefault();
     try {
-      console.log("Timing state before sending request:", timing);
+      
       const response = await axios.post(
         `/api/updateTimings/${restaurant.Restaurant_id}`,
         {
@@ -227,7 +227,7 @@ const ManageRestaurant = ({
         message: 'Timings updated successfully!',
         type: 'success'
       });
-      console.log("Response:", response.data);
+      
       setTimingPopupOpen(false); // Close the popup after submission
       fetchRestaurants();
       setTiming({
@@ -245,7 +245,7 @@ const ManageRestaurant = ({
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    console.log(`Input changed: ${name} = ${value}`);
+    
     setTiming((prevState) => ({
       ...prevState,
       [name]: value,
@@ -256,7 +256,7 @@ const ManageRestaurant = ({
     const { name, value } = e.target;
     // Handle file input separately
     if (name === "image") {
-      console.log("image updated");
+      
       setMenuItem((prevValues) => ({
         ...prevValues,
         image: e.target.files[0], // Store the file object
@@ -282,10 +282,9 @@ const ManageRestaurant = ({
     if (restaurant.r_admin && !adminData.Email_address) {
       axios.get('/api/getAdmin/' + restaurant.Location_id)
         .then(res => {
-          console.log('received ', res.data.admin);
+          
           setAdminData({ ...res.data.admin, newPassword: "" })
         })
-        .catch(err => console.log(err.message))
     }
     setAdminPopup(true);
   }
@@ -301,10 +300,10 @@ const ManageRestaurant = ({
   const handleAdminSubmit = async (e) => {
     e.preventDefault();
     try {
-      console.log(restaurant.Location_id);
+      
 
       if (restaurant.r_admin === null) {
-        console.log('not me', adminData);
+        
 
         const response = await axios.post(
           `/api/addAdmin/${restaurant.Restaurant_id}`,
@@ -318,7 +317,7 @@ const ManageRestaurant = ({
         }
       }
       else {
-        console.log('heres : ', adminData)
+        
         axios.post('/api/updateAdmin', JSON.stringify({ adminData }), { withCredentials: true, headers: { "Content-Type": "application/json" } })
           .then(res => {
             setAlert({
@@ -326,11 +325,11 @@ const ManageRestaurant = ({
               type: 'success'
             });
           })
-          .catch(err => console.log(err.message))
+
       } setAdminPopup(false);
 
     } catch (err) {
-      console.log("Error adding admin" + err.message);
+      
       setAlert({
         message: 'Error adding admin',
         type: 'failure'
@@ -347,12 +346,12 @@ const ManageRestaurant = ({
     formData.append("cuisine", menuItem.cuisine);
     formData.append("category", menuItem.category);
     if (menuItem.image) {
-      console.log("image appened");
+      
       formData.append("image", menuItem.image);
     }
     formData.append("menu_id", menuId);
     try {
-      console.log("sending add item request with", formData);
+      
       const response = await axios.post(
         `/api/addMenuItem/${restaurant.Restaurant_id}`,
         formData,
@@ -362,7 +361,7 @@ const ManageRestaurant = ({
         message: 'Menu item added successfully!',
         type: 'success'
       });
-      console.log("Response:", response.data);
+      
       setAddItemPopupOpen(false); // Close the popup after submission
       fetchRestaurants(); // Refresh the menu
       setMenuItem({
@@ -401,7 +400,7 @@ const ManageRestaurant = ({
     formData.append("Restaurant_image", newImage);
 
     try {
-      console.log("Sending image change request ", formData);
+      
       const response = await axios.post(
         `/api/changeRestaurantImage/${restaurant.Restaurant_id}`,
         formData,

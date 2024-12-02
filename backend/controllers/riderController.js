@@ -15,32 +15,30 @@ module.exports.getMyTips = (req, res) => {
         return res.status(200).json({ tips: 0 });
       }
   
-      console.log('Result of rider tips:', result);
+      
       return res.status(200).json({ tips: result[0].tips });
     });
   };
   
 module.exports.updateStatus =(req,res) => {
-    console.log('updating rider status ',req.body.status);
+    
     const q = 'UPDATE delivery_rider set available = ? where rider_id = ?';
     db.query(q,[req.body.status,req.params.id,],(err,result) => {
         if(err){
             console.log('error ',err.message);
             res.status(500).json({error : err.message});
         }
-        console.log(
-            "marked" + req.body.status
-        )
+        
         res.status(200).json({message : "marked" + req.body.status});
     })
 
 }
 
 module.exports.setVehicle = (req,res) => {
-    console.log('Hit add/update Vehicle');
+    
     const rider_id = req.params.id;
     const bikeNo = req.body.bikeNo;
-    console.log(bikeNo);
+    
     const q = 'UPDATE Delivery_Rider SET BikeNo = ? where Rider_id = ? ';
     db.query(q,[bikeNo,rider_id],(err,result) => {
         if(err) {
@@ -51,7 +49,7 @@ module.exports.setVehicle = (req,res) => {
 }
 
 module.exports.getRestaurantInfo = (req,res) => {
-    console.log('get restaurant info hit');
+    
     const rider_id = req.params.id;
     const q =  `
       SELECT r.restaurant_name,l.address,l.location_id 
@@ -65,7 +63,7 @@ module.exports.getRestaurantInfo = (req,res) => {
         if(err){
             return res.status(500).json({error : err.message});
         }
-        console.log(result);
+        
         return res.status(200).json(result);
     })
 }
@@ -81,7 +79,7 @@ module.exports.getPendingOrders = (req,res) =>{
 }
 
 module.exports.getHistory = (req,res) => {
-    console.log('received2 : ',req.params.id);
+    
     const q = 'SELECT * FROM Orders WHERE Delivered_by_id = ? and Order_Status = ? ';
     db.query(q,[req.params.id,'Delivered'], (err,result) => {
         if(err) res.status(500).json({message : 'Cannot get History'})
@@ -92,7 +90,7 @@ module.exports.getHistory = (req,res) => {
 
 module.exports.markOrderDelivered = (req,res) => {
     const {Order_id, Rider_id} = req.body;
-    console.log('recieved order id : ',Order_id);
+    
     const q = 'UPDATE Orders SET Order_Status = \'Delivered\' WHERE Order_id = ?';
     db.query(q,[Order_id], (err,result) => {
         if(err || result.length <= 0) res.status(500).json({message : 'Cannot mark as delivered'});

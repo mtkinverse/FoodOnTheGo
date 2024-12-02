@@ -75,7 +75,7 @@ const Restaurants = () => {
         )}
 
         {/* All Restaurants Section */}
-        <div className="bg-white rounded-xl shadow-md p-6 w-100%">
+        <div className="bg-white rounded-xl shadow-md p-6 w-[90vw] max-w-7xl">
           
           <div className="py-2">
 

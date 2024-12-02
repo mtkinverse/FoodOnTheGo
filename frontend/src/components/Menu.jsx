@@ -128,64 +128,64 @@ const RestaurantMenu = () => {
   return (
     <div className="w-full max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
       <div>
-        <div class="flex flex-col sm:flex-row gap-6 items-start mb-8 bg-gradient-to-r from-purple-50 to-purple-100 p-6 rounded-xl shadow-lg relative overflow-hidden">
+        <div className="flex flex-col sm:flex-row gap-6 items-start mb-8 bg-gradient-to-r from-purple-50 to-purple-100 p-6 rounded-xl shadow-lg relative overflow-hidden">
           <img
             src={restaurant.Restaurant_Image}
             alt={restaurant.Restaurant_Name}
-            class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover shadow-md ring-4 ring-white"
+            className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover shadow-md ring-4 ring-white"
           />
 
-          <div class="flex-1 min-w-0">
-            <h1 class="text-xl sm:text-2xl font-extrabold mb-2 truncate text-gray-800 hover:text-purple-700 transition-colors duration-300">
+          <div className="flex-1 min-w-0">
+            <h1 className="text-xl sm:text-2xl font-extrabold mb-2 truncate text-gray-800 hover:text-purple-700 transition-colors duration-300">
               {restaurant.Restaurant_Name}
             </h1>
 
-            <div class="text-sm sm:text-base text-purple-600 mb-3 truncate flex items-center gap-2">
+            <div className="text-sm sm:text-base text-purple-600 mb-3 truncate flex items-center gap-2">
               <svg
-                class="w-5 h-5"
+                className="w-5 h-5"
                 fill="currentColor"
                 viewBox="0 0 20 20"
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  fill-rule="evenodd"
+                  fillRule="evenodd"
                   d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
-                  clip-rule="evenodd"
+                  clipRule="evenodd"
                 />
               </svg>
               {restaurant.Address}
             </div>
 
-            <div class="flex items-center gap-4 text-sm sm:text-base">
-              <div class="flex items-center bg-yellow-100 px-3 py-1.5 rounded-full">
+            <div className="flex items-center gap-4 text-sm sm:text-base">
+              <div className="flex items-center bg-yellow-100 px-3 py-1.5 rounded-full">
                 <svg
-                  class="text-yellow-500 w-5 h-5 mr-1.5"
+                  className="text-yellow-500 w-5 h-5 mr-1.5"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                 </svg>
-                <span class="font-bold text-gray-800">{restaurant.Rating}</span>
-                <span class="text-gray-600 ml-1.5">
+                <span className="font-bold text-gray-800">{restaurant.Rating}</span>
+                <span className="text-gray-600 ml-1.5">
                   ({Math.floor(restaurant.review_count)}+)
                 </span>
               </div>
 
               <button
-                class="flex items-center text-purple-700 bg-white px-4 py-1.5 rounded-full shadow-sm hover:bg-purple-50 hover:shadow-md transition-all duration-300"
+                className="flex items-center text-purple-700 bg-white px-4 py-1.5 rounded-full shadow-sm hover:bg-purple-50 hover:shadow-md transition-all duration-300"
                 onClick={() => setReviewspop(true)}
               >
                 <svg
-                  class="w-5 h-5 mr-2"
+                  className="w-5 h-5 mr-2"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
-                    fill-rule="evenodd"
+                    fillRule="evenodd"
                     d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                    clip-rule="evenodd"
+                    clipRule="evenodd"
                   />
                 </svg>
                 <span>Reviews</span>
@@ -194,7 +194,7 @@ const RestaurantMenu = () => {
           </div>
 
           {restaurant.discount_value && (
-            <div class="absolute top-0 right-0 bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-sm font-extrabold px-6 py-2 rounded-bl-2xl shadow-lg transform rotate-12 translate-x-2 -translate-y-2">
+            <div className="absolute top-0 right-0 bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-sm font-extrabold px-6 py-2 rounded-bl-2xl shadow-lg transform rotate-12 translate-x-2 -translate-y-2">
               {restaurant.discount_value}% OFF
             </div>
           )}

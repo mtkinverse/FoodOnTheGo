@@ -16,7 +16,6 @@ module.exports.deleteDeal = (req, res) => {
 }
 
 module.exports.updateDeal = (req, res) => {
-    console.log('deal to updated : ', req.body);
 
     let q, passArr = [];
     if (req.body.Type === 'discount') {
@@ -43,7 +42,7 @@ module.exports.getDeals = (req, res) => {
     const location_id = req.params.id;
 
     const restaurantQuery = 'SELECT restaurant_id FROM restaurant WHERE location_id = ?';
-    console.log('get deals hit', location_id);
+    
     db.query(restaurantQuery, [location_id], (err, restaurantResult) => {
         if (err) {
             console.error("Error fetching restaurant:", err);
@@ -56,20 +55,20 @@ module.exports.getDeals = (req, res) => {
 
         const restaurant_id = restaurantResult[0].restaurant_id;
 
-        const promosQuery = 'SELECT * FROM promos WHERE restaurant_id = ? AND end_date >= CURRENT_DATE';
+        const promosQuery = 'SELECT * FROM promos WHERE restaurant_id = ? AND start_date <= CURRENT_DATE AND end_date >= CURRENT_DATE';
         db.query(promosQuery, [restaurant_id], (err, promosResult) => {
             if (err) {
                 console.error("Error fetching promos:", err);
                 return res.status(500).send("Internal Server Error");
             }
 
-            const discountsQuery = 'SELECT * FROM discount WHERE restaurant_id = ? AND end_date >= CURRENT_DATE';
+            const discountsQuery = 'SELECT * FROM discount WHERE restaurant_id = ? AND start_date <= CURRENT_DATE AND end_date >= CURRENT_DATE';
             db.query(discountsQuery, [restaurant_id], (err, discountsResult) => {
                 if (err) {
                     console.error("Error fetching discounts:", err);
                     return res.status(500).send("Internal Server Error");
                 }
-                console.log(promosResult, discountsResult);
+                
                 res.json({
                     promos: promosResult,
                     discounts: discountsResult
@@ -79,7 +78,7 @@ module.exports.getDeals = (req, res) => {
     });
 };
 module.exports.AddDiscount = (req, res) => {
-    console.log('Here to add discount');
+    
     const location_id = req.params.id;
     const { discount_value, start_date, end_date } = req.body;
 
@@ -94,7 +93,7 @@ module.exports.AddDiscount = (req, res) => {
 
         const queryActiveDiscount = `
             SELECT * FROM discount 
-            WHERE restaurant_id = ? AND end_date >= CURRENT_DATE
+            WHERE restaurant_id = ? AND start_date <= CURRENT_DATE AND end_date >= CURRENT_DATE
         `;
         db.query(queryActiveDiscount, [restaurant_id], (err2, activeDiscounts) => {
             if (err2) {
@@ -118,7 +117,7 @@ module.exports.AddDiscount = (req, res) => {
                     return res.status(500).json({ message: 'Error adding discount' });
                 }
 
-                console.log('Discount added successfully');
+                
                 return res.status(201).json({
                     success: true,
                     message: 'Discount added successfully',
@@ -132,7 +131,7 @@ module.exports.AddDiscount = (req, res) => {
 module.exports.AddPromo = (req, res) => {
     const location_id = req.params.id;
     const { promo_code, promo_value, start_date, end_date, limit, Min_Total } = req.body;
-    console.log(req.body);
+    
     const q = 'SELECT restaurant_id from restaurant where location_id = ? ';
 
     db.query(q, [location_id], (err, result) => {
@@ -141,7 +140,7 @@ module.exports.AddPromo = (req, res) => {
         }
 
         const restaurant_id = result[0].restaurant_id;
-        console.log(restaurant_id);
+        
         const qq = `
             INSERT INTO Promos (restaurant_id,promo_code,
             promo_value,start_date,end_date,usage_limit,Min_Total) VALUES (?,?,?,?,?,?,?); 
@@ -150,7 +149,7 @@ module.exports.AddPromo = (req, res) => {
             if (err1) {
                 return res.status(500).json({ message: 'Error adding promo' });
             }
-            console.log('prmote added');
+            
             return res.status(200).json({ message: 'Promo added' });
         })
     })
@@ -179,7 +178,7 @@ module.exports.getRiders = (req, res) => {
 }
 module.exports.getOrders = (req, res) => {
     const location_id = req.params.id;
-    console.log('location id is ', location_id);
+    
 
     const q = `
        SELECT o.order_id, o.total_amount, o.order_status, TIME(o.order_time) AS order_time, o.promo_id, 
@@ -229,7 +228,7 @@ module.exports.getOrders = (req, res) => {
             return acc;
         }, []);
 
-        console.log(groupedOrders);
+        
         res.json({ orders: groupedOrders });
     });
 };
@@ -238,7 +237,7 @@ module.exports.getOrders = (req, res) => {
 module.exports.updateOrderStatus = (req, res) => {
     const order_id = req.params.id;
     const status = req.body.status;
-    console.log(order_id, status, " update hit");
+    
     const q = 'UPDATE orders SET order_status = ? where order_id = ?';
 
     db.query(q, [status, order_id], (err, result) => {
@@ -310,7 +309,7 @@ module.exports.dispatchOrder = (req, res) => {
 
 module.exports.getDeliveryDetails = (req, res) => {
     const order_id = req.params.id;
-    console.log('Delivery details hitt ', order_id);
+    
 
     const q = `SELECT r.rider_id,r.rider_name,d.address
                from orders o join deliveryaddress d
@@ -322,7 +321,7 @@ module.exports.getDeliveryDetails = (req, res) => {
         if (err) {
             res.status(500).json({ error: err.message });
         }
-        console.log(result);
+        
         return res.status(200).json(result);
     })
 }

@@ -2,7 +2,6 @@ const db = require('../db');
 
 module.exports.getReviews = (req,res) => {
     const restaurant_id = req.params.id;
-    console.log('get reviews hit ');
     const q = `
          SELECT re.*,c.customer_name from order_review re
         join orders o on o.review_id = re.review_id
@@ -15,10 +14,7 @@ module.exports.getReviews = (req,res) => {
       if(err){
         return res.status(400).json({message : 'Error getting reviews'});
       }
-      console.log(
-        'review result ',result
-      )
-      return res.status(200).json(result);
+      return res.status(200).json(result.reverse());
     })
 }
 
@@ -27,7 +23,8 @@ module.exports.getRestaurants = (req, res) => {
    SELECT * 
    FROM restaurant r
    JOIN locations loc ON r.location_id = loc.location_id
-   LEFT JOIN Discount d ON d.restaurant_id = r.restaurant_id AND d.end_date > CURRENT_TIMESTAMP;
+   LEFT JOIN Discount d ON d.restaurant_id = r.restaurant_id
+   WHERE d.start_date <= CURRENT_TIMESTAMP AND d.end_date >= CURRENT_TIMESTAMP;
 `;
 
 db.query(q,[], (err, data) => {
@@ -54,7 +51,6 @@ db.query(q,[], (err, data) => {
       restaurantsWithReviewCount.push(restaurant);
       processedCount++;
       if (processedCount === data.length) {
-        console.log(restaurantsWithReviewCount);
         return res.status(200).json(restaurantsWithReviewCount);
       }
     });
@@ -65,7 +61,6 @@ db.query(q,[], (err, data) => {
 
 module.exports.getSpecificRestaurant = (req, res) => {
   const restaurantId = req.params.id;
-  console.log(`Fetching details for restaurant with ID: ${restaurantId}`);
 
   const query = `
     SELECT 
@@ -78,8 +73,8 @@ module.exports.getSpecificRestaurant = (req, res) => {
          AND o.review_id IS NOT NULL) AS review_count 
     FROM restaurant r
     JOIN locations l ON r.location_id = l.location_id
-    LEFT JOIN Discount d ON d.restaurant_id = r.restaurant_id AND d.end_date > CURRENT_TIMESTAMP
-    WHERE r.Restaurant_id = ?;
+    LEFT JOIN Discount d ON d.restaurant_id = r.restaurant_id
+    WHERE r.Restaurant_id = ?  AND d.start_date <= CURRENT_TIMESTAMP AND d.end_date >= CURRENT_TIMESTAMP;
 `;
 
 
@@ -91,11 +86,9 @@ module.exports.getSpecificRestaurant = (req, res) => {
       }
 
       if (data.length === 0) {
-          console.log(`No restaurant found with ID: ${restaurantId}`);
           return res.status(404).json({ message: 'Restaurant not found' });
       }
 
-      console.log(`Fetched details:`, data[0]);
       return res.status(200).json(data[0]);
   });
 };

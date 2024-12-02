@@ -13,7 +13,7 @@ module.exports.deleteAccount = (req, res) => {
     if (!['Customer', 'Delivery_Rider'].includes(role)) {
         return res.status(400).json({ message: 'Invalid role provided' });
     }
-   console.log('delete hit for ',user_id,role);
+   
     let q;
     switch (role) {
         case 'Customer':
@@ -35,13 +35,13 @@ module.exports.deleteAccount = (req, res) => {
         if (result.affectedRows === 0) {
             return res.status(404).json({ message: 'Account not found' });
         }
-        console.log('account deleted');
+        
         return res.status(200).json({ message: 'Account deleted successfully' });
     });
 };
 
 function registerCustomer(req,res) {
-    console.log("Customer registration endpoint hit");
+    
     const q = 'SELECT * FROM Customer WHERE email_address = ? or phone_no = ?';
 
     db.query(q, [req.body.email,req.body.phoneNo], (err, data) => {
@@ -53,7 +53,7 @@ function registerCustomer(req,res) {
         
         const qInsert = "INSERT INTO Customer (Customer_name,Email_address,Account_Password,Phone_no) VALUES (?, ?, ?, ?)";
         const values = [req.body.name,req.body.email, hash,req.body.phoneNo];
-        console.log("Inserting customer:", values);
+        
         db.query(qInsert, values, (err, data) => {
             if (err) return res.status(500).json(err);
             return res.status(200).json('Customer created');
@@ -63,7 +63,7 @@ function registerCustomer(req,res) {
 
 
 function registerOwner(req,res) {
-    console.log("Owner registration endpoint hit");
+    
     const q = 'SELECT * FROM Restaurant_owner WHERE email_address = ? or phone_no = ?';
 
     db.query(q, [req.body.email,req.body.phoneNo], (err, data) => {
@@ -75,7 +75,7 @@ function registerOwner(req,res) {
         
         const qInsert = "INSERT INTO Restaurant_owner (Owner_name,Email_address,Account_Password,Phone_no) VALUES (?, ?, ?, ?)";
         const values = [req.body.name,req.body.email, hash,req.body.phoneNo];
-        console.log("Inserting owner:", values);
+        
         db.query(qInsert, values, (err, data) => {
             if (err) return res.status(500).json(err);
             return res.status(200).json('Owner created');
@@ -85,7 +85,7 @@ function registerOwner(req,res) {
 
 
 function registerRider(req,res) {
-    console.log("Delivery Rider registration endpoint hit");
+    
     const q = 'SELECT * FROM Delivery_Rider WHERE email_address = ? or phone_no = ?';
 
     db.query(q, [req.body.email,req.body.phoneNo], (err, data) => {
@@ -97,7 +97,7 @@ function registerRider(req,res) {
         
         const qInsert = "INSERT INTO Delivery_Rider (Rider_name,Email_address,Account_Password,Phone_no) VALUES (?, ?, ?, ?)";
         const values = [req.body.name,req.body.email, hash,req.body.phoneNo];
-        console.log("Inserting rider:", values);
+        
         db.query(qInsert, values, (err, data) => {
             if (err) return res.status(500).json(err);
             return res.status(200).json('Rider created');
@@ -131,10 +131,10 @@ module.exports.registerUser = (req, res) => {
 };
 
 module.exports.loginUser = (req, res) => {
-    console.log('login endpoint hit');
-    console.log(req.body);
+    
+    
     const role = req.body.role;
-    console.log(req.body.role);
+    
     const q = `SELECT * FROM ${role} WHERE Email_address = ?`;
 
     db.query(q, [req.body.email], (err, data) => {
@@ -142,7 +142,7 @@ module.exports.loginUser = (req, res) => {
 
         if (data.length == 0) {
             // Return an error for invalid email
-            console.log("email error set");
+            
             return res.status(400).json({message : 'Invalid email address'});
         }
          
@@ -151,19 +151,19 @@ module.exports.loginUser = (req, res) => {
         
         if (!isPasswordValid) {
             // Return an error for invalid password
-            console.log("password error set");
+            
             return res.status(400).json({message : 'Incorrect Password,Try again'});
         }
 
         const { Account_Password, ...other } = user;
-        console.log(other);
+        
 
         const token = jwt.sign(
             { id: role === 'Customer' ? user.Customer_id : role == 'Restaurant_owner' ? user.Owner_id : role == 'Restaurant_Admin' ? user.Admin_id : user.Rider_id }, 
              process.env.JWT_SECRET, 
             { expiresIn: 600 }
         );
-        console.log('Login successful for ', role);
+        
         res.status(200).cookie("access_token", token, {
             httpOnly: true
         }).json({
@@ -189,7 +189,7 @@ module.exports.logoutUser = (req,res) =>{
 
 
 module.exports.getMenu = (req, res) => {
-    console.log('Menu endpoint hit');
+    
     const restaurant_id = req.params.id;
 
     // Query to fetch the menu_id for the given restaurant
@@ -212,7 +212,7 @@ module.exports.getMenu = (req, res) => {
             SELECT discount_value 
             FROM discount 
             WHERE restaurant_id = ? 
-              AND end_date >= CURRENT_TIMESTAMP
+            AND start_date <= CURRENT_DATE  AND end_date >= CURRENT_TIMESTAMP
         `;
 
         db.query(discount_query, [restaurant_id], (err2, discountResult) => {
@@ -222,7 +222,7 @@ module.exports.getMenu = (req, res) => {
             }
 
             const discount_value = discountResult.length > 0 ? discountResult[0].discount_value : 0;
-            console.log('Discount value:', discount_value);
+            
 
             const items_query = 'SELECT * FROM menu_items WHERE menu_id = ?';
 
@@ -243,7 +243,7 @@ module.exports.getMenu = (req, res) => {
                     };
                 });
 
-                console.log('Sending items with discount:', itemsWithDiscount);
+                
                 return res.status(200).json(itemsWithDiscount);
             });
         });
@@ -253,9 +253,9 @@ module.exports.getMenu = (req, res) => {
 
 module.exports.updateAccount = (req,res) => {
     const {User_id,User_name,Email_address,phone_no,role} = req.body.userData;
-    console.log(req.body.userData);
+    
     let new_password = req.body.password;
-    console.log('update account hitt');
+    
     let hash ;
     if(new_password !== ""){
         const salt = bcrypt.genSaltSync(10);

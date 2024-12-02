@@ -49,7 +49,6 @@ const AddRestaurantPopup = ({ isOpen, onClose,fetchRestaurants}) => {
         headers: { "Content-Type": "multipart/form-data" },
       })
       .then((response) => {
-        console.log("Restaurant added:", response.data);
         setFormValues({
           Restaurant_name: "",
           OpensAt: "",

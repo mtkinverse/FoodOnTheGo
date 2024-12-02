@@ -7,12 +7,12 @@ module.exports.orderAgain = (req, res) => {
       SELECT r.*, loc.*, d.discount_value
       FROM restaurant r
       JOIN locations loc ON r.location_id = loc.location_id
-      LEFT JOIN Discount d ON d.restaurant_id = r.restaurant_id AND d.end_date > CURRENT_TIMESTAMP
+      LEFT JOIN Discount d ON d.restaurant_id = r.restaurant_id 
       JOIN (
         SELECT DISTINCT restaurant_id
         FROM Orders
         WHERE customer_id = ?
-      ) o ON o.restaurant_id = r.restaurant_id
+      ) o ON o.restaurant_id = r.restaurant_id AND d.start_date <= CURRENT_TIMESTAMP AND d.end_date >= CURRENT_TIMESTAMP
     `;
 
     db.query(q, [customer_id], (err, data) => {
@@ -46,7 +46,6 @@ module.exports.orderAgain = (req, res) => {
 
                 if (processedCount === data.length) {
                     // Send response when all restaurants have been processed
-                    console.log('sending ORDER AGAIN ',restaurantsWithReviewCount);
                     return res.status(200).json(restaurantsWithReviewCount);
                 }
             });
@@ -56,13 +55,11 @@ module.exports.orderAgain = (req, res) => {
 
 
 module.exports.verifyPromo = (req, res) => {
-    console.log('Verify promo hit');
     const menu_id = req.params.id;
     const promo_code = req.query.promo_code;
     const user_id = req.query.user_id;
 
     const q = 'SELECT restaurant_id FROM restaurant WHERE menu_id = ?';
-    console.log(menu_id, promo_code, user_id);
 
     db.query(q, [menu_id], (err, result) => {
         if (err) {
@@ -112,13 +109,11 @@ module.exports.verifyPromo = (req, res) => {
                 // Ensure `result2` is valid and has the expected structure
                 const num_orders = result2[0]?.num_orders || 0;
 
-                console.log('Number of orders:', num_orders);
                 if (num_orders >= usage_limit) {
                     console.log('Usage limit reached');
                     return res.status(403).json({ message: 'You have used the promo maximum number of times' });
                 }
 
-                console.log('Sending promo back:', result1[0]);
                 // Return promo details if all checks pass
                 return res.status(200).json(result1[0]);
             });
@@ -135,40 +130,46 @@ module.exports.getPromos = (req,res) => {
         if(err){
             return res.status(500).json({message : 'No promos found'});
         }
-        console.log(result);
         return res.status(200).json(result);
     })
 }
 
 module.exports.reviewOrder = (req,res) => {
-    console.log('i am here to review order',req.body,req.params.id);
-   const order_id = req.params.id;
+
+    const order_id = req.params.id;
    const {rating,description} = req.body;
    const q = 'INSERT INTO order_review (rating,Review_Description) VALUES(?,?)';
 
-   db.query(q,[rating,description],(err,result) => {
-      if(err){
-        console.log(err.message);
-        return res.status(400).json({error : err.message});
-      }
-      //set order review here;
-      const qq = 'UPDATE orders set review_id = ? where order_id = ?';
-      db.query(qq,[result.insertId,order_id],(err1,result1) => {
-        if(err1){
-            console.log('err1',err1.message);
-            return res.status(400).json({error : err1.message});
+   db.beginTransaction(() =>{
+
+    db.query(q,[rating,description],(err,result) => {
+        if(err){
+          console.log(err.message);
+          db.rollback();
+          return res.status(400).json({error : err.message});
         }
-        console.log('order was rated..');
-        res.status(200).json({review_id : result1.insertId});
-      })
-   });
+        //set order review here;
+        const qq = 'UPDATE orders set review_id = ? where order_id = ?';
+        db.query(qq,[result.insertId,order_id],(err1,result1) => {
+          if(err1){
+              console.log('err1',err1.message);
+              db.rollback();
+              return res.status(400).json({error : err1.message});
+          }
+          db.commit();
+          res.status(200).json({review_id : result1.insertId});
+        })
+     });
+
+   })
+   
+   
 
 }
 
 module.exports.getLastOrder  = (req,res) =>{
      
     const customer_id = req.params.id;
-    console.log('HEre to fetch last order : ',customer_id);
     const q = ` 
        SELECT o.order_id,r.restaurant_name,r.restaurant_id,o.review_id
        from orders o join customer c on o.customer_id = c.customer_id
@@ -183,85 +184,84 @@ module.exports.getLastOrder  = (req,res) =>{
             console.log('error fetching recent order');
             return res.status(500).json({ error : err.message });
         }
-        console.log(result);
         return res.status(200).json(result);
     })
 }
 module.exports.PlaceOrder = (req, res) => {
-    console.log('Received order request:', req.body);
 
     const { Customer_id, Menu_Id, Address, NearbyPoint, items, total_amount, promo_id, riderTip } = req.body;
 
+
     const q1 = 'SELECT Restaurant_id FROM restaurant WHERE menu_id = ?';
-    db.query(q1, [Menu_Id], (err, restaurantResult) => {
-        if (err) {
-            console.error('Database query error:', err);
-            return res.status(500).json({ message: 'Database query error' });
-        }
+    db.beginTransaction(()=>{
 
-        if (restaurantResult.length === 0) {
-            return res.status(404).json({ message: 'Menu not found' });
-        }
-
-        const Restaurant_id = restaurantResult[0].Restaurant_id;
-        console.log('Found Restaurant_id:', Restaurant_id);
-
-        const createOrderQuery = 'CALL PLACEORDER (?, ?, ?, ?, @Created_Order_id)';
-        db.query(createOrderQuery, [Customer_id, Restaurant_id, Address, NearbyPoint], (err, orderResult) => {
+        db.query(q1, [Menu_Id], (err, restaurantResult) => {
             if (err) {
-                console.error('Error while placing order:', err);
-                return res.status(500).json({ message: 'Error while placing order' });
+                console.error('Database query error:', err);
+                return res.status(500).json({ message: 'Database query error' });
             }
-
-            db.query('SELECT @Created_Order_id AS orderId', (err, orderStatus) => {
+    
+            if (restaurantResult.length === 0) {
+                return res.status(404).json({ message: 'Menu not found' });
+            }
+    
+            const Restaurant_id = restaurantResult[0].Restaurant_id;
+    
+            const createOrderQuery = 'CALL PLACEORDER (?, ?, ?, ?, @Created_Order_id)';
+            db.query(createOrderQuery, [Customer_id, Restaurant_id, Address, NearbyPoint], (err, orderResult) => {
                 if (err) {
-                    console.error('Error fetching order ID:', err);
-                    return res.status(500).json({ message: 'Error fetching order ID' });
+                    console.error('Error while placing order:', err);
+                    return res.status(500).json({ message: 'Error while placing order' });
                 }
-
-                const Order_id = orderStatus[0].orderId;
-                if (!Order_id) {
-                    return res.status(400).json({ message: 'Failed to create order. Restaurant may be closed.' });
-                }
-
-                console.log('Created Order ID:', Order_id);
-
-                const itemInsertQuery = 'INSERT INTO ordered_items (order_id, item_id, quantity, price) VALUES (?, ?, ?, ?)';
-                items.forEach((item, index) => {
-                    const priceToUse = item.discounted_price && item.discounted_price < item.Item_Price
-                        ? item.discounted_price
-                        : item.Item_Price;
-                    console.log('Adding item to ordered_items:', item.Item_id, item.quantity, priceToUse);
-                    db.query(itemInsertQuery, [Order_id, item.Item_id, item.quantity, priceToUse], (err) => {
-                        if (err) {
-                            console.error('Error inserting item into ordered_items:', err);
-                            return res.status(500).json({ message: 'Error inserting item into order' });
-                        }
-
-                        if (index === items.length - 1) {
-                            const updateOrderQuery = 'UPDATE orders SET promo_id = ?, total_amount = ?, rider_tip = ? WHERE order_id = ?';
-                            console.log('Updating order with promo_id:', promo_id, 'total_amount:', total_amount);
-                            db.query(updateOrderQuery, [promo_id, total_amount, riderTip, Order_id], (err) => {
-                                if (err) {
-                                    console.error('Error updating order:', err);
-                                    return res.status(500).json({ message: 'Error updating order' });
-                                }
-
-                                return res.status(200).json({ success: true, message: 'Order placed successfully' });
-                            });
-                        }
+    
+                db.query('SELECT @Created_Order_id AS orderId', (err, orderStatus) => {
+                    if (err) {
+                        console.error('Error fetching order ID:', err);
+                        return res.status(500).json({ message: 'Error fetching order ID' });
+                    }
+    
+                    const Order_id = orderStatus[0].orderId;
+                    if (!Order_id) {
+                        return res.status(400).json({ message: 'Failed to create order. Restaurant may be closed.' });
+                    }
+    
+    
+                    const itemInsertQuery = 'INSERT INTO ordered_items (order_id, item_id, quantity, price) VALUES (?, ?, ?, ?)';
+                    items.forEach((item, index) => {
+                        const priceToUse = item.discounted_price && item.discounted_price < item.Item_Price
+                            ? item.discounted_price
+                            : item.Item_Price;
+                        db.query(itemInsertQuery, [Order_id, item.Item_id, item.quantity, priceToUse], (err) => {
+                            if (err) {
+                                console.error('Error inserting item into ordered_items:', err);
+                                return res.status(500).json({ message: 'Error inserting item into order' });
+                            }
+    
+                            if (index === items.length - 1) {
+                                const updateOrderQuery = 'UPDATE orders SET promo_id = ?, total_amount = ?, rider_tip = ? WHERE order_id = ?';
+                                db.query(updateOrderQuery, [promo_id, total_amount, riderTip, Order_id], (err) => {
+                                    if (err) {
+                                        console.error('Error updating order:', err);
+                                        return res.status(500).json({ message: 'Error updating order' });
+                                    }
+    
+                                    return res.status(200).json({ success: true, message: 'Order placed successfully' });
+                                });
+                            }
+                        });
                     });
                 });
             });
         });
-    });
+
+    })
+    
 };
 
 
 
 module.exports.cancelOrder = (req, res) => {
     const order_id = req.params.id;
-    console.log('Delete order hit');
     const q  = 'DELETE FROM Orders where Order_id = ? ';
 
     db.query(q,[order_id],(err,result) => {
@@ -275,8 +275,6 @@ module.exports.cancelOrder = (req, res) => {
 }
 module.exports.getAllOrders = (req, res) => {
     const Customer_id = req.params.id;
-    console.log('get orders hit ', Customer_id);
-
     const q = `
  SELECT 
         o.order_id,
@@ -338,7 +336,6 @@ module.exports.getAllOrders = (req, res) => {
             }, {})
         );
 
-        console.log(groupedOrders);
         res.status(200).json(groupedOrders);
     });
 };

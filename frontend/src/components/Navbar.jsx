@@ -371,7 +371,7 @@ function ShowCurrentOrders({
                                     : "bg-gray-300"
                                 } ${
                                   shouldBlink(stage, order.status)
-                                    ? "animate-pulse animate-[pulse_2s_ease-in-out_infinite]"
+                                    ? "animate-pulse" // two same properties were applied
                                     : ""
                                 }`}
                               />
@@ -524,7 +524,7 @@ const Navbar = () => {
     axios
       .post(`/api/cancelOrder/${order_id}`)
       .then((response) => {
-        console.log("Order successfully deleted");
+        
         const updatedOrders = currentOrders.filter(
           (order) => order.order_id !== order_id
         );
@@ -548,11 +548,11 @@ const Navbar = () => {
         bikeNo: bikeDetails.BikeNo,
       })
       .then((response) => {
-        console.log("Bike id updated");
+        
         setBikePopup(false);
       })
       .catch((err) => {
-        console.log("error updating bike");
+        
       });
   };
   useEffect(() => {
@@ -597,7 +597,7 @@ const Navbar = () => {
       signout();
       navigate('/');
     } catch (err) {
-      console.log(err);
+      
     }
   };
 
@@ -608,7 +608,7 @@ const Navbar = () => {
     const role = updatedDetails.role;
     try {
       signout();
-      console.log("sending delete request for ,", User_id, role);
+      
       const response = await axios.post(`/api/deleteAccount/${User_id}`, {
         role,
       });
@@ -691,12 +691,12 @@ const Navbar = () => {
         password: newPassword.first_entry,
       })
       .then((response) => {
-        console.log("Updated data in DB successfully");
+        
       })
       .catch((error) => {
-        console.log("ERror updating data");
+        
       });
-    console.log("Context data", userData);
+    
     setEditMode(false);
     setAlert({ message: "Account updated", type: "success" });
   };

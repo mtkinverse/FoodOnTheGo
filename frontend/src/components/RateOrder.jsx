@@ -15,7 +15,6 @@ const RatingPopup = ({ order, onClose }) => {
   
   const handleSubmit = async () => {
       try{
-        console.log('sending submit review',order.order_id,rating,description);
         const response = await axios.post(`/api/reviewOrder/${order.order_id}`, { rating, description });
         const newReviewId = response.data.review_id; 
     

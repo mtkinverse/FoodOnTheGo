@@ -1,12 +1,12 @@
 const db = require('../db');
 module.exports.getTopRestaurants = (req, res) => {
-  console.log("getHome endpoint hit");
+  
 
   const q = `
     SELECT * FROM restaurant r 
     JOIN locations loc ON r.location_id = loc.location_id
-    LEFT JOIN Discount d ON d.restaurant_id = r.restaurant_id AND d.end_date > CURRENT_TIMESTAMP
-    WHERE r.rating >= ?
+    LEFT JOIN Discount d ON d.restaurant_id = r.restaurant_id
+    WHERE r.rating >= ? AND d.start_date <= CURRENT_TIMESTAMP AND d.end_date >= CURRENT_TIMESTAMP
     ORDER BY r.rating DESC
   `;
 
@@ -34,7 +34,6 @@ module.exports.getTopRestaurants = (req, res) => {
         restaurantsWithReviewCount.push(restaurant);
         processedCount++;
         if (processedCount === data.length) {
-          console.log(restaurantsWithReviewCount);
           return res.status(200).json(restaurantsWithReviewCount);
         }
       });
