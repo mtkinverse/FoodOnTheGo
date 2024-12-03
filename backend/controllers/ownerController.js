@@ -9,7 +9,7 @@ module.exports.getStats = (req, res) => {
 
     // Object to hold all statistics
     const stats = {};
-
+    
     // Query 1: Get average weekly orders
     const weeklyOrdersQuery = `
         SELECT 
@@ -92,13 +92,22 @@ module.exports.getStats = (req, res) => {
                     }
 
                     stats.most_popular_item = popularItemResult[0]?.dish_name || "No data available";
+                    
+                    const review_query = 'SELECT count(o.review_id) as review_count from orders o where o.restaurant_id = ?';
+                    db.query(review_query,[restaurant_id],(err1,result1) => {
+                        if(err1){
+                            console.error(err1);
+                            return res.status(500).json({success: false,message: 'Error retreiving popular item'});
 
-                    // All queries completed, return the final stats
+                        }
+                        stats.review_count = result1[0].review_count;
                     console.log(stats);
                     return res.status(200).json({
                         success: true,
                         stats,
                     });
+                    })
+                   
                 });
             });
         });
