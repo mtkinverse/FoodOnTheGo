@@ -75,8 +75,8 @@ const UserContextProvider = ({ children }) => {
   }, [userData.User_id]);
   
   useEffect(() => {
-    console.log("Current orders updated ",currentOrders);
-    console.log("Past ORders updated ",pastOrders);
+    
+    
   },[currentOrders,pastOrders]);
   
   useEffect(() => {
@@ -101,8 +101,8 @@ const UserContextProvider = ({ children }) => {
       );
 
       if (res.status === 200) {
-        console.log("Login successful. Response data:", res.data);
-        console.log(res.data.role);
+        
+        
         let tempUserData;
         let bikeData;
         // Check the role and adjust the destructuring accordingly
@@ -156,7 +156,7 @@ const UserContextProvider = ({ children }) => {
           message : 'Login successful',
           type: 'success'
         })
-        console.log("User data set for:", tempUserData);
+        
       } else {
         throw new Error(res.message || "Unexpected error occurred");
       }

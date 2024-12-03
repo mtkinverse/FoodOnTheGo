@@ -43,7 +43,7 @@ const CartContextProvider = ({ children }) => {
   
 
   const getTotalAmount = () => {
-    console.log(promo);
+    
     const discountedTotal = getDiscountedTotal();
     const totalAmount = discountedTotal + DELIVERY_CHARGES ; 
     return isNaN(totalAmount) ? 0 : totalAmount;
@@ -53,7 +53,7 @@ const CartContextProvider = ({ children }) => {
 
   const applyPromoCode = async () => {
     try {
-      console.log('Sending request to verify promo:', cart[0]?.Menu_id, promo.promo_code);
+      
   
       const response = await axios.get(`/api/verifyPromo/${cart[0]?.Menu_id}`, {
         params: { promo_code: promo.promo_code, user_id: userData.User_id },
@@ -66,7 +66,7 @@ const CartContextProvider = ({ children }) => {
           const subTotal = getSubTotal();
   
           if (subTotal >= promoData.Min_Total) {
-            console.log('Promo verified, Subtotal:', subTotal);
+            
   
             setPromo((prev) => ({
               ...prev,
