@@ -167,6 +167,7 @@ const CartContextProvider = ({ children }) => {
     cart.forEach((ele) => {
       items = items.concat({
         Item_id: ele.Item_id,
+        dish_name: ele.Dish_Name,
         quantity: ele.quantity,
         Order_id: null,
         Item_Price: ele.Item_Price,
@@ -179,6 +180,8 @@ const CartContextProvider = ({ children }) => {
     // Prepare the request object to send to the backend
     const req = {
       Customer_id: userData.User_id,
+      Customer_name : userData.User_name,
+      Email : userData.Email_address,
       Menu_Id: cart[0].Menu_id,
       Address: addressRecv,
       NearbyPoint: pointNear,

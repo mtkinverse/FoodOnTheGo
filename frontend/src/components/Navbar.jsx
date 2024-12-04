@@ -522,7 +522,7 @@ const Navbar = () => {
 
   const cancelOrder = (order_id) => {
     axios
-      .post(`/api/cancelOrder/${order_id}`)
+      .post(`/api/cancelOrder/${order_id}`,{Email : userData.Email_address,Name:userData.User_name})
       .then((response) => {
         
         const updatedOrders = currentOrders.filter(

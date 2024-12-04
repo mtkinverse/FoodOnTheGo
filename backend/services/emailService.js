@@ -1,7 +1,7 @@
 const nodemailer = require('nodemailer');
 const db = require('../db');
 const crypto = require('crypto');
-require('dotenv').config;
+require('dotenv').config();
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -17,8 +17,81 @@ function generateOTP() {
   return crypto.randomInt(1000, 9999).toString();
 }
 
+function formatOrderDetailsHTML(order) {
+  return `
+  <div style="font-family: Arial, sans-serif; color: #4B0082; background-color: #FFFFFF; padding: 20px; border: 1px solid #4B0082; border-radius: 8px;">
+      <h1 style="color: #4B0082; border-bottom: 2px solid #4B0082; padding-bottom: 5px;">Order Confirmation</h1>
+      <p>Hello <strong>${order.customerName}</strong>,</p>
+      <p>Thank you for your order! Here are your order details:</p>
+
+      <h3 style="color: #4B0082;">Order ID: ${order.id}</h3>
+      <p>Date: ${order.date}</p>
+
+      <h3 style="color: #4B0082;">Items:</h3>
+      <ul style="list-style-type: none; padding: 0;">
+          ${order.items.map(item => `<li style='margin-bottom: 8px;'>${item.quantity}x ${item.dish_name} - <strong>Rs ${item.Item_Price}</strong></li>`).join('')}
+      </ul>
+
+      <h3 style="color: #4B0082;">Total Amount: <span style="color: #2E8B57;">Rs ${order.totalAmount}</span></h3>
+
+      <h3 style="color: #4B0082;">Delivery Address:</h3>
+      <p>${order.deliveryAddress}</p>
+      
+      <p style="margin-top: 20px;">Thank you for ordering from us!</p>
+      <p style="margin-top: 10px; text-align: center; font-weight: bold; border-top: 2px solid #4B0082; padding-top: 10px; color: #4B0082;">FOOD ON THE GO</p>
+  </div>
+  `;
+}
+
+function formatOrderCancellationEmail(order){
+  return `
+  <div style="font-family: Arial, sans-serif; color: #4B0082; background-color: #FFFFFF; padding: 20px; border: 1px solid #4B0082; border-radius: 8px;">
+      <h1 style="color: #4B0082; border-bottom: 2px solid #4B0082; padding-bottom: 5px;">Order Cancellation</h1>
+      <p>Hello <strong>${order.customerName}</strong>,</p>
+      <p>Your order was cancelled</p>
+
+      <h3 style="color: #4B0082;">Order ID: ${order.id}</h3>
+      
+      <p style="margin-top: 20px;">We hope to see you again!</p>
+      <p style="margin-top: 10px; text-align: center; font-weight: bold; border-top: 2px solid #4B0082; padding-top: 10px; color: #4B0082;">FOOD ON THE GO</p>
+  </div>
+  `;
+}
+
+async function sendOrderNotification(email, order) {
+  const mailOptions = {
+      from: process.env.EMAIL,
+      to: email,
+      subject: `Order Confirmation - ${order.id}`,
+      html: formatOrderDetailsHTML(order), // For HTML emails
+  };
+
+  try {
+      await transporter.sendMail(mailOptions);
+      console.log('Order notification sent.');
+  } catch (error) {
+      console.error('Error sending order notification:', error);
+  }
+}
+
+async function sendCancellationEmail(email,order){
+  const mailOptions = {
+    from: process.env.EMAIL,
+    to: email,
+    subject: `Order Cancellation - ${order.id}`,
+    html: formatOrderCancellationEmail(order), // For HTML emails
+};
+  try{
+    await transporter.sendMail(mailOptions);
+    console.log('cancellation email sent');
+  }
+  catch(err){
+    console.log('Error sending email');
+  }
+}
+
 // Send verification email
-async function sendVerificationEmail(email, otp) {
+async function sendVerificationEmail (email, otp) {
   const mailOptions = {
     from: process.env.EMAIL,
     to: email,
@@ -90,7 +163,7 @@ function verifyOTP(email, userOTP) {
   });
 }
 
-module.exports.handleSendOTP = async (req, res) => {
+async function handleSendOTP  (req, res) {
   const { email } = req.body;
   try {
     const result = await generateAndStoreOTP(email);
@@ -105,7 +178,7 @@ module.exports.handleSendOTP = async (req, res) => {
   }
 };
 
-module.exports.handleVerifyOTP = async (req, res) => {
+async function handleVerifyOTP(req, res) {
   const { email, otp } = req.body;
   try {
     const isValid = await verifyOTP(email, otp);
@@ -118,4 +191,12 @@ module.exports.handleVerifyOTP = async (req, res) => {
     console.error('Error handling verify OTP:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
+};
+
+
+module.exports = {
+  handleSendOTP,
+  handleVerifyOTP,
+  sendOrderNotification,
+  sendCancellationEmail
 };

@@ -1,4 +1,5 @@
 const db = require('../db');
+const {sendOrderNotification,sendCancellationEmail} = require('../services/emailService');
 
 module.exports.orderAgain = (req, res) => {
     const customer_id = req.params.id;
@@ -189,7 +190,7 @@ module.exports.getLastOrder  = (req,res) =>{
 }
 module.exports.PlaceOrder = (req, res) => {
 
-    const { Customer_id, Menu_Id, Address, NearbyPoint, items, total_amount, promo_id, riderTip } = req.body;
+    const { Customer_id, Customer_name ,Email ,Menu_Id, Address, NearbyPoint, items, total_amount, promo_id, riderTip } = req.body;
 
 
     const q1 = 'SELECT Restaurant_id FROM restaurant WHERE menu_id = ?';
@@ -231,6 +232,7 @@ module.exports.PlaceOrder = (req, res) => {
                         const priceToUse = item.discounted_price && item.discounted_price < item.Item_Price
                             ? item.discounted_price
                             : item.Item_Price;
+                        item.Item_Price = priceToUse;
                         db.query(itemInsertQuery, [Order_id, item.Item_id, item.quantity, priceToUse], (err) => {
                             if (err) {
                                 console.error('Error inserting item into ordered_items:', err);
@@ -244,7 +246,17 @@ module.exports.PlaceOrder = (req, res) => {
                                         console.error('Error updating order:', err);
                                         return res.status(500).json({ message: 'Error updating order' });
                                     }
-    
+                                    const order = {
+                                        customerName: Customer_name,
+                                        id:Order_id,
+                                        date:  new Date().toLocaleString(),
+                                        items: items,
+                                        totalAmount: total_amount,
+                                        deliveryAddress: Address,
+                                        riderTip : riderTip
+
+                                    }
+                                    sendOrderNotification(Email,order)
                                     return res.status(200).json({ success: true, message: 'Order placed successfully' });
                                 });
                             }
@@ -262,6 +274,7 @@ module.exports.PlaceOrder = (req, res) => {
 
 module.exports.cancelOrder = (req, res) => {
     const order_id = req.params.id;
+    const {Email,Name} = req.body;
     const q  = 'DELETE FROM Orders where Order_id = ? ';
 
     db.query(q,[order_id],(err,result) => {
@@ -269,7 +282,11 @@ module.exports.cancelOrder = (req, res) => {
             console.log("error cancelling order");
             res.status(400).json({error: "error cancelling the order"});
         }
-       
+        const order = {
+            customerName:Name,
+            id : order_id
+        }
+        sendCancellationEmail(Email,order)
         res.status(200).json({message : "Order cancelled"});
     });
 }
