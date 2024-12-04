@@ -1,4 +1,5 @@
 const db = require('../db');
+const {sendStatusEmail} = require('../services/emailService');
 
 module.exports.deleteDeal = (req, res) => {
     const deal_id = req.params.id;
@@ -160,7 +161,7 @@ module.exports.AddPromo = (req, res) => {
 module.exports.getRiders = (req, res) => {
     const location_id = req.params.id;
     const q = `
-       SELECT d.rider_id,d.rider_name,d.available ,d.bikeNo from delivery_rider d
+       SELECT d.rider_id,d.rider_name,d.available ,d.bikeNo,d.Phone_No from delivery_rider d
        join restaurant r on d.restaurant_id = d.restaurant_id
        where r.location_id = ? and d.Available = true;
     `;
@@ -181,10 +182,11 @@ module.exports.getOrders = (req, res) => {
     
 
     const q = `
-       SELECT o.order_id, o.total_amount, o.order_status, TIME(o.order_time) AS order_time, o.promo_id, 
+       SELECT c.customer_name,c.email_address,o.order_id, o.total_amount, o.order_status, TIME(o.order_time) AS order_time, o.promo_id, 
               p.promo_value, mm.dish_name, i.quantity, i.price * i.quantity AS sub_total, 
               d.address, o.delivered_by_id
        FROM orders o 
+       JOIN customer c on c.customer_id = o.customer_id
        JOIN deliveryaddress d ON o.address_id = d.address_id
        JOIN restaurant r ON r.restaurant_id = o.restaurant_id
        JOIN ordered_items i ON i.order_id = o.order_id
@@ -201,13 +203,15 @@ module.exports.getOrders = (req, res) => {
         }
 
         const groupedOrders = result.reduce((acc, row) => {
-            const { order_id, order_status, order_time, dish_name, quantity, sub_total, address, delivered_by_id, promo_value, total_amount } = row;
+            const { order_id, order_status, customer_name,email_address,order_time, dish_name, quantity, sub_total, address, delivered_by_id, promo_value, total_amount } = row;
 
             let order = acc.find(o => o.order_id === order_id);
 
             if (!order) {
                 order = {
                     order_id,
+                    customer_name,
+                    email_address,
                     time: order_time,
                     address,
                     status: order_status,
@@ -295,7 +299,9 @@ module.exports.dispatchOrder = (req, res) => {
                                 console.log("Error inserting rider's tip:", err4);
                                 return res.status(500).json({ error: err4.message });
                             }
-                            return res.status(200).json({ message: 'Order dispatched and tip inserted successfully.' });
+                         
+                                    return res.status(200).json({ message: 'Order dispatched ,user notified and tip inserted successfully.' });
+       
                         });
                     }
                 });

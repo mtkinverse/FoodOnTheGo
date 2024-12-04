@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const { PlaceOrder,getAllOrders,cancelOrder, getLastOrder, reviewOrder, 
-    getPromos, verifyPromo, orderAgain } = require('../controllers/customerController');
+    getPromos, verifyPromo, orderAgain,notifyDispatch } = require('../controllers/customerController');
+
 
 router.post('/placeOrder',PlaceOrder);
 router.get('/getAllOrders/:id',getAllOrders);
@@ -11,5 +12,5 @@ router.post('/reviewOrder/:id',reviewOrder);
 router.get('/getPromos/:id',getPromos);
 router.get('/verifyPromo/:id',verifyPromo);
 router.get('/orderAgain/:id',orderAgain);
-
+router.post('/send-status-email',notifyDispatch)
 module.exports = router;

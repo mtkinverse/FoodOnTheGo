@@ -1,5 +1,12 @@
 const db = require('../db');
-const {sendOrderNotification,sendCancellationEmail} = require('../services/emailService');
+const {sendOrderNotification,sendCancellationEmail,sendStatusEmail} = require('../services/emailService');
+
+module.exports.notifyDispatch = (req,res) => {
+    const {email} = req.body;
+    console.log(email,req.body);
+    sendStatusEmail(email,req.body);
+    return res.status(200).json({message : 'email sent'});
+}
 
 module.exports.orderAgain = (req, res) => {
     const customer_id = req.params.id;

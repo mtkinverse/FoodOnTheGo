@@ -3,7 +3,15 @@ CREATE DATABASE online_food_system;
 USE online_food_system;
 
  ------------------------------------------------ tables / entities --------------------------------------------
- 
+
+CREATE TABLE OTP (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  email VARCHAR(255) NOT NULL,
+  otp VARCHAR(6) NOT NULL,
+  expiration_time DATETIME NOT NULL,
+  UNIQUE KEY unique_email (email)
+);
+
 CREATE TABLE Customer(
    Customer_id INT AUTO_INCREMENT PRIMARY KEY,
    Customer_Name VARCHAR(100) NOT NULL,
@@ -106,8 +114,6 @@ ALTER TABLE Delivery_Rider ADD CONSTRAINT Restaurant_fk Foreign key (Restaurant_
 ALTER TABLE Delivery_Rider MODIFY Phone_no VARCHAR(20) UNIQUE;
 ALTER TABLE Delivery_Rider MODIFY BikeNo VARCHAR(20) UNIQUE;
 
-
-drop table Rider_Tips;
 CREATE TABLE Rider_Tips (
     rider_id INT NOT NULL,
     tips INT DEFAULT 0,    
@@ -117,8 +123,7 @@ CREATE TABLE Rider_Tips (
 
 ALTER TABLE Rider_Tips ADD CONSTRAINT rid_fk FOREIGN KEY(rider_id) REFERENCES delivery_rider(rider_id);
 
-select * from delivery_rider;
-SELECT tips from rider_tips where rider_id = 102928 and date(tip_date) = CURRENT_DATE;
+
 
 CREATE TABLE Orders (
     Customer_id INT NOT NULL,
