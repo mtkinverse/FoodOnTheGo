@@ -1,8 +1,99 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Mail, Lock, User, Phone, ChevronRight } from 'lucide-react';
 import { useAlertContext } from '../contexts/alertContext';
+
+const OTPPopup = ({ isOpen, onClose, onVerify, email }) => {
+  const [otp, setOtp] = useState(['', '', '', '']);
+  const [timer, setTimer] = useState(60);
+  const [canResend, setCanResend] = useState(false);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    let interval = null;
+    if (timer > 0) {
+      interval = setInterval(() => {
+        setTimer((prevTimer) => prevTimer - 1);
+      }, 1000);
+    } else {
+      setCanResend(true);
+    }
+
+    return () => clearInterval(interval);
+  }, [timer, isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      setTimer(60);
+      setCanResend(false);
+      setOtp(['', '', '', '']);
+    }
+  }, [isOpen]);
+
+  const handleChange = (element, index) => {
+    if (isNaN(element.value)) return;
+    setOtp((prevOtp) => prevOtp.map((d, idx) => (idx === index ? element.value : d)));
+    if (element.nextSibling) {
+      element.nextSibling.focus();
+    }
+  };
+
+  const handleResendOTP = async () => {
+    try {
+      await axios.post('/api/resend-otp/', { email });
+      setTimer(60);
+      setCanResend(false);
+    } catch (error) {
+      console.error('Error resending OTP:', error);
+    }
+  };
+
+  return (
+    isOpen && (
+      <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center">
+        <div className="bg-white p-8 rounded-2xl shadow-xl w-96">
+          <h2 className="text-2xl font-bold text-purple-600 mb-4">Enter OTP</h2>
+          <p className="text-gray-600 mb-6">
+            We've sent a code to {email}. Enter it below to verify your email.
+          </p>
+          <div className="flex justify-between mb-6">
+            {otp.map((data, index) => (
+              <input
+                key={index}
+                type="text"
+                maxLength="1"
+                className="w-12 h-12 text-center text-2xl border-2 border-purple-300 rounded-lg focus:border-purple-500 focus:ring focus:ring-purple-200"
+                value={data}
+                onChange={(e) => handleChange(e.target, index)}
+                onFocus={(e) => e.target.select()}
+              />
+            ))}
+          </div>
+          <button
+            className="w-full bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700 transition duration-200"
+            onClick={() => onVerify(otp.join(''))}
+          >
+            Verify OTP
+          </button>
+          <div className="mt-4 text-center">
+            {canResend ? (
+              <button
+                className="text-purple-600 hover:text-purple-700"
+                onClick={handleResendOTP}
+              >
+                Resend OTP
+              </button>
+            ) : (
+              <p className="text-gray-600">Resend OTP in {timer} seconds</p>
+            )}
+          </div>
+        </div>
+      </div>
+    )
+  );
+};
 
 const Register = () => {
   const { setAlert } = useAlertContext();
@@ -18,7 +109,8 @@ const Register = () => {
   const [roleClicked, setRoleClicked] = useState(false);
   const [role, changeRole] = useState('customer');
   const [isPhoneValid, setIsPhoneValid] = useState(true);
-
+  const [showOTPPopup, setShowOTPPopup] = useState(false);
+  
   function isValidPhoneNumber(phoneNumber) {
     const phoneRegex = /^(\+92\s?|0)?(3\d{2})\s?\d{7}$/;
     
@@ -43,8 +135,27 @@ const Register = () => {
       setIsLoading(false);
       return;
     }
-
+    
     try {
+      // Send OTP to user's email
+      console.log('sending otp to ',values.email);
+      await axios.post('/api/send-otp', { email: values.email });
+      setShowOTPPopup(true);
+    } catch (err) {
+      console.error(err.response?.data || err.message);
+      setAlert({ message: 'Failed to send OTP. Please try again.', type: 'error' });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleOTPVerification = async (enteredOTP) => {
+    setIsLoading(true);
+    try {
+      // Verify OTP
+      await axios.post('/api/verify-otp', { email: values.email, otp: enteredOTP });
+      
+      // If OTP is verified, proceed with registration
       const sendVal = {
         name: `${values.firstname} ${values.lastname}`,
         email: values.email,
@@ -62,15 +173,15 @@ const Register = () => {
       navigate('/login');
     } catch (err) {
       console.error(err.response?.data || err.message);
-      setAlert({ message: err.response?.data,type: 'failure'
-      });
+      setAlert({ message: err.response?.data || 'Failed to verify OTP or register. Please try again.', type: 'error' });
     } finally {
       setIsLoading(false);
+      setShowOTPPopup(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+   <div className="min-h-screen bg-gray-50 flex flex-col">
       <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12">
         <div className="max-w-md w-full space-y-8 bg-white rounded-2xl shadow-xl p-8">
           <div className="text-center">
@@ -231,6 +342,13 @@ const Register = () => {
           </div>
         </div>
       </div>
+
+      <OTPPopup
+        isOpen={showOTPPopup}
+        onClose={() => setShowOTPPopup(false)}
+        onVerify={handleOTPVerification}
+        email={values.email}
+      />
     </div>
   );
 };
