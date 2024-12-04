@@ -1,12 +1,13 @@
 const nodemailer = require('nodemailer');
 const db = require('../db');
 const crypto = require('crypto');
+require('dotenv').config;
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'abdullahedhi17@gmail.com',
-    pass: 'fqwg bdzf cutl jgot', // Use an app password for better security
+    user: process.env.EMAIL,
+    pass: process.env.PASSWORD, // Use an app password for better security
   },
   debug: true, // Include detailed logs
   logger: true, // Log transport actions
@@ -19,7 +20,7 @@ function generateOTP() {
 // Send verification email
 async function sendVerificationEmail(email, otp) {
   const mailOptions = {
-    from: 'abdullahedhi17@gmail.com',
+    from: process.env.EMAIL,
     to: email,
     subject: 'Verify Your Email',
     text: `Your verification code is: ${otp}. This code will expire in 5 minutes.`,
