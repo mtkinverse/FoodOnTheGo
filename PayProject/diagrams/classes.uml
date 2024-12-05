@@ -1,0 +1,650 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmi:version="20131001" xmlns:xmi="http://www.omg.org/spec/XMI/20131001" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:FoodGo="http:///schemas/FoodGo/_tvTkALKyEe-KL6pWsr-1iQ/3" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML" xsi:schemaLocation="http:///schemas/FoodGo/_tvTkALKyEe-KL6pWsr-1iQ/3 FoodGo.profile.uml#_tvULELKyEe-KL6pWsr-1iQ">
+  <uml:Model xmi:id="_edM-cLJbEe-8A6mPkfVmXA" name="classes">
+    <packageImport xmi:type="uml:PackageImport" xmi:id="_ert7kLJbEe-8A6mPkfVmXA">
+      <importedPackage xmi:type="uml:Model" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#_0"/>
+    </packageImport>
+    <packagedElement xmi:type="uml:Package" xmi:id="_y0N64LJbEe-8A6mPkfVmXA" name="EntityClasses">
+      <packagedElement xmi:type="uml:Class" xmi:id="_mRdk8LJbEe-8A6mPkfVmXA" name="Customer" visibility="public">
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_IZgoULJcEe-8A6mPkfVmXA" name="Customer_id">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_MPO8sLJcEe-8A6mPkfVmXA" name="Customer_name">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_QYMWILJcEe-8A6mPkfVmXA" name="Email_address">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_VE6j8LJcEe-8A6mPkfVmXA" name="Account_Password">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_Zj0YMLJcEe-8A6mPkfVmXA" name="phone_no">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+        </ownedAttribute>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Class" xmi:id="_mPkSELJcEe-8A6mPkfVmXA" name="Restaurant_Owner" visibility="public">
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_mPkSEbJcEe-8A6mPkfVmXA" name="Owner_id">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_mPkSErJcEe-8A6mPkfVmXA" name="Owner_name">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_mPkSE7JcEe-8A6mPkfVmXA" name="Email_address">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_mPkSFLJcEe-8A6mPkfVmXA" name="Account_Password">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_mPkSFbJcEe-8A6mPkfVmXA" name="phone_no">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+        </ownedAttribute>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Class" xmi:id="_-1gtELJcEe-8A6mPkfVmXA" name="Restaurant" visibility="public">
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_-1gtEbJcEe-8A6mPkfVmXA" name="Restaurant_id">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_-1gtErJcEe-8A6mPkfVmXA" name="Restaurant_name">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_-1gtE7JcEe-8A6mPkfVmXA" name="Restaurant_Image">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_O_LfULJdEe-8A6mPkfVmXA" name="Owner_id">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_PHcDcLJdEe-8A6mPkfVmXA" name="Location_id">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_PzClMLJdEe-8A6mPkfVmXA" name="Menu_id">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_Zb0dULJdEe-8A6mPkfVmXA" name="ClosesAt">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_da468LJdEe-8A6mPkfVmXA" name="OpensAt">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+        </ownedAttribute>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Class" xmi:id="_qhMp4LJdEe-8A6mPkfVmXA" name="Locations" visibility="public">
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_qhMp4bJdEe-8A6mPkfVmXA" name="Location_id">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_qhMp4rJdEe-8A6mPkfVmXA" name="Address">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_qhMp47JdEe-8A6mPkfVmXA" name="Contatct_No">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+        </ownedAttribute>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Class" xmi:id="_8N5VILJdEe-8A6mPkfVmXA" name="Restaurant_Admin" visibility="public">
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_8N5VIbJdEe-8A6mPkfVmXA" name="Admin_id">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_8N5VIrJdEe-8A6mPkfVmXA" name="Admin_name">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_8N5VI7JdEe-8A6mPkfVmXA" name="Email_address">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_8N5VJLJdEe-8A6mPkfVmXA" name="Account_Password">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_8N5VJbJdEe-8A6mPkfVmXA" name="phone_no">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_KIrN8LJeEe-8A6mPkfVmXA" name="Location_id">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
+        </ownedAttribute>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Class" xmi:id="_PNgZwLJeEe-8A6mPkfVmXA" name="Menu" visibility="public">
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_PNgZwbJeEe-8A6mPkfVmXA" name="Menu_id">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
+        </ownedAttribute>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Class" xmi:id="_Y6BiYLJeEe-8A6mPkfVmXA" name="Menu_Items" visibility="public">
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_Y6BiYbJeEe-8A6mPkfVmXA" name="Item_id">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_Y6BiYrJeEe-8A6mPkfVmXA" name="Dish_name">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_Y6BiY7JeEe-8A6mPkfVmXA" name="Item_Image">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_Y6BiZLJeEe-8A6mPkfVmXA" name="Cuisine">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_Y6BiZrJeEe-8A6mPkfVmXA" name="Menu_id">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_v7i9QLJeEe-8A6mPkfVmXA" name="Item_Price">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Real"/>
+        </ownedAttribute>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Class" xmi:id="_5Hl2ELJeEe-8A6mPkfVmXA" name="DeliveryAddress" visibility="public">
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_5Hl2EbJeEe-8A6mPkfVmXA" name="Address_id">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_5Hl2ErJeEe-8A6mPkfVmXA" name="Address">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_5Hl2E7JeEe-8A6mPkfVmXA" name="Contatct_No">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_BY494LJfEe-8A6mPkfVmXA" name="NearbyPoint">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+        </ownedAttribute>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Class" xmi:id="_HS9voLJfEe-8A6mPkfVmXA" name="Delivery_Rider" visibility="public">
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_HS9vobJfEe-8A6mPkfVmXA" name="Rider_id">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_HS9vorJfEe-8A6mPkfVmXA" name="Rider_name">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_HS9vo7JfEe-8A6mPkfVmXA" name="Email_address">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_HS9vpLJfEe-8A6mPkfVmXA" name="Account_Password">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_HS9vpbJfEe-8A6mPkfVmXA" name="phone_no">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_VIO2ULJfEe-8A6mPkfVmXA" name="BikeNo">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_aC1vILJfEe-8A6mPkfVmXA" name="Restaurant_id">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_coVKsLJfEe-8A6mPkfVmXA" name="Available">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Boolean"/>
+        </ownedAttribute>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Class" xmi:id="_nRY0ELJfEe-8A6mPkfVmXA" name="Rider_Tips" visibility="public">
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_nRY0EbJfEe-8A6mPkfVmXA" name="Rider_id">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_nRY0ErJfEe-8A6mPkfVmXA" name="tip_date">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_yjbJALJfEe-8A6mPkfVmXA" name="tips">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Real"/>
+        </ownedAttribute>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Class" xmi:id="_8VSEoLJfEe-8A6mPkfVmXA" name="Orders" visibility="public">
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_8VSEobJfEe-8A6mPkfVmXA" name="order_id">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_8VSEorJfEe-8A6mPkfVmXA" name="order_time">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_8VSEo7JfEe-8A6mPkfVmXA" name="Order_status">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_8VSEpbJfEe-8A6mPkfVmXA" name="Customer_id">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_8VSEprJfEe-8A6mPkfVmXA" name="delivered_by_id">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_XWeaELJgEe-8A6mPkfVmXA" name="Restaurant_id">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_XbTPsLJgEe-8A6mPkfVmXA" name="Review_id">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_Xf0jULJgEe-8A6mPkfVmXA" name="Address_id">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
+        </ownedAttribute>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Class" xmi:id="_gzd48LJgEe-8A6mPkfVmXA" name="ordered_items" visibility="public">
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_gzd48bJgEe-8A6mPkfVmXA" name="Item_id">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_gzd49bJgEe-8A6mPkfVmXA" name="Order_id">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_rOxaMLJgEe-8A6mPkfVmXA" name="quantity">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
+        </ownedAttribute>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Class" xmi:id="_zOTckLJgEe-8A6mPkfVmXA" name="Order_Review" visibility="public">
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_zOTckbJgEe-8A6mPkfVmXA" name="Review_id">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_zOTckrJgEe-8A6mPkfVmXA" name="Review_description">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_zOTck7JgEe-8A6mPkfVmXA" name="Rating">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Real"/>
+        </ownedAttribute>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Class" xmi:id="_DPuRwLJhEe-8A6mPkfVmXA" name="Promos" visibility="public">
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_DPuRwbJhEe-8A6mPkfVmXA" name="promo_id">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_DPuRwrJhEe-8A6mPkfVmXA" name="promo_code">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_DPuRw7JhEe-8A6mPkfVmXA" name="promo_value">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Real"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_a9nqcLJhEe-8A6mPkfVmXA" name="Restaurant_id">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_bCfjYLJhEe-8A6mPkfVmXA" name="usage_limit">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_sc6y4LJhEe-8A6mPkfVmXA" name="start_date">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_sfzu0LJhEe-8A6mPkfVmXA" name="end_date">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+        </ownedAttribute>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Class" xmi:id="_vrb9ULJhEe-8A6mPkfVmXA" name="Discount" visibility="public">
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_vrb9UbJhEe-8A6mPkfVmXA" name="discount_id">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_vrb9U7JhEe-8A6mPkfVmXA" name="dsicount_value">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Real"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_vrb9VLJhEe-8A6mPkfVmXA" name="Restaurant_id">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_vrb9VrJhEe-8A6mPkfVmXA" name="start_date">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_vrb9V7JhEe-8A6mPkfVmXA" name="end_date">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+        </ownedAttribute>
+      </packagedElement>
+      <profileApplication xmi:type="uml:ProfileApplication" xmi:id="_T0uGx7KxEe-KL6pWsr-1iQ">
+        <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_6PstALKzEe-KL6pWsr-1iQ" source="PapyrusVersion">
+          <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_6PstAbKzEe-KL6pWsr-1iQ" key="Version" value="0.0.1"/>
+          <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_6PstArKzEe-KL6pWsr-1iQ" key="Comment" value=""/>
+          <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_6PstA7KzEe-KL6pWsr-1iQ" key="Copyright" value=""/>
+          <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_6PstBLKzEe-KL6pWsr-1iQ" key="Date" value="12/4/24, 6:43 PM"/>
+          <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_6PstBbKzEe-KL6pWsr-1iQ" key="Author" value=""/>
+        </eAnnotations>
+        <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_T0ut0LKxEe-KL6pWsr-1iQ" source="http://www.eclipse.org/uml2/2.0.0/UML">
+          <references xmi:type="ecore:EPackage" href="FoodGo.profile.uml#_tvULELKyEe-KL6pWsr-1iQ"/>
+        </eAnnotations>
+        <appliedProfile xmi:type="uml:Profile" href="FoodGo.profile.uml#_biVIILKwEe-KL6pWsr-1iQ"/>
+      </profileApplication>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Package" xmi:id="_PXe74LKwEe-KL6pWsr-1iQ" name="ControlClasses">
+      <packagedElement xmi:type="uml:Class" xmi:id="_UpSzwLKwEe-KL6pWsr-1iQ" name="RestaurantSubsystem"/>
+      <packagedElement xmi:type="uml:Class" xmi:id="_c5oSQLKwEe-KL6pWsr-1iQ" name="AdminSubsystem"/>
+      <packagedElement xmi:type="uml:Class" xmi:id="_hvEXMLKwEe-KL6pWsr-1iQ" name="CustomerSubsytem"/>
+      <packagedElement xmi:type="uml:Class" xmi:id="_mdvs0LKwEe-KL6pWsr-1iQ" name="OwnerSubsystem"/>
+      <packagedElement xmi:type="uml:Class" xmi:id="_pXlAsLKwEe-KL6pWsr-1iQ" name="RiderSubsystem"/>
+      <packagedElement xmi:type="uml:Class" xmi:id="_vpxXgLKwEe-KL6pWsr-1iQ" name="UserSubsytem"/>
+      <profileApplication xmi:type="uml:ProfileApplication" xmi:id="_bjAdkLKwEe-KL6pWsr-1iQ">
+        <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_6P0o0LKzEe-KL6pWsr-1iQ" source="PapyrusVersion">
+          <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_6P0o0bKzEe-KL6pWsr-1iQ" key="Version" value="0.0.1"/>
+          <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_6P0o0rKzEe-KL6pWsr-1iQ" key="Comment" value=""/>
+          <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_6P0o07KzEe-KL6pWsr-1iQ" key="Copyright" value=""/>
+          <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_6P0o1LKzEe-KL6pWsr-1iQ" key="Date" value="12/4/24, 6:43 PM"/>
+          <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_6P0o1bKzEe-KL6pWsr-1iQ" key="Author" value=""/>
+        </eAnnotations>
+        <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_bjEvALKwEe-KL6pWsr-1iQ" source="http://www.eclipse.org/uml2/2.0.0/UML">
+          <references xmi:type="ecore:EPackage" href="FoodGo.profile.uml#_tvULELKyEe-KL6pWsr-1iQ"/>
+        </eAnnotations>
+        <appliedProfile xmi:type="uml:Profile" href="FoodGo.profile.uml#_biVIILKwEe-KL6pWsr-1iQ"/>
+      </profileApplication>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Package" xmi:id="_2Hoy0LKwEe-KL6pWsr-1iQ" name="BoundaryClasses">
+      <packagedElement xmi:type="uml:Class" xmi:id="_6_pqoLKwEe-KL6pWsr-1iQ" name="SignupUI"/>
+      <packagedElement xmi:type="uml:Class" xmi:id="_Jj4JELKxEe-KL6pWsr-1iQ" name="LoginUi"/>
+      <packagedElement xmi:type="uml:Class" xmi:id="_BQdkkLK1Ee-KL6pWsr-1iQ" name="WebUi"/>
+      <packagedElement xmi:type="uml:Class" xmi:id="_ozpB0LLfEe-KL6pWsr-1iQ" name="MenuUi"/>
+      <packagedElement xmi:type="uml:Class" xmi:id="_tg2X0LLfEe-KL6pWsr-1iQ" name="CartUi"/>
+      <packagedElement xmi:type="uml:Class" xmi:id="_SBx-ILLgEe-KL6pWsr-1iQ" name="AdminDashboard"/>
+      <packagedElement xmi:type="uml:Class" xmi:id="_YWqckLLgEe-KL6pWsr-1iQ" name="RiderDashboard"/>
+      <packagedElement xmi:type="uml:Class" xmi:id="_CHRXULLiEe-KL6pWsr-1iQ" name="OwnerUi"/>
+      <profileApplication xmi:type="uml:ProfileApplication" xmi:id="_IUlEYLKxEe-KL6pWsr-1iQ">
+        <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_6Pw-cLKzEe-KL6pWsr-1iQ" source="PapyrusVersion">
+          <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_6Pw-cbKzEe-KL6pWsr-1iQ" key="Version" value="0.0.1"/>
+          <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_6Pw-crKzEe-KL6pWsr-1iQ" key="Comment" value=""/>
+          <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_6Pw-c7KzEe-KL6pWsr-1iQ" key="Copyright" value=""/>
+          <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_6Pw-dLKzEe-KL6pWsr-1iQ" key="Date" value="12/4/24, 6:43 PM"/>
+          <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_6Pw-dbKzEe-KL6pWsr-1iQ" key="Author" value=""/>
+        </eAnnotations>
+        <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_IUmSgLKxEe-KL6pWsr-1iQ" source="http://www.eclipse.org/uml2/2.0.0/UML">
+          <references xmi:type="ecore:EPackage" href="FoodGo.profile.uml#_tvULELKyEe-KL6pWsr-1iQ"/>
+        </eAnnotations>
+        <appliedProfile xmi:type="uml:Profile" href="FoodGo.profile.uml#_biVIILKwEe-KL6pWsr-1iQ"/>
+      </profileApplication>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Package" xmi:id="_nxCOwLKyEe-KL6pWsr-1iQ" name="Actors">
+      <packagedElement xmi:type="uml:Class" xmi:id="_qU_ZQLKyEe-KL6pWsr-1iQ" name="User"/>
+      <packagedElement xmi:type="uml:Class" xmi:id="_S9cKkLLfEe-KL6pWsr-1iQ" name="Cusotmer"/>
+      <packagedElement xmi:type="uml:Class" xmi:id="_jMn5gLLgEe-KL6pWsr-1iQ" name="Admin"/>
+      <packagedElement xmi:type="uml:Class" xmi:id="_mXujkLLgEe-KL6pWsr-1iQ" name="Rider"/>
+      <packagedElement xmi:type="uml:Class" xmi:id="_9_mXULLhEe-KL6pWsr-1iQ" name="Owner"/>
+      <profileApplication xmi:type="uml:ProfileApplication" xmi:id="_tvVZOLKyEe-KL6pWsr-1iQ">
+        <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_tvWAQLKyEe-KL6pWsr-1iQ" source="http://www.eclipse.org/uml2/2.0.0/UML">
+          <references xmi:type="ecore:EPackage" href="FoodGo.profile.uml#_tvULELKyEe-KL6pWsr-1iQ"/>
+        </eAnnotations>
+        <appliedProfile xmi:type="uml:Profile" href="FoodGo.profile.uml#_biVIILKwEe-KL6pWsr-1iQ"/>
+      </profileApplication>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_7wdKkLKyEe-KL6pWsr-1iQ" memberEnd="_7w2zMLKyEe-KL6pWsr-1iQ _7w4oYLKyEe-KL6pWsr-1iQ">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_7w0W8LKyEe-KL6pWsr-1iQ" source="org.eclipse.papyrus">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_7w0W8bKyEe-KL6pWsr-1iQ" key="nature" value="UML_Nature"/>
+      </eAnnotations>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_7w2zMLKyEe-KL6pWsr-1iQ" name="signupui" type="_6_pqoLKwEe-KL6pWsr-1iQ" association="_7wdKkLKyEe-KL6pWsr-1iQ"/>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_7w4oYLKyEe-KL6pWsr-1iQ" name="user" type="_qU_ZQLKyEe-KL6pWsr-1iQ" association="_7wdKkLKyEe-KL6pWsr-1iQ"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_LzjawLKzEe-KL6pWsr-1iQ" memberEnd="_Lzl3ALKzEe-KL6pWsr-1iQ _LznFILKzEe-KL6pWsr-1iQ">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_LzlP8LKzEe-KL6pWsr-1iQ" source="org.eclipse.papyrus">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_LzlP8bKzEe-KL6pWsr-1iQ" key="nature" value="UML_Nature"/>
+      </eAnnotations>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_Lzl3ALKzEe-KL6pWsr-1iQ" name="usersubsytem" type="_vpxXgLKwEe-KL6pWsr-1iQ" association="_LzjawLKzEe-KL6pWsr-1iQ"/>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_LznFILKzEe-KL6pWsr-1iQ" name="signupui" type="_6_pqoLKwEe-KL6pWsr-1iQ" association="_LzjawLKzEe-KL6pWsr-1iQ"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_bcHEALKzEe-KL6pWsr-1iQ" memberEnd="_bcISIbKzEe-KL6pWsr-1iQ _bcI5MLKzEe-KL6pWsr-1iQ">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_bcHrELKzEe-KL6pWsr-1iQ" source="org.eclipse.papyrus">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_bcISILKzEe-KL6pWsr-1iQ" key="nature" value="UML_Nature"/>
+      </eAnnotations>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_bcISIbKzEe-KL6pWsr-1iQ" name="customer" type="_mRdk8LJbEe-8A6mPkfVmXA" association="_bcHEALKzEe-KL6pWsr-1iQ"/>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_bcI5MLKzEe-KL6pWsr-1iQ" name="usersubsytem" type="_vpxXgLKwEe-KL6pWsr-1iQ" association="_bcHEALKzEe-KL6pWsr-1iQ"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_b8J2ALKzEe-KL6pWsr-1iQ" memberEnd="_b8LEILKzEe-KL6pWsr-1iQ _b8LrMLKzEe-KL6pWsr-1iQ">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_b8KdELKzEe-KL6pWsr-1iQ" source="org.eclipse.papyrus">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_b8KdEbKzEe-KL6pWsr-1iQ" key="nature" value="UML_Nature"/>
+      </eAnnotations>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_b8LEILKzEe-KL6pWsr-1iQ" name="restaurant_owner" type="_mPkSELJcEe-8A6mPkfVmXA" association="_b8J2ALKzEe-KL6pWsr-1iQ"/>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_b8LrMLKzEe-KL6pWsr-1iQ" name="usersubsytem" type="_vpxXgLKwEe-KL6pWsr-1iQ" association="_b8J2ALKzEe-KL6pWsr-1iQ"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_cl0eELKzEe-KL6pWsr-1iQ" memberEnd="_cl1FIbKzEe-KL6pWsr-1iQ _cl1sMLKzEe-KL6pWsr-1iQ">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_cl0eEbKzEe-KL6pWsr-1iQ" source="org.eclipse.papyrus">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_cl1FILKzEe-KL6pWsr-1iQ" key="nature" value="UML_Nature"/>
+      </eAnnotations>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_cl1FIbKzEe-KL6pWsr-1iQ" name="delivery_rider" type="_HS9voLJfEe-8A6mPkfVmXA" association="_cl0eELKzEe-KL6pWsr-1iQ"/>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_cl1sMLKzEe-KL6pWsr-1iQ" name="usersubsytem" type="_vpxXgLKwEe-KL6pWsr-1iQ" association="_cl0eELKzEe-KL6pWsr-1iQ"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_pxX5YLKzEe-KL6pWsr-1iQ" memberEnd="_pxZHgrKzEe-KL6pWsr-1iQ _pxa8sLKzEe-KL6pWsr-1iQ">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_pxZHgLKzEe-KL6pWsr-1iQ" source="org.eclipse.papyrus">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_pxZHgbKzEe-KL6pWsr-1iQ" key="nature" value="UML_Nature"/>
+      </eAnnotations>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_pxZHgrKzEe-KL6pWsr-1iQ" name="loginui" type="_Jj4JELKxEe-KL6pWsr-1iQ" association="_pxX5YLKzEe-KL6pWsr-1iQ"/>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_pxa8sLKzEe-KL6pWsr-1iQ" name="user" type="_qU_ZQLKyEe-KL6pWsr-1iQ" association="_pxX5YLKzEe-KL6pWsr-1iQ"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_q7-EQLKzEe-KL6pWsr-1iQ" memberEnd="_q7_SYLKzEe-KL6pWsr-1iQ _q7_5cLKzEe-KL6pWsr-1iQ">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_q7-rULKzEe-KL6pWsr-1iQ" source="org.eclipse.papyrus">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_q7-rUbKzEe-KL6pWsr-1iQ" key="nature" value="UML_Nature"/>
+      </eAnnotations>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_q7_SYLKzEe-KL6pWsr-1iQ" name="usersubsytem" type="_vpxXgLKwEe-KL6pWsr-1iQ" association="_q7-EQLKzEe-KL6pWsr-1iQ"/>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_q7_5cLKzEe-KL6pWsr-1iQ" name="loginui" type="_Jj4JELKxEe-KL6pWsr-1iQ" association="_q7-EQLKzEe-KL6pWsr-1iQ"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_MJotkLK1Ee-KL6pWsr-1iQ" memberEnd="_MJpUorK1Ee-KL6pWsr-1iQ _MJp7sLK1Ee-KL6pWsr-1iQ">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_MJpUoLK1Ee-KL6pWsr-1iQ" source="org.eclipse.papyrus">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_MJpUobK1Ee-KL6pWsr-1iQ" key="nature" value="UML_Nature"/>
+      </eAnnotations>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_MJpUorK1Ee-KL6pWsr-1iQ" name="webui" type="_BQdkkLK1Ee-KL6pWsr-1iQ" association="_MJotkLK1Ee-KL6pWsr-1iQ"/>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_MJp7sLK1Ee-KL6pWsr-1iQ" name="user" type="_qU_ZQLKyEe-KL6pWsr-1iQ" association="_MJotkLK1Ee-KL6pWsr-1iQ"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_JDXHELLfEe-KL6pWsr-1iQ" memberEnd="_JDiGMLLfEe-KL6pWsr-1iQ _JDmXoLLfEe-KL6pWsr-1iQ">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_JDfC4LLfEe-KL6pWsr-1iQ" source="org.eclipse.papyrus">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_JDhfILLfEe-KL6pWsr-1iQ" key="nature" value="UML_Nature"/>
+      </eAnnotations>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_JDiGMLLfEe-KL6pWsr-1iQ" name="restaurantsubsystem" type="_hvEXMLKwEe-KL6pWsr-1iQ" association="_JDXHELLfEe-KL6pWsr-1iQ"/>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_JDmXoLLfEe-KL6pWsr-1iQ" name="webui" type="_BQdkkLK1Ee-KL6pWsr-1iQ" association="_JDXHELLfEe-KL6pWsr-1iQ"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_ff8o4LLfEe-KL6pWsr-1iQ" memberEnd="_ff9P8rLfEe-KL6pWsr-1iQ _fgBhYLLfEe-KL6pWsr-1iQ">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_ff9P8LLfEe-KL6pWsr-1iQ" source="org.eclipse.papyrus">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_ff9P8bLfEe-KL6pWsr-1iQ" key="nature" value="UML_Nature"/>
+      </eAnnotations>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_ff9P8rLfEe-KL6pWsr-1iQ" name="webui" type="_BQdkkLK1Ee-KL6pWsr-1iQ" association="_ff8o4LLfEe-KL6pWsr-1iQ"/>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_fgBhYLLfEe-KL6pWsr-1iQ" name="cusotmer" type="_S9cKkLLfEe-KL6pWsr-1iQ" association="_ff8o4LLfEe-KL6pWsr-1iQ"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_2sdLwLLfEe-KL6pWsr-1iQ" memberEnd="_2seZ4rLfEe-KL6pWsr-1iQ _2sfA8LLfEe-KL6pWsr-1iQ">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_2seZ4LLfEe-KL6pWsr-1iQ" source="org.eclipse.papyrus">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_2seZ4bLfEe-KL6pWsr-1iQ" key="nature" value="UML_Nature"/>
+      </eAnnotations>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_2seZ4rLfEe-KL6pWsr-1iQ" name="menuui" type="_ozpB0LLfEe-KL6pWsr-1iQ" association="_2sdLwLLfEe-KL6pWsr-1iQ"/>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_2sfA8LLfEe-KL6pWsr-1iQ" name="webui" type="_BQdkkLK1Ee-KL6pWsr-1iQ" association="_2sdLwLLfEe-KL6pWsr-1iQ"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_5gARcLLfEe-KL6pWsr-1iQ" memberEnd="_5gBfkLLfEe-KL6pWsr-1iQ _5gCGoLLfEe-KL6pWsr-1iQ">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_5gA4gLLfEe-KL6pWsr-1iQ" source="org.eclipse.papyrus">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_5gA4gbLfEe-KL6pWsr-1iQ" key="nature" value="UML_Nature"/>
+      </eAnnotations>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_5gBfkLLfEe-KL6pWsr-1iQ" name="cartui" type="_tg2X0LLfEe-KL6pWsr-1iQ" association="_5gARcLLfEe-KL6pWsr-1iQ"/>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_5gCGoLLfEe-KL6pWsr-1iQ" name="webui" type="_BQdkkLK1Ee-KL6pWsr-1iQ" association="_5gARcLLfEe-KL6pWsr-1iQ"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_8AgfULLfEe-KL6pWsr-1iQ" memberEnd="_8AhGYbLfEe-KL6pWsr-1iQ _8AhGYrLfEe-KL6pWsr-1iQ">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_8AgfUbLfEe-KL6pWsr-1iQ" source="org.eclipse.papyrus">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_8AhGYLLfEe-KL6pWsr-1iQ" key="nature" value="UML_Nature"/>
+      </eAnnotations>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_8AhGYbLfEe-KL6pWsr-1iQ" name="restaurantsubsystem" type="_hvEXMLKwEe-KL6pWsr-1iQ" association="_8AgfULLfEe-KL6pWsr-1iQ"/>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_8AhGYrLfEe-KL6pWsr-1iQ" name="menuui" type="_ozpB0LLfEe-KL6pWsr-1iQ" association="_8AgfULLfEe-KL6pWsr-1iQ"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_8w9E0LLfEe-KL6pWsr-1iQ" memberEnd="_8w9r4rLfEe-KL6pWsr-1iQ _8w-S8LLfEe-KL6pWsr-1iQ">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_8w9r4LLfEe-KL6pWsr-1iQ" source="org.eclipse.papyrus">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_8w9r4bLfEe-KL6pWsr-1iQ" key="nature" value="UML_Nature"/>
+      </eAnnotations>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_8w9r4rLfEe-KL6pWsr-1iQ" name="restaurantsubsystem" type="_hvEXMLKwEe-KL6pWsr-1iQ" association="_8w9E0LLfEe-KL6pWsr-1iQ"/>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_8w-S8LLfEe-KL6pWsr-1iQ" name="cartui" type="_tg2X0LLfEe-KL6pWsr-1iQ" association="_8w9E0LLfEe-KL6pWsr-1iQ"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_aMLh0LLiEe-KL6pWsr-1iQ" memberEnd="_aMMv8LLiEe-KL6pWsr-1iQ _aMN-ELLiEe-KL6pWsr-1iQ">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_aMMI4LLiEe-KL6pWsr-1iQ" source="org.eclipse.papyrus">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_aMMI4bLiEe-KL6pWsr-1iQ" key="nature" value="UML_Nature"/>
+      </eAnnotations>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_aMMv8LLiEe-KL6pWsr-1iQ" name="admindashboard" type="_SBx-ILLgEe-KL6pWsr-1iQ" association="_aMLh0LLiEe-KL6pWsr-1iQ"/>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_aMN-ELLiEe-KL6pWsr-1iQ" name="admin" type="_jMn5gLLgEe-KL6pWsr-1iQ" association="_aMLh0LLiEe-KL6pWsr-1iQ"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_g6a7cLLiEe-KL6pWsr-1iQ" memberEnd="_g6cJkbLiEe-KL6pWsr-1iQ _g6cwoLLiEe-KL6pWsr-1iQ">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_g6bigLLiEe-KL6pWsr-1iQ" source="org.eclipse.papyrus">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_g6cJkLLiEe-KL6pWsr-1iQ" key="nature" value="UML_Nature"/>
+      </eAnnotations>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_g6cJkbLiEe-KL6pWsr-1iQ" name="adminsubsystem" type="_c5oSQLKwEe-KL6pWsr-1iQ" association="_g6a7cLLiEe-KL6pWsr-1iQ"/>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_g6cwoLLiEe-KL6pWsr-1iQ" name="admindashboard" type="_SBx-ILLgEe-KL6pWsr-1iQ" association="_g6a7cLLiEe-KL6pWsr-1iQ"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_SQedQLLnEe-KL6pWsr-1iQ" memberEnd="_SQfrYLLnEe-KL6pWsr-1iQ _SQgScLLnEe-KL6pWsr-1iQ">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_SQfEULLnEe-KL6pWsr-1iQ" source="org.eclipse.papyrus">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_SQfEUbLnEe-KL6pWsr-1iQ" key="nature" value="UML_Nature"/>
+      </eAnnotations>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_SQfrYLLnEe-KL6pWsr-1iQ" name="ownerui" type="_CHRXULLiEe-KL6pWsr-1iQ" association="_SQedQLLnEe-KL6pWsr-1iQ"/>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_SQgScLLnEe-KL6pWsr-1iQ" name="owner" type="_9_mXULLhEe-KL6pWsr-1iQ" association="_SQedQLLnEe-KL6pWsr-1iQ"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_S_UgQLLnEe-KL6pWsr-1iQ" memberEnd="_S_VHUrLnEe-KL6pWsr-1iQ _S_VuYLLnEe-KL6pWsr-1iQ">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_S_VHULLnEe-KL6pWsr-1iQ" source="org.eclipse.papyrus">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_S_VHUbLnEe-KL6pWsr-1iQ" key="nature" value="UML_Nature"/>
+      </eAnnotations>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_S_VHUrLnEe-KL6pWsr-1iQ" name="ownersubsystem" type="_mdvs0LKwEe-KL6pWsr-1iQ" association="_S_UgQLLnEe-KL6pWsr-1iQ"/>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_S_VuYLLnEe-KL6pWsr-1iQ" name="ownerui" type="_CHRXULLiEe-KL6pWsr-1iQ" association="_S_UgQLLnEe-KL6pWsr-1iQ"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_twNI0LLnEe-KL6pWsr-1iQ" memberEnd="_twOW8bLnEe-KL6pWsr-1iQ _twO-ALLnEe-KL6pWsr-1iQ">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_twNv4LLnEe-KL6pWsr-1iQ" source="org.eclipse.papyrus">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_twOW8LLnEe-KL6pWsr-1iQ" key="nature" value="UML_Nature"/>
+      </eAnnotations>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_twOW8bLnEe-KL6pWsr-1iQ" name="riderdashboard" type="_YWqckLLgEe-KL6pWsr-1iQ" association="_twNI0LLnEe-KL6pWsr-1iQ"/>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_twO-ALLnEe-KL6pWsr-1iQ" name="rider" type="_mXujkLLgEe-KL6pWsr-1iQ" association="_twNI0LLnEe-KL6pWsr-1iQ"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_uTbKoLLnEe-KL6pWsr-1iQ" memberEnd="_uTbxsrLnEe-KL6pWsr-1iQ _uTcYwLLnEe-KL6pWsr-1iQ">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_uTbxsLLnEe-KL6pWsr-1iQ" source="org.eclipse.papyrus">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_uTbxsbLnEe-KL6pWsr-1iQ" key="nature" value="UML_Nature"/>
+      </eAnnotations>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_uTbxsrLnEe-KL6pWsr-1iQ" name="ridersubsystem" type="_pXlAsLKwEe-KL6pWsr-1iQ" association="_uTbKoLLnEe-KL6pWsr-1iQ"/>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_uTcYwLLnEe-KL6pWsr-1iQ" name="riderdashboard" type="_YWqckLLgEe-KL6pWsr-1iQ" association="_uTbKoLLnEe-KL6pWsr-1iQ"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_1e9kQLLnEe-KL6pWsr-1iQ" memberEnd="_1e_ZcLLnEe-KL6pWsr-1iQ _1fAnkLLnEe-KL6pWsr-1iQ">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_1e-yYLLnEe-KL6pWsr-1iQ" source="org.eclipse.papyrus">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_1e-yYbLnEe-KL6pWsr-1iQ" key="nature" value="UML_Nature"/>
+      </eAnnotations>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_1e_ZcLLnEe-KL6pWsr-1iQ" name="restaurant_admin" type="_8N5VILJdEe-8A6mPkfVmXA" association="_1e9kQLLnEe-KL6pWsr-1iQ"/>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_1fAnkLLnEe-KL6pWsr-1iQ" name="ridersubsystem" type="_pXlAsLKwEe-KL6pWsr-1iQ" association="_1e9kQLLnEe-KL6pWsr-1iQ"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_5sfUoLLnEe-KL6pWsr-1iQ" memberEnd="_5sf7sLLnEe-KL6pWsr-1iQ _5sf7sbLnEe-KL6pWsr-1iQ">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_5sfUobLnEe-KL6pWsr-1iQ" source="org.eclipse.papyrus">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_5sfUorLnEe-KL6pWsr-1iQ" key="nature" value="UML_Nature"/>
+      </eAnnotations>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_5sf7sLLnEe-KL6pWsr-1iQ" name="restaurant" type="_-1gtELJcEe-8A6mPkfVmXA" association="_5sfUoLLnEe-KL6pWsr-1iQ"/>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_5sf7sbLnEe-KL6pWsr-1iQ" name="ridersubsystem" type="_pXlAsLKwEe-KL6pWsr-1iQ" association="_5sfUoLLnEe-KL6pWsr-1iQ"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_9Pm2ELLnEe-KL6pWsr-1iQ" memberEnd="_9PoEMLLnEe-KL6pWsr-1iQ _9PorQLLnEe-KL6pWsr-1iQ">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_9PndILLnEe-KL6pWsr-1iQ" source="org.eclipse.papyrus">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_9PndIbLnEe-KL6pWsr-1iQ" key="nature" value="UML_Nature"/>
+      </eAnnotations>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_9PoEMLLnEe-KL6pWsr-1iQ" name="restaurant" type="_-1gtELJcEe-8A6mPkfVmXA" association="_9Pm2ELLnEe-KL6pWsr-1iQ"/>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_9PorQLLnEe-KL6pWsr-1iQ" name="ownersubsystem" type="_mdvs0LKwEe-KL6pWsr-1iQ" association="_9Pm2ELLnEe-KL6pWsr-1iQ"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="__v3MULLnEe-KL6pWsr-1iQ" memberEnd="__v3zYLLnEe-KL6pWsr-1iQ __v4acLLnEe-KL6pWsr-1iQ">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="__v3MUbLnEe-KL6pWsr-1iQ" source="org.eclipse.papyrus">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="__v3MUrLnEe-KL6pWsr-1iQ" key="nature" value="UML_Nature"/>
+      </eAnnotations>
+      <ownedEnd xmi:type="uml:Property" xmi:id="__v3zYLLnEe-KL6pWsr-1iQ" name="restaurant_admin" type="_8N5VILJdEe-8A6mPkfVmXA" association="__v3MULLnEe-KL6pWsr-1iQ"/>
+      <ownedEnd xmi:type="uml:Property" xmi:id="__v4acLLnEe-KL6pWsr-1iQ" name="ownersubsystem" type="_mdvs0LKwEe-KL6pWsr-1iQ" association="__v3MULLnEe-KL6pWsr-1iQ"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_Q6uV0LLoEe-KL6pWsr-1iQ" memberEnd="_Q6vj8rLoEe-KL6pWsr-1iQ _Q61DgLLoEe-KL6pWsr-1iQ">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_Q6vj8LLoEe-KL6pWsr-1iQ" source="org.eclipse.papyrus">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_Q6vj8bLoEe-KL6pWsr-1iQ" key="nature" value="UML_Nature"/>
+      </eAnnotations>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_Q6vj8rLoEe-KL6pWsr-1iQ" name="restaurant_admin" type="_8N5VILJdEe-8A6mPkfVmXA" association="_Q6uV0LLoEe-KL6pWsr-1iQ"/>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_Q61DgLLoEe-KL6pWsr-1iQ" name="adminsubsystem" type="_c5oSQLKwEe-KL6pWsr-1iQ" association="_Q6uV0LLoEe-KL6pWsr-1iQ"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_ekGVkLLoEe-KL6pWsr-1iQ" memberEnd="_ekHjsLLoEe-KL6pWsr-1iQ _ekIx0LLoEe-KL6pWsr-1iQ">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_ekG8oLLoEe-KL6pWsr-1iQ" source="org.eclipse.papyrus">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_ekG8obLoEe-KL6pWsr-1iQ" key="nature" value="UML_Nature"/>
+      </eAnnotations>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_ekHjsLLoEe-KL6pWsr-1iQ" name="promos" type="_DPuRwLJhEe-8A6mPkfVmXA" association="_ekGVkLLoEe-KL6pWsr-1iQ"/>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_ekIx0LLoEe-KL6pWsr-1iQ" name="orders" type="_8VSEoLJfEe-8A6mPkfVmXA" association="_ekGVkLLoEe-KL6pWsr-1iQ"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_fH170LLoEe-KL6pWsr-1iQ" memberEnd="_fH2i4rLoEe-KL6pWsr-1iQ _fH3J8LLoEe-KL6pWsr-1iQ">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_fH2i4LLoEe-KL6pWsr-1iQ" source="org.eclipse.papyrus">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_fH2i4bLoEe-KL6pWsr-1iQ" key="nature" value="UML_Nature"/>
+      </eAnnotations>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_fH2i4rLoEe-KL6pWsr-1iQ" name="discount" type="_vrb9ULJhEe-8A6mPkfVmXA" association="_fH170LLoEe-KL6pWsr-1iQ"/>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_fH3J8LLoEe-KL6pWsr-1iQ" name="orders" type="_8VSEoLJfEe-8A6mPkfVmXA" association="_fH170LLoEe-KL6pWsr-1iQ"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_fhLo4LLoEe-KL6pWsr-1iQ" memberEnd="_fhM3AbLoEe-KL6pWsr-1iQ _fhNeELLoEe-KL6pWsr-1iQ">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_fhMP8LLoEe-KL6pWsr-1iQ" source="org.eclipse.papyrus">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_fhM3ALLoEe-KL6pWsr-1iQ" key="nature" value="UML_Nature"/>
+      </eAnnotations>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_fhM3AbLoEe-KL6pWsr-1iQ" name="orders" type="_8VSEoLJfEe-8A6mPkfVmXA" association="_fhLo4LLoEe-KL6pWsr-1iQ"/>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_fhNeELLoEe-KL6pWsr-1iQ" name="restaurant_admin" type="_8N5VILJdEe-8A6mPkfVmXA" association="_fhLo4LLoEe-KL6pWsr-1iQ"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_oRu4gLLoEe-KL6pWsr-1iQ" memberEnd="_oRwGorLoEe-KL6pWsr-1iQ _oRwtsLLoEe-KL6pWsr-1iQ">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_oRwGoLLoEe-KL6pWsr-1iQ" source="org.eclipse.papyrus">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_oRwGobLoEe-KL6pWsr-1iQ" key="nature" value="UML_Nature"/>
+      </eAnnotations>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_oRwGorLoEe-KL6pWsr-1iQ" name="restaurantsubsystem" type="_hvEXMLKwEe-KL6pWsr-1iQ" association="_oRu4gLLoEe-KL6pWsr-1iQ"/>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_oRwtsLLoEe-KL6pWsr-1iQ" name="orders" type="_8VSEoLJfEe-8A6mPkfVmXA" association="_oRu4gLLoEe-KL6pWsr-1iQ"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_p_HnYLLoEe-KL6pWsr-1iQ" memberEnd="_p_I1grLoEe-KL6pWsr-1iQ _p_Vp0LLoEe-KL6pWsr-1iQ">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_p_I1gLLoEe-KL6pWsr-1iQ" source="org.eclipse.papyrus">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_p_I1gbLoEe-KL6pWsr-1iQ" key="nature" value="UML_Nature"/>
+      </eAnnotations>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_p_I1grLoEe-KL6pWsr-1iQ" name="restaurantsubsystem" type="_UpSzwLKwEe-KL6pWsr-1iQ" association="_p_HnYLLoEe-KL6pWsr-1iQ"/>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_p_Vp0LLoEe-KL6pWsr-1iQ" name="restaurant" type="_-1gtELJcEe-8A6mPkfVmXA" association="_p_HnYLLoEe-KL6pWsr-1iQ"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_ttpuoLLoEe-KL6pWsr-1iQ" memberEnd="_ttqVsrLoEe-KL6pWsr-1iQ _ttuAELLoEe-KL6pWsr-1iQ">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_ttqVsLLoEe-KL6pWsr-1iQ" source="org.eclipse.papyrus">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_ttqVsbLoEe-KL6pWsr-1iQ" key="nature" value="UML_Nature"/>
+      </eAnnotations>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_ttqVsrLoEe-KL6pWsr-1iQ" name="orders" type="_8VSEoLJfEe-8A6mPkfVmXA" association="_ttpuoLLoEe-KL6pWsr-1iQ"/>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_ttuAELLoEe-KL6pWsr-1iQ" name="ordered_items" type="_gzd48LJgEe-8A6mPkfVmXA" association="_ttpuoLLoEe-KL6pWsr-1iQ"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_uxE6gLLoEe-KL6pWsr-1iQ" memberEnd="_uxFhkrLoEe-KL6pWsr-1iQ _uxGIoLLoEe-KL6pWsr-1iQ">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_uxFhkLLoEe-KL6pWsr-1iQ" source="org.eclipse.papyrus">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_uxFhkbLoEe-KL6pWsr-1iQ" key="nature" value="UML_Nature"/>
+      </eAnnotations>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_uxFhkrLoEe-KL6pWsr-1iQ" name="restaurantsubsystem" type="_hvEXMLKwEe-KL6pWsr-1iQ" association="_uxE6gLLoEe-KL6pWsr-1iQ"/>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_uxGIoLLoEe-KL6pWsr-1iQ" name="ordered_items" type="_gzd48LJgEe-8A6mPkfVmXA" association="_uxE6gLLoEe-KL6pWsr-1iQ"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_yoxk0LLoEe-KL6pWsr-1iQ" memberEnd="_yoyy8rLoEe-KL6pWsr-1iQ _yozaALLoEe-KL6pWsr-1iQ">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_yoyy8LLoEe-KL6pWsr-1iQ" source="org.eclipse.papyrus">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_yoyy8bLoEe-KL6pWsr-1iQ" key="nature" value="UML_Nature"/>
+      </eAnnotations>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_yoyy8rLoEe-KL6pWsr-1iQ" name="restaurant" type="_-1gtELJcEe-8A6mPkfVmXA" association="_yoxk0LLoEe-KL6pWsr-1iQ"/>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_yozaALLoEe-KL6pWsr-1iQ" name="menu" type="_PNgZwLJeEe-8A6mPkfVmXA" association="_yoxk0LLoEe-KL6pWsr-1iQ"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_3WbmwLLoEe-KL6pWsr-1iQ" memberEnd="_3Wc04bLoEe-KL6pWsr-1iQ _3WhtYLLoEe-KL6pWsr-1iQ">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_3WcN0LLoEe-KL6pWsr-1iQ" source="org.eclipse.papyrus">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_3Wc04LLoEe-KL6pWsr-1iQ" key="nature" value="UML_Nature"/>
+      </eAnnotations>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_3Wc04bLoEe-KL6pWsr-1iQ" name="menu" type="_PNgZwLJeEe-8A6mPkfVmXA" association="_3WbmwLLoEe-KL6pWsr-1iQ"/>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_3WhtYLLoEe-KL6pWsr-1iQ" name="menu_items" type="_Y6BiYLJeEe-8A6mPkfVmXA" association="_3WbmwLLoEe-KL6pWsr-1iQ"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_9o970LLoEe-KL6pWsr-1iQ" memberEnd="_9o-i4rLoEe-KL6pWsr-1iQ _9o_J8LLoEe-KL6pWsr-1iQ">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_9o-i4LLoEe-KL6pWsr-1iQ" source="org.eclipse.papyrus">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_9o-i4bLoEe-KL6pWsr-1iQ" key="nature" value="UML_Nature"/>
+      </eAnnotations>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_9o-i4rLoEe-KL6pWsr-1iQ" name="orders" type="_8VSEoLJfEe-8A6mPkfVmXA" association="_9o970LLoEe-KL6pWsr-1iQ"/>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_9o_J8LLoEe-KL6pWsr-1iQ" name="deliveryaddress" type="_5Hl2ELJeEe-8A6mPkfVmXA" association="_9o970LLoEe-KL6pWsr-1iQ"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_BdWzcLLpEe-KL6pWsr-1iQ" memberEnd="_BdZPsLLpEe-KL6pWsr-1iQ _BdjnwLLpEe-KL6pWsr-1iQ">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_BdYooLLpEe-KL6pWsr-1iQ" source="org.eclipse.papyrus">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_BdYoobLpEe-KL6pWsr-1iQ" key="nature" value="UML_Nature"/>
+      </eAnnotations>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_BdZPsLLpEe-KL6pWsr-1iQ" name="delivery_rider" type="_HS9voLJfEe-8A6mPkfVmXA" association="_BdWzcLLpEe-KL6pWsr-1iQ"/>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_BdjnwLLpEe-KL6pWsr-1iQ" name="rider_tips" type="_nRY0ELJfEe-8A6mPkfVmXA" association="_BdWzcLLpEe-KL6pWsr-1iQ"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_aWJR8LLpEe-KL6pWsr-1iQ" memberEnd="_aWKgErLpEe-KL6pWsr-1iQ _aWLuMLLpEe-KL6pWsr-1iQ">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_aWKgELLpEe-KL6pWsr-1iQ" source="org.eclipse.papyrus">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_aWKgEbLpEe-KL6pWsr-1iQ" key="nature" value="UML_Nature"/>
+      </eAnnotations>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_aWKgErLpEe-KL6pWsr-1iQ" name="ownersubsystem" type="_mdvs0LKwEe-KL6pWsr-1iQ" association="_aWJR8LLpEe-KL6pWsr-1iQ"/>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_aWLuMLLpEe-KL6pWsr-1iQ" name="restaurant_owner" type="_mPkSELJcEe-8A6mPkfVmXA" association="_aWJR8LLpEe-KL6pWsr-1iQ"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_blCG8LLpEe-KL6pWsr-1iQ" memberEnd="_blDVEbLpEe-KL6pWsr-1iQ _blD8ILLpEe-KL6pWsr-1iQ">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_blCuALLpEe-KL6pWsr-1iQ" source="org.eclipse.papyrus">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_blDVELLpEe-KL6pWsr-1iQ" key="nature" value="UML_Nature"/>
+      </eAnnotations>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_blDVEbLpEe-KL6pWsr-1iQ" name="customersubsytem" type="_hvEXMLKwEe-KL6pWsr-1iQ" association="_blCG8LLpEe-KL6pWsr-1iQ"/>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_blD8ILLpEe-KL6pWsr-1iQ" name="customer" type="_mRdk8LJbEe-8A6mPkfVmXA" association="_blCG8LLpEe-KL6pWsr-1iQ"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_JuEP8LLqEe-KL6pWsr-1iQ" memberEnd="_JuE3ArLqEe-KL6pWsr-1iQ _JuIhYLLqEe-KL6pWsr-1iQ">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_JuE3ALLqEe-KL6pWsr-1iQ" source="org.eclipse.papyrus">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_JuE3AbLqEe-KL6pWsr-1iQ" key="nature" value="UML_Nature"/>
+      </eAnnotations>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_JuE3ArLqEe-KL6pWsr-1iQ" name="customersubsytem" type="_hvEXMLKwEe-KL6pWsr-1iQ" association="_JuEP8LLqEe-KL6pWsr-1iQ"/>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_JuIhYLLqEe-KL6pWsr-1iQ" name="rider_tips" type="_nRY0ELJfEe-8A6mPkfVmXA" association="_JuEP8LLqEe-KL6pWsr-1iQ"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_S3_o4LLqEe-KL6pWsr-1iQ" memberEnd="_S7PxMLLqEe-KL6pWsr-1iQ _S7UCoLLqEe-KL6pWsr-1iQ">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_S4A3ALLqEe-KL6pWsr-1iQ" source="org.eclipse.papyrus">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_S7PKILLqEe-KL6pWsr-1iQ" key="nature" value="UML_Nature"/>
+      </eAnnotations>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_S7PxMLLqEe-KL6pWsr-1iQ" name="restaurant" type="_-1gtELJcEe-8A6mPkfVmXA" association="_S3_o4LLqEe-KL6pWsr-1iQ"/>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_S7UCoLLqEe-KL6pWsr-1iQ" name="locations" type="_qhMp4LJdEe-8A6mPkfVmXA" association="_S3_o4LLqEe-KL6pWsr-1iQ"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Package" xmi:id="_AzByILLrEe-KL6pWsr-1iQ" name="Package46"/>
+  </uml:Model>
+  <FoodGo:Control xmi:id="_bjMDwLKwEe-KL6pWsr-1iQ" base_Class="_UpSzwLKwEe-KL6pWsr-1iQ" Control="defaultValue"/>
+  <FoodGo:Control xmi:id="_c6hDELKwEe-KL6pWsr-1iQ" base_Class="_c5oSQLKwEe-KL6pWsr-1iQ" Control="defaultValue"/>
+  <FoodGo:Control xmi:id="_hvNhILKwEe-KL6pWsr-1iQ" base_Class="_hvEXMLKwEe-KL6pWsr-1iQ" Control="defaultValue"/>
+  <FoodGo:Control xmi:id="_md3BkLKwEe-KL6pWsr-1iQ" base_Class="_mdvs0LKwEe-KL6pWsr-1iQ" Control="defaultValue"/>
+  <FoodGo:Control xmi:id="_pXorELKwEe-KL6pWsr-1iQ" base_Class="_pXlAsLKwEe-KL6pWsr-1iQ" Control="defaultValue"/>
+  <FoodGo:Boundary xmi:id="_IUngoLKxEe-KL6pWsr-1iQ" base_Class="_6_pqoLKwEe-KL6pWsr-1iQ" Boundary="defaultValue"/>
+  <FoodGo:Boundary xmi:id="_Jj9ooLKxEe-KL6pWsr-1iQ" base_Class="_Jj4JELKxEe-KL6pWsr-1iQ" Boundary="defaultValue"/>
+  <FoodGo:Entity xmi:id="_T0v78LKxEe-KL6pWsr-1iQ" base_Class="_mRdk8LJbEe-8A6mPkfVmXA" Entity="defaultValue"/>
+  <FoodGo:Entity xmi:id="_Y0sAsLKxEe-KL6pWsr-1iQ" base_Class="_mPkSELJcEe-8A6mPkfVmXA"/>
+  <FoodGo:Entity xmi:id="_acfsALKxEe-KL6pWsr-1iQ" base_Class="_-1gtELJcEe-8A6mPkfVmXA"/>
+  <FoodGo:Entity xmi:id="_cNmdQLKxEe-KL6pWsr-1iQ" base_Class="_qhMp4LJdEe-8A6mPkfVmXA"/>
+  <FoodGo:Entity xmi:id="_dacq4LKxEe-KL6pWsr-1iQ" base_Class="_8N5VILJdEe-8A6mPkfVmXA"/>
+  <FoodGo:Entity xmi:id="_eqLNYLKxEe-KL6pWsr-1iQ" base_Class="_PNgZwLJeEe-8A6mPkfVmXA"/>
+  <FoodGo:Entity xmi:id="_f10hILKxEe-KL6pWsr-1iQ" base_Class="_Y6BiYLJeEe-8A6mPkfVmXA"/>
+  <FoodGo:Entity xmi:id="_hDAF8LKxEe-KL6pWsr-1iQ" base_Class="_5Hl2ELJeEe-8A6mPkfVmXA"/>
+  <FoodGo:Entity xmi:id="_iKcPILKxEe-KL6pWsr-1iQ" base_Class="_HS9voLJfEe-8A6mPkfVmXA"/>
+  <FoodGo:Entity xmi:id="_jPRJMLKxEe-KL6pWsr-1iQ" base_Class="_nRY0ELJfEe-8A6mPkfVmXA"/>
+  <FoodGo:Entity xmi:id="_ktk6QLKxEe-KL6pWsr-1iQ" base_Class="_8VSEoLJfEe-8A6mPkfVmXA"/>
+  <FoodGo:Entity xmi:id="_mM27sLKxEe-KL6pWsr-1iQ" base_Class="_gzd48LJgEe-8A6mPkfVmXA"/>
+  <FoodGo:Entity xmi:id="_nfZhoLKxEe-KL6pWsr-1iQ" base_Class="_zOTckLJgEe-8A6mPkfVmXA"/>
+  <FoodGo:Entity xmi:id="_ohU4sLKxEe-KL6pWsr-1iQ" base_Class="_DPuRwLJhEe-8A6mPkfVmXA"/>
+  <FoodGo:Entity xmi:id="_pt3kULKxEe-KL6pWsr-1iQ" base_Class="_vrb9ULJhEe-8A6mPkfVmXA"/>
+  <FoodGo:Control xmi:id="_tD6TELKxEe-KL6pWsr-1iQ" base_Class="_vpxXgLKwEe-KL6pWsr-1iQ"/>
+  <FoodGo:Actor xmi:id="_tvWAQbKyEe-KL6pWsr-1iQ" base_Class="_qU_ZQLKyEe-KL6pWsr-1iQ"/>
+  <FoodGo:Boundary xmi:id="_BQgn4LK1Ee-KL6pWsr-1iQ" base_Class="_BQdkkLK1Ee-KL6pWsr-1iQ" Boundary="defaultValue"/>
+  <FoodGo:Actor xmi:id="_S9hqILLfEe-KL6pWsr-1iQ" base_Class="_S9cKkLLfEe-KL6pWsr-1iQ"/>
+  <FoodGo:Boundary xmi:id="_ozreELLfEe-KL6pWsr-1iQ" base_Class="_ozpB0LLfEe-KL6pWsr-1iQ" Boundary="defaultValue"/>
+  <FoodGo:Boundary xmi:id="_tg4NALLfEe-KL6pWsr-1iQ" base_Class="_tg2X0LLfEe-KL6pWsr-1iQ" Boundary="defaultValue"/>
+  <FoodGo:Boundary xmi:id="_SBzzX7LgEe-KL6pWsr-1iQ" base_Class="_SBx-ILLgEe-KL6pWsr-1iQ" Boundary="defaultValue"/>
+  <FoodGo:Boundary xmi:id="_YWs40LLgEe-KL6pWsr-1iQ" base_Class="_YWqckLLgEe-KL6pWsr-1iQ" Boundary="defaultValue"/>
+  <FoodGo:Actor xmi:id="_jMrj4LLgEe-KL6pWsr-1iQ" base_Class="_jMn5gLLgEe-KL6pWsr-1iQ"/>
+  <FoodGo:Actor xmi:id="_mXxm4LLgEe-KL6pWsr-1iQ" base_Class="_mXujkLLgEe-KL6pWsr-1iQ"/>
+  <FoodGo:Actor xmi:id="_9_ozn7LhEe-KL6pWsr-1iQ" base_Class="_9_mXULLhEe-KL6pWsr-1iQ"/>
+  <FoodGo:Boundary xmi:id="_CHUaoLLiEe-KL6pWsr-1iQ" base_Class="_CHRXULLiEe-KL6pWsr-1iQ" Boundary="defaultValue"/>
+</xmi:XMI>
