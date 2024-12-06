@@ -103,7 +103,7 @@ const TopRestaurants = () => {
                 onClick={() => setCurrentIndex(isMobile ? idx : idx * itemsToShow)}
                 className={`w-2 h-2 rounded-full transition-all duration-300 
                   ${(isMobile ? currentIndex : Math.floor(currentIndex / itemsToShow)) === idx 
-                    ? 'w-6 bg-indigo-600' 
+                    ? 'w-6 bg-purple-600' 
                     : 'bg-gray-300 hover:bg-gray-400'}`}
                 aria-label={`Go to slide ${idx + 1}`}
               />
@@ -118,7 +118,7 @@ const TopRestaurants = () => {
               className={`p-2 rounded-full border transition-all duration-300
                 ${currentIndex === 0
                   ? 'border-gray-200 text-gray-300 cursor-not-allowed'
-                  : 'border-gray-300 text-gray-600 hover:border-indigo-600 hover:text-indigo-600'
+                  : 'border-gray-300 text-gray-600 hover:border-purple-600 hover:text-purple-600'
                 }`}
               aria-label="Previous slide"
             >
@@ -134,7 +134,7 @@ const TopRestaurants = () => {
                   ? currentIndex >= restaurantData.length - 1 
                   : currentIndex >= restaurantData.length - itemsToShow)
                   ? 'border-gray-200 text-gray-300 cursor-not-allowed'
-                  : 'border-gray-300 text-gray-600 hover:border-indigo-600 hover:text-indigo-600'
+                  : 'border-gray-300 text-gray-600 hover:border-purple-600 hover:text-purple-600'
                 }`}
               aria-label="Next slide"
             >
@@ -173,7 +173,7 @@ const TopRestaurants = () => {
             onClick={() => setCurrentIndex(isMobile ? idx : idx * itemsToShow)}
             className={`w-2 h-2 rounded-full transition-all duration-300 
               ${(isMobile ? currentIndex : Math.floor(currentIndex / itemsToShow)) === idx 
-                ? 'w-6 bg-indigo-600' 
+                ? 'w-6 bg-purple-600' 
                 : 'bg-gray-300 hover:bg-gray-400'}`}
             aria-label={`Go to slide ${idx + 1}`}
           />

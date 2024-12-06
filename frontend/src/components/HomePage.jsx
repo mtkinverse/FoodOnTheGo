@@ -17,11 +17,11 @@ const HomePage = () => {
       {/* Hero Section */}
       <section className="bg-purple-100 py-20">
         <div className="container mx-auto px-6 text-center">
-          <h1 className="text-5xl font-bold text-purple-800 mb-4">Delicious Food, Delivered to You</h1>
+          <h1 className="text-5xl font-bold text-purple-800 mb-4">Savor Every Bite, Delivered Fresh!</h1>
           <p className="text-xl text-purple-600 mb-8">Order from your favorite restaurants with just a few clicks!</p>
           <a href="#topRestaurants" className='no-underline text-white'>
             <button className="bg-purple-600 text-white font-bold py-3 px-8 rounded-full hover:bg-purple-700 transition duration-300">
-              Order Now
+              Get Your Meal Now
             </button>
           </a>
         </div>

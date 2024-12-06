@@ -14,11 +14,14 @@ const SocialIcon = ({ icon, href }) => (
 
 const Footer = () => {
   return (
-    <footer className="bg-white text-gray-800 py-8 md:py-12">
+    <footer 
+      className="bg-white text-gray-800 py-8 md:py-12 relative z-10"
+      style={{ boxShadow: '0 -4px 6px rgba(0, 0, 0, 0.1)' }}
+    >
       <div className="container mx-auto px-4 md:px-6">
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="mb-6 md:mb-0">
-            <h3 className="text-2xl font-bold text-purple-600 mb-2">BOIS Restaurant</h3>
+            <h3 className="text-2xl font-extrabold text-purple-600 mb-2">FOOD ON THE GO</h3>
             <p className="text-sm md:text-base">Delicious food, delivered to your doorstep</p>
           </div>
           <div className="flex flex-col items-center md:items-end">

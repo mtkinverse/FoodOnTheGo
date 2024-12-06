@@ -104,6 +104,69 @@ module.exports.getSpecificRestaurant = (req, res) => {
   });
 };
 
+module.exports.getPopularItems = (req, res) => {
+  const restaurantId = req.params.id;
+  console.log('here to get popular items');
+  // First query: Get popular items
+  const popularItemsQuery = `
+     select oo.item_id
+     from ordered_items oo
+     join orders o on oo.order_id = o.order_id
+     where restaurant_id = ?
+     group by oo.item_id
+     having count(oo.order_id) > 0; 
+  `;
+  
+  db.query(popularItemsQuery, [restaurantId], (err, result) => {
+      if (err) {
+          return res.status(500).json({ message: 'Error occurred while fetching popular items' });
+      }
+
+      const itemIds = result.map(row => row.item_id);
+      console.log(itemIds);
+      if (itemIds.length === 0) {
+          return res.status(404).json({ message: 'No popular items found for this restaurant' });
+      }
+      console.log('popular items' ,itemIds);
+      const menuItemsQuery = 'SELECT * FROM menu_items WHERE item_id IN (?)';
+      db.query(menuItemsQuery, [itemIds], (err1, menuItems) => {
+          if (err1) {
+              return res.status(500).json({ message: 'Error occurred while fetching menu items' });
+          }
+
+          const discountQuery = `
+              SELECT discount_value
+              FROM discount
+              WHERE restaurant_id = ?
+              AND start_date <= CURRENT_DATE
+              AND end_date >= CURRENT_TIMESTAMP
+          `;
+
+          db.query(discountQuery, [restaurantId], (err3, discounts) => {
+              if (err3) {
+                  return res.status(500).json({ message: 'Error occurred while fetching discount data' });
+              }
+
+              const itemsWithDiscount = menuItems.map(item => {
+                  const discount = discounts.find(d => d.item_id === item.item_id);
+                  const discount_value = discount ? discount.discount_value : 0;
+                  const discounted_price = discount_value > 0
+                      ? (item.Item_Price * (1 - discount_value / 100)).toFixed(2)
+                      : item.Item_Price;
+
+                  return {
+                      ...item,
+                      discounted_price: parseFloat(discounted_price),
+                  };
+              });
+              console.log('returning result ',itemsWithDiscount);
+              return res.status(200).json(itemsWithDiscount);
+          });
+      });
+  });
+};
+
+
 module.exports.getRestaurantMenu = (req, res) => {
     const restaurantId = req.params.id;  
 

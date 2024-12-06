@@ -75,10 +75,10 @@ const RestaurantCard = ({ restaurant, flag }) => {
   const nextDayName = getNextDayName();
 
   const handleMenuButtonClick = () => {
-    if(!openStatus) {
-      setAlert({message: 'Sorry,the restaurant is closed until tomorrow',type : 'failure'})
-    }
-    else 
+    // if(!openStatus) {
+    //   setAlert({message: 'Sorry,the restaurant is closed until tomorrow',type : 'failure'})
+    // }
+    // else 
     navigate(`/menu/${Restaurant_Name}/${Restaurant_id}`);
   };
 
@@ -120,7 +120,7 @@ const RestaurantCard = ({ restaurant, flag }) => {
       </div>
 
       <div className="p-5 space-y-4">
-        <h2 className="text-xl font-bold text-gray-800 line-clamp-1">
+        <h2 className="text-xl font-extrabold text-gray-800 line-clamp-1">
           {Restaurant_Name}
         </h2>
 

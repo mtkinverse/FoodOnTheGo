@@ -1,5 +1,4 @@
 const db = require('../db');
-const {sendStatusEmail} = require('../services/emailService');
 
 module.exports.deleteDeal = (req, res) => {
     const deal_id = req.params.id;
@@ -161,7 +160,7 @@ module.exports.AddPromo = (req, res) => {
 module.exports.getRiders = (req, res) => {
     const location_id = req.params.id;
     const q = `
-       SELECT d.rider_id,d.rider_name,d.available ,d.bikeNo,d.Phone_No from delivery_rider d
+       SELECT d.rider_id,d.rider_name,d.available ,d.bikeNo,d.Phone_No,d.email_address from delivery_rider d
        join restaurant r on d.restaurant_id = d.restaurant_id
        where r.location_id = ? and d.Available = true;
     `;
