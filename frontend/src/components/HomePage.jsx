@@ -1,31 +1,65 @@
-import React, { useEffect, useState } from 'react';
-import { FaUtensils, FaFire,FaStar, FaClock } from 'react-icons/fa';
+import React from 'react';
+import { FaUtensils, FaFire, FaStar, FaClock, FaStore } from 'react-icons/fa';
 import TopRestaurants from './TopRestaurants';
 import Cart from './Cart';
 import { useUserContext } from '../contexts/userContext';
 
 const HomePage = () => {
-  const { loggedIn, userData } = useUserContext();
-
-  // Close the pop-up after rating
-  const handleRateOrderClose = () => {
-    setShowRatePopup(false);
-  };
+  const { loggedIn } = useUserContext();
 
   return (
     <>
       {/* Hero Section */}
-      <section className="bg-purple-100 py-20">
-        <div className="container mx-auto px-6 text-center">
-          <h1 className="text-5xl font-bold text-purple-800 mb-4">Savor Every Bite, Delivered Fresh!</h1>
-          <p className="text-xl text-purple-600 mb-8">Order from your favorite restaurants with just a few clicks!</p>
-          <a href="#topRestaurants" className='no-underline text-white'>
-            <button className="bg-purple-600 text-white font-bold py-3 px-8 rounded-full hover:bg-purple-700 transition duration-300">
-              Get Your Meal Now
-            </button>
-          </a>
+      <section className="bg-gradient-to-r from-purple-900 to-indigo-800 overflow-hidden">
+        <div className="container mx-auto px-4 py-16 sm:px-6 lg:px-8">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
+            {/* Circular Image Container - Left Side */}
+            <div className="relative w-64 h-64 lg:w-96 lg:h-96 flex-shrink-0">
+              <div className="w-full h-full rounded-full overflow-hidden border-4 border-white/20 shadow-2xl">
+                <img
+                  src="/images/1.jpg"
+                  alt="Delicious Food"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              {/* Decorative Ring */}
+              <div className="absolute -inset-4 border-2 border-white/10 rounded-full animate-spin-slow" />
+            </div>
+
+            {/* Text Content - Right Side */}
+            <div className="flex-1 max-w-xl text-center lg:text-left">
+              <h1 className="text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-6 leading-tight">
+                Savor Every Bite, <br />
+                <span className="text-yellow-400">Delivered Fresh!</span>
+              </h1>
+              <p className="text-gray-300 text-xl mb-8">
+                Indulge in your favorite meals from top restaurants. 
+                Quick delivery, unmatched taste!
+              </p>
+              <a 
+                href="#topRestaurants" 
+                className="inline-block bg-yellow-400 hover:bg-yellow-500 text-purple-900 font-bold px-8 py-4 rounded-full transition-all duration-300 hover:shadow-lg transform hover:-translate-y-1"
+              >
+                Explore Menu
+              </a>
+            </div>
+          </div>
         </div>
       </section>
+  {/* Add custom animation for the decorative ring */}
+  <style jsx>{`
+        @keyframes spin-slow {
+          from {
+            transform: rotate(0deg);
+          }
+          to {
+            transform: rotate(360deg);
+          }
+        }
+        .animate-spin-slow {
+          animation: spin-slow 20s linear infinite;
+        }
+      `}</style>
 
       {/* Features Section */}
       <section className="py-10 bg-white">
@@ -51,29 +85,31 @@ const HomePage = () => {
         </div>
       </section>
 
-   {/* Top Restaurants Section */}
-<section id='topRestaurants' className="py-20 bg-purple-100">
-  <div className="container mx-auto px-6">
-    {/* Section Title with Icon Next to It */}
-    <div className="flex justify-center items-center mb-2">
-      <h2 className="text-4xl font-bold text-purple-800 flex items-center">
-        Top Restaurants
-      </h2>
-    </div>
+      {/* Top Restaurants Section */}
+      <section id="topRestaurants" className="py-20 bg-purple-100">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Section Title with Icon */}
+          <div className="flex items-center justify-center gap-4 mb-12">
+            <FaStore className="text-purple-800 text-5xl" />
+            <h2 className="text-4xl font-bold text-purple-800">Top Restaurants</h2>
+          </div>
 
-    {/* Top Restaurants List */}
-    <TopRestaurants />
-  </div>
-</section>
+          {/* Section Description */}
+          <p className="text-center text-purple-700 text-xl mb-12">
+            Discover the best-rated restaurants near you.
+          </p>
+          {/* Top Restaurants List */}
+          <TopRestaurants />
+        </div>
+      </section>
 
       {loggedIn && <Cart />}
-
-
     </>
   );
 };
+
 const FeatureCard = ({ icon, title, description }) => (
-  <div className="flex flex-col items-center text-center bg-purple-50 p-4 rounded-lg shadow-md transform transition-all duration-300 hover:shadow-lg hover:scale-105 hover:bg-purple-100">
+  <div className="flex flex-col items-center text-center bg-purple-50 p-4 rounded-lg shadow-md transform transition-all duration-300 hover:shadow-lg hover:scale-105 hover:bg-purple-200">
     <div className="mb-4 text-purple-700 text-4xl">{icon}</div>
 
     {/* Title */}
