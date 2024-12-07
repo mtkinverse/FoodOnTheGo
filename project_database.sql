@@ -3,7 +3,15 @@ CREATE DATABASE online_food_system;
 USE online_food_system;
 
  ------------------------------------------------ tables / entities --------------------------------------------
- 
+
+CREATE TABLE OTP (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  email VARCHAR(255) NOT NULL,
+  otp VARCHAR(6) NOT NULL,
+  expiration_time DATETIME NOT NULL,
+  UNIQUE KEY unique_email (email)
+);
+
 CREATE TABLE Customer(
    Customer_id INT AUTO_INCREMENT PRIMARY KEY,
    Customer_Name VARCHAR(100) NOT NULL,
@@ -88,6 +96,8 @@ CREATE TABLE DeliveryAddress(
     NearbyPoint VARCHAR(50) DEFAULT NULL
 );
 ALTER TABLE DeliveryAddress AUTO_INCREMENT = 23838;
+alter table DeliveryAddress add latitude FLOAT not null;
+alter table DeliveryAddress add longitude FLOAT not null;
 
 
 CREATE TABLE Delivery_Rider(
@@ -105,7 +115,6 @@ ALTER TABLE Delivery_Rider ADD COLUMN Restaurant_id INT DEFAULT NULL;
 ALTER TABLE Delivery_Rider ADD CONSTRAINT Restaurant_fk Foreign key (Restaurant_id) REFERENCES Restaurant(Restaurant_id);
 ALTER TABLE Delivery_Rider MODIFY Phone_no VARCHAR(20) UNIQUE;
 ALTER TABLE Delivery_Rider MODIFY BikeNo VARCHAR(20) UNIQUE;
-
 
 drop table Rider_Tips;
 CREATE TABLE Rider_Tips (
@@ -184,6 +193,16 @@ CREATE TABLE Discount(
 ALTER TABLE Discount AUTO_INCREMENT =3733378;
 ALTER TABLE Discount ADD CONSTRAINT res_fk FOREIGN KEY(restaurant_id) REFERENCES Restaurant(restaurant_id) ON DELETE CASCADE;
 
+
+CREATE TABLE Complaints(
+    Complaint_id int AUTO_INCREMENT PRIMARY KEY,
+    Restaurant_id INT NOT NULL,
+    Customer_id INT NOT NULL,
+    Order_id INT NOT NULL,
+    Status varchar(20) CHECK (status IN ('Lodged','Pending','Addressed')),
+    Complaint_Desc varchar(200)
+);
+ALTER TABLE Complaints AUTO_INCREMENT = 3000;
 ------------------------------------------------ triggers & procedures -----------------------
 
 CREATE TRIGGER delete_order_address
@@ -281,6 +300,7 @@ CREATE PROCEDURE PlaceOrder(
 BEGIN
     DECLARE tempPhoneNO VARCHAR(20);
     DECLARE tempAddress_id INT;
+    DECLARE isOpen INT;
 
     DECLARE exit handler FOR SQLEXCEPTION
     BEGIN
@@ -290,23 +310,35 @@ BEGIN
 
     START TRANSACTION;
 
-    SELECT phone_No INTO tempPhoneNo 
-    FROM customer 
-    WHERE Customer_id = p_Customer_id;
+    SELECT 
+        CASE 
+            WHEN OpensAt <= CURRENT_TIMESTAMP AND ClosesAt > CURRENT_TIMESTAMP THEN 1 
+            ELSE 0 
+        END 
+    INTO isOpen 
+    FROM Restaurant 
+    WHERE Restaurant_id = p_Restaurant_id;
 
-    INSERT INTO DeliveryAddress (Address, phoneNo, nearbyPoint) 
-    VALUES (p_Address, tempPhoneNo, p_NearbyPoint); 
--- Bhai y ese nahi ho rha
---    select address_id into tempAddress_id from deliveryAddress where phoneNo = tempPhoneNo;
-    set tempAddress_id  = LAST_INSERT_ID();
-
-    INSERT INTO Orders (Customer_id, Restaurant_id, Address_id, Order_Status)
-    VALUES (p_Customer_id, p_Restaurant_id, tempAddress_id, 'Placed');
+    IF isOpen = 0 OR isOpen IS NULL THEN
+        SET p_Order_id = NULL;
+        ROLLBACK;
+    else
+        SELECT phone_No INTO tempPhoneNo 
+        FROM customer 
+        WHERE Customer_id = p_Customer_id;
     
-    SET p_Order_id = LAST_INSERT_ID();
-
-    COMMIT;
-
+        INSERT INTO DeliveryAddress (Address, phoneNo, nearbyPoint) 
+        VALUES (p_Address, tempPhoneNo, p_NearbyPoint); 
+    
+        SET tempAddress_id = LAST_INSERT_ID();
+    
+        INSERT INTO Orders (Customer_id, Restaurant_id, Address_id, Order_Status)
+        VALUES (p_Customer_id, p_Restaurant_id, tempAddress_id, 'Placed');
+    
+        SET p_Order_id = LAST_INSERT_ID();
+    
+        COMMIT;
+    END IF;
 END;
 /
 

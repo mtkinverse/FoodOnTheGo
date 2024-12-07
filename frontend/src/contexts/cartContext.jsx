@@ -194,7 +194,7 @@ const CartContextProvider = ({ children }) => {
     try {
       // Make the API call to place the order
       const res = await axios.post("/api/placeOrder", req, {
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json" }, withCredentials : true
       });
   
       // Check if the response is successful

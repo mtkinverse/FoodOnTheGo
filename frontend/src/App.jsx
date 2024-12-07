@@ -1,5 +1,5 @@
 
-import {createBrowserRouter,RouterProvider,Route, Outlet,createRoutesFromElements} from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, Route, Outlet, createRoutesFromElements } from 'react-router-dom';
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
@@ -11,6 +11,9 @@ import Menu from './components/Menu';  // Your menu component
 import 'bootstrap/dist/css/bootstrap.min.css';
 import RiderDashboard from "./views/rider/RiderDashboard";
 import AdminDashboard from './views/AdminDashboard';
+import { LoadScript } from '@react-google-maps/api';
+import ComplaintLodger from './popups/ComplaintLodger';
+import { usePopUpContext } from './contexts/popUpContext';
 
 
 // const router = createBrowserRouter([
@@ -32,39 +35,44 @@ import AdminDashboard from './views/AdminDashboard';
 //    }
 // ]);
 
-const Layout = () =>{
-   return(
-      <>
-         <Navbar/>
-         <Outlet/>
-         <Footer/>
-      </>
-   );
+const Layout = () => {
+  return (
+    <>
+      <Navbar />
+      <Outlet />
+      <Footer />
+    </>
+  );
 }
 
 const router = createBrowserRouter(
-   createRoutesFromElements(
-     <Route path='/' element={<Layout />}>
-       <Route path='' element={<Home />} />
-       <Route path='register' element={<Register />} />
-       <Route path='login' element={<Login />} />
-       <Route path='restaurants' element={<Restaurants />} />
-       <Route path='ownedRestaurants' element = {<OwnedRestaurants/>}/>
-       <Route path ='menu/:restaurant_name/:restaurant_id' element = {<Menu/>}/>
-       <Route path= 'RiderDashboard' element = {<RiderDashboard/>} />
-       <Route path= 'AdminDashboard' element = {<AdminDashboard/>} />
-     </Route>
-   ),
- );
+  createRoutesFromElements(
+    <Route path='/' element={<Layout />}>
+      <Route path='' element={<Home />} />
+      <Route path='register' element={<Register />} />
+      <Route path='login' element={<Login />} />
+      <Route path='restaurants' element={<Restaurants />} />
+      <Route path='ownedRestaurants' element={<OwnedRestaurants />} />
+      <Route path='menu/:restaurant_name/:restaurant_id' element={<Menu />} />
+      <Route path='RiderDashboard' element={<RiderDashboard />} />
+      <Route path='AdminDashboard' element={<AdminDashboard />} />
+    </Route>
+  ),
+);
 
- function App() {
+function App() {
+
+  const libraries = ['marker', 'places'];
+  const {lodger} = usePopUpContext();
+
   return (
-    <div className="min-h-screen w-full bg-purple-50 flex flex-col">
-      
-        <RouterProvider router={router}/>
 
-      
-    </div>
+    // <LoadScript googleMapsApiKey={import.meta.env.VITE_MAP_KEY} libraries={libraries}>
+    // </LoadScript>
+      <div className="min-h-screen w-full bg-purple-50 flex flex-col">
+        <RouterProvider router={router} />
+          {lodger && <ComplaintLodger/>}
+      </div>
   );
 }
 

@@ -22,6 +22,7 @@ import { useCartContext } from "../contexts/cartContext";
 import { useAlertContext } from "../contexts/alertContext";
 import RatingPopup from "./RateOrder";
 import { useNavigate } from "react-router-dom";
+import { usePopUpContext } from "../contexts/popUpContext";
 
 const ShowPastOrders = ({
   pastOrders,
@@ -31,6 +32,7 @@ const ShowPastOrders = ({
   setSelectedOrder,
 }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const {lodger,setLodger,setComplaint} = usePopUpContext();
 
   if (pastPopup) {
     document.body.style.overflow = "hidden";
@@ -154,7 +156,7 @@ const ShowPastOrders = ({
                               </span>
                             </div>
                           </div>
-                          <div className="pt-4">
+                          <div className="pt-4 flex flex-wrap space-x-1">
                             {order.review_id === null ? (
                               <button
                                 onClick={() => {
@@ -175,6 +177,15 @@ const ShowPastOrders = ({
                                 Reviewed
                               </button>
                             )}
+                            <button
+                                onClick={() => {
+                                  setComplaint(prev => ({...prev, Order_id:order.order_id}))
+                                  setLodger(true);
+                                }}
+                                className="flex items-center justify-center text-white bg-red-600 hover:bg-red-800 rounded-full py-2 px-6 text-sm font-semibold transition-colors"
+                              >
+                                Lodge Complaint
+                              </button>
                           </div>
                         </div>
                       </div>
@@ -473,10 +484,13 @@ function ShowCurrentOrders({
 }
 
 const Navbar = () => {
+
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const profileMenuRef = useRef(null); // Ref to handle outside click
+  const {adminComplaintPopup,setAdminComplaintPopup} = usePopUpContext();
+  
   const {
     loggedIn,
     signout,
@@ -798,6 +812,18 @@ const Navbar = () => {
               Delete Account
             </button>
           )}
+
+          {userData.role === 'Restaurant_Admin' && 
+            <button
+              className="block w-full px-4 py-2 text-sm text-white hover:bg-purple-800"
+              onClick={() => {
+                setAdminComplaintPopup(true);
+              }}
+            >
+              View Complaints
+            </button>
+            
+          }
 
           {userData.role === "Customer" && (
             <button

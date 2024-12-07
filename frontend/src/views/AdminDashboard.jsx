@@ -534,8 +534,16 @@ const AdminDashboard = () => {
         `/api/dispatchOrder/${selectedOrder.order_id}`,
         { rider_id: selectedRider.rider_id }
       );
-
-      if (response.status === 200) {
+      const order = {
+        customer_name : selectedOrder.customer_name,
+        email : selectedOrder.email_address,
+        order_id : selectedOrder.order_id,
+        rider_name : selectedRider.rider_name,
+        rider_contact : selectedRider.Phone_No,
+        total_amount : selectedOrder.total_amount
+      }
+      const res = await axios.post('/api/send-status-email',order);
+      if (response.status === 200 && res.status === 200) {
         const updatedOrder = {
           ...selectedOrder,
           rider_id: selectedRider.rider_id,

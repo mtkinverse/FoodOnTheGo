@@ -202,6 +202,8 @@ const UserContextProvider = ({ children }) => {
     })
   }
 
+  const [lodger,setLodger] = useState(false);
+
   return (
     <UserContext.Provider
       value={{
@@ -220,7 +222,9 @@ const UserContextProvider = ({ children }) => {
         getRestaurantOrders,
         restaurantOrders,
         setRestaurantOrders,
-        setPastOrders
+        setPastOrders,
+        lodger,
+        setLodger
       }}
     >
       {children}

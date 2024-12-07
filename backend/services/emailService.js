@@ -7,10 +7,9 @@ const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
     user: process.env.EMAIL,
-    pass: process.env.PASSWORD, // Use an app password for better security
+    pass: process.env.PASSWORD, 
   },
-  debug: true, // Include detailed logs
-  logger: true, // Log transport actions
+
 });
 
 function generateOTP() {
@@ -23,6 +22,7 @@ function formatOrderDetailsHTML(order) {
       <h1 style="color: #4B0082; border-bottom: 2px solid #4B0082; padding-bottom: 5px;">Order Confirmation</h1>
       <p>Hello <strong>${order.customerName}</strong>,</p>
       <p>Thank you for your order! Here are your order details:</p>
+      <hr/>
 
       <h3 style="color: #4B0082;">Order ID: ${order.id}</h3>
       <p>Date: ${order.date}</p>
@@ -36,7 +36,8 @@ function formatOrderDetailsHTML(order) {
 
       <h3 style="color: #4B0082;">Delivery Address:</h3>
       <p>${order.deliveryAddress}</p>
-      
+            <hr/>
+
       <p style="margin-top: 20px;">Thank you for ordering from us!</p>
       <p style="margin-top: 10px; text-align: center; font-weight: bold; border-top: 2px solid #4B0082; padding-top: 10px; color: #4B0082;">FOOD ON THE GO</p>
   </div>
@@ -51,12 +52,14 @@ function formatOrderCancellationEmail(order){
       <p>Your order was cancelled</p>
 
       <h3 style="color: #4B0082;">Order ID: ${order.id}</h3>
-      
+            <hr/>
+
       <p style="margin-top: 20px;">We hope to see you again!</p>
       <p style="margin-top: 10px; text-align: center; font-weight: bold; border-top: 2px solid #4B0082; padding-top: 10px; color: #4B0082;">FOOD ON THE GO</p>
   </div>
   `;
 }
+
 
 async function sendOrderNotification(email, order) {
   const mailOptions = {
@@ -90,6 +93,43 @@ async function sendCancellationEmail(email,order){
   }
 }
 
+function formatStatusEmail(order){
+  return `
+  <div style="font-family: Arial, sans-serif; color: #4B0082; background-color: #FFFFFF; padding: 20px; border: 1px solid #4B0082; border-radius: 8px;">
+      <h1 style="color: #4B0082; border-bottom: 2px solid #4B0082; padding-bottom: 5px;">Order Delivery</h1>
+      <p>Hello <strong>${order.customer_name}</strong>,</p>
+      <p>Your order is out for delivery</p>
+
+      <h3 style="color: #4B0082;">Order ID: ${order.order_id}</h3>
+      <hr/>
+      <h3 style="color: #4B0082;">Rider : ${order.rider_name}</h3>
+      <h3 style="color: #4B0082;">You can contact your rider at ${order.rider_contact}</h3>
+
+      <p style="margin-top: 20px;">Please keep Rs. ${order.total_amount} in cash,ready!</p>
+      <hr/>
+      <p style="margin-top: 20px;">Thank you for ordering from us!</p>
+
+      <p style="margin-top: 10px; text-align: center; font-weight: bold; border-top: 2px solid #4B0082; padding-top: 10px; color: #4B0082;">FOOD ON THE GO</p>
+  </div>
+  `;
+}
+
+
+async function sendStatusEmail(email,order){
+  const mailOptions = {
+    from: process.env.EMAIL,
+    to: email,
+    subject: `Your order is on the way - ${order.id}`,
+    html: formatStatusEmail(order), // For HTML emails
+};
+  try{
+    await transporter.sendMail(mailOptions);
+    console.log('dispatch email sent');
+  }
+  catch(err){
+    console.log('Error sending email');
+  }
+}
 // Send verification email
 async function sendVerificationEmail (email, otp) {
   const mailOptions = {
@@ -198,5 +238,6 @@ module.exports = {
   handleSendOTP,
   handleVerifyOTP,
   sendOrderNotification,
-  sendCancellationEmail
+  sendCancellationEmail,
+  sendStatusEmail
 };
