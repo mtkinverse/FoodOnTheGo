@@ -10,6 +10,7 @@ import {
 import { Banknote } from "lucide-react";
 
 const Cart = () => {
+  
   const {
     cart,
     cartCount,

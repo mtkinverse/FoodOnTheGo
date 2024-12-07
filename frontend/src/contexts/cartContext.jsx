@@ -18,8 +18,12 @@ const CartContextProvider = ({ children }) => {
     promo_value: 0,
     min_total : 0
   }); //user enters;
-
   
+
+  useEffect(() => {
+      
+  });
+
   const getSubTotal = () => {
     let sub_total = cart.reduce((total, item) => {
       const price = item.discounted_price && item.discounted_price < item.Item_Price 
@@ -162,7 +166,7 @@ const CartContextProvider = ({ children }) => {
 
   const placeOrder = async (addressRecv, pointNear, riderTip) => {
     let items = [];
-  
+
     // Prepare the items array from the cart
     cart.forEach((ele) => {
       items = items.concat({

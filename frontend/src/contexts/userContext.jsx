@@ -16,7 +16,8 @@ const UserContextProvider = ({ children }) => {
   });
 
   const {setAlert} = useAlertContext();
-  
+  const [pastAddresses,setAddresses] = useState([]);
+
   //for rider
   const [bikeDetails,setBikeDetails] = useState({
      BikeNo : ""
@@ -34,7 +35,7 @@ const UserContextProvider = ({ children }) => {
   const fetchOrders = async () => {
     try {
       const response = await axios.get(`/api/getAllOrders/${userData.User_id}`);
-  
+      const response2 =await axios.get(`/api/getPastAddresses/${userData.User_id}`);
       const current = [];
       const past = [];
   

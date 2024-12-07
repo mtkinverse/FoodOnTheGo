@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import {
   FaStar,
-  FaInfoCircle,
+  FaTags,
   FaSearch,
   FaPlus,
   FaTag,
   FaTimes,
   FaMapMarkerAlt,
+  FaCopy,
+  FaShoppingCart
 } from "react-icons/fa";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
@@ -14,6 +16,164 @@ import { useCartContext } from "../contexts/cartContext";
 import { useUserContext } from "../contexts/userContext";
 import { useAlertContext } from "../contexts/alertContext";
 import Cart from "./Cart";
+
+const MenuItemCard = ({ item, handleAddToCart }) => {
+  const { loggedIn } = useUserContext();
+
+  // Calculate discount percentage
+  const calculateDiscountPercentage = () => {
+    if (item.discounted_price && item.discounted_price < item.Item_Price) {
+      return Math.round(
+        ((item.Item_Price - item.discounted_price) / item.Item_Price) * 100
+      );
+    }
+    return 0;
+  };
+
+  const discountPercentage = calculateDiscountPercentage();
+
+  return (
+    <div className="group relative bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-purple-50">
+      {/* Discount Badge */}
+      {discountPercentage > 0 && (
+        <div className="absolute top-3 left-3 z-10 bg-yellow-400 text-purple-900 px-2 py-1 rounded-full text-xs font-bold flex items-center space-x-1 shadow-md">
+          <FaTags className="w-3 h-3" />
+          <span>{discountPercentage}% OFF</span>
+        </div>
+      )}
+
+      {/* Item Image */}
+      <div className="relative h-40 overflow-hidden">
+        {item.Item_image ? (
+          <img
+            src={item.Item_image}
+            alt={item.Dish_Name}
+            className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-300"
+          />
+        ) : (
+          <div className="w-full h-full bg-purple-100 flex items-center justify-center">
+            <FaShoppingCart className="text-purple-300 w-16 h-16" />
+          </div>
+        )}
+      </div>
+
+      {/* Item Details */}
+      <div className="p-4 space-y-3">
+        {/* Dish Name */}
+        <h3 className="text-lg font-bold text-purple-900 line-clamp-2 mb-2">
+          {item.Dish_Name}
+        </h3>
+{/* Fire Tag */}
+{item.popular && (
+  <div className=" absolute top-7 left-3 z-10 bg-gradient-to-r from-red-600 to-orange-600 text-white text-sm font-semibold px-3 py-1 rounded-full shadow-lg flex items-center space-x-2 z-10">
+  <span className="font-extrabold">popular</span>
+  </div>
+)}
+
+
+        {/* Pricing */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            {/* Discounted Price */}
+            {item.discounted_price && item.discounted_price < item.Item_Price ? (
+              <>
+                <span className="text-purple-600 font-bold text-base">
+                  Rs. {item.discounted_price.toFixed(2)}
+                </span>
+                <span className="text-gray-400 line-through text-sm">
+                  Rs. {item.Item_Price}
+                </span>
+              </>
+            ) : (
+              <span className="text-purple-600 font-bold text-base">
+                Rs. {item.Item_Price}
+              </span>
+            )}
+          </div>
+
+          {/* Add to Cart Button */}
+          <button
+            className={`w-10 h-10 flex items-center justify-center 
+              rounded-full transition-all duration-300 
+              ${
+                loggedIn
+                  ? "bg-purple-500 hover:bg-purple-600 text-white hover:shadow-lg"
+                  : "bg-gray-300 cursor-not-allowed"
+              }
+            `}
+            onClick={() => handleAddToCart(item)}
+            disabled={!loggedIn}
+            aria-label={`Add ${item.Dish_Name} to cart`}
+          >
+            <FaPlus className="w-5 h-5" />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+
+const DealCard = ({ deal }) => {
+  const {setAlert} = useAlertContext();
+  const copyPromoCode = () => {
+    navigator.clipboard.writeText(deal.promo_code);
+    setAlert({message: 'Code copied! 🎉',type: 'success'});
+  };
+
+  return (
+    <div className="bg-white rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-xl border border-purple-100">
+      {/* Top Gradient Banner */}
+      <div className="bg-gradient-to-r from-purple-600 to-indigo-700 p-3 flex justify-between items-center">
+        <div className="flex items-center space-x-2">
+          <FaTag className="text-yellow-400 w-5 h-5" />
+          <span className="text-white font-bold text-lg">
+            {deal.promo_value}% OFF
+          </span>
+        </div>
+        <button 
+          onClick={copyPromoCode}
+          className="bg-white/20 hover:bg-white/30 text-white rounded-full p-2 transition-all"
+          title="Copy Promo Code"
+        >
+          <FaCopy className="w-4 h-4" />
+        </button>
+      </div>
+
+      {/* Deal Details */}
+      <div className="p-4 space-y-3">
+        {/* Promo Code Section */}
+        <div className="flex items-center justify-between">
+          <div>
+            <span className="text-gray-600 text-sm">Promo Code:</span>
+            <span className="ml-2 font-bold text-purple-800 bg-purple-100 px-2 py-1 rounded-full text-sm">
+              {deal.promo_code}
+            </span>
+          </div>
+        </div>
+
+        {/* Minimum Order Information */}
+        <div className="flex items-center space-x-2 text-gray-700">
+          <FaShoppingCart className="w-5 h-5 text-purple-600" />
+          {deal.Min_Total > 0 ? (
+            <span className="text-sm">
+              Minimum Order: 
+              <span className="font-bold ml-1 text-purple-800">
+                Rs. {deal.Min_Total}
+              </span>
+            </span>
+          ) : (
+            <span className="text-green-600 font-medium text-sm flex items-center">
+              No Minimum Order! 🎉
+            </span>
+          )}
+        </div>
+
+      
+      </div>
+    </div>
+  );
+};
 
 const RestaurantMenu = () => {
   const { restaurant_id } = useParams();
@@ -49,7 +209,7 @@ const RestaurantMenu = () => {
           `/api/getReviews/${restaurant_id}`
         );
         setReviews(reviewsResponse.data);
-
+          
         const dealsResponse = await axios.get(
           `/api/getPromos/${restaurant_id}`
         );
@@ -59,6 +219,17 @@ const RestaurantMenu = () => {
           "All",
           ...new Set(menuResponse.data.map((item) => item.Cuisine)),
         ];
+
+        const updatedMenuItems = menuResponse.data.map(menuItem => {
+          const isPopular = popularResponse.data.some(popularItem => popularItem.Item_id === menuItem.Item_id);
+        
+          return {
+            ...menuItem,
+            popular: isPopular,  
+          };
+        });
+        setMenuItems(updatedMenuItems);
+        console.log('trying to preint categories');
         setCategories(uniqueCategories);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -131,7 +302,7 @@ const RestaurantMenu = () => {
     return (
       <div className="w-full max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
         {/* Restaurant Overview */}
-        <div className="flex flex-col sm:flex-row gap-6 items-start mb-8 bg-gradient-to-r from-purple-50 to-purple-100 p-6 rounded-xl shadow-lg relative overflow-hidden">
+        <div className="flex flex-col sm:flex-row gap-6 items-start mb-8 bg-gradient-to-r from-purple-900 to-indigo-800 p-6 rounded-xl shadow-lg relative overflow-hidden">
           <img
             src={restaurant.Restaurant_Image}
             alt={restaurant.Restaurant_Name}
@@ -139,11 +310,11 @@ const RestaurantMenu = () => {
           />
     
           <div className="flex-1 min-w-0">
-            <h1 className="text-xl sm:text-2xl font-extrabold mb-2 truncate text-gray-800 hover:text-purple-700 transition-colors duration-300">
+            <h1 className="text-xl sm:text-2xl font-extrabold mb-2 truncate text-white hover:text-purple-700 transition-colors duration-300">
               {restaurant.Restaurant_Name}
             </h1>
     
-            <div className="text-sm sm:text-base text-purple-600 mb-3 truncate flex items-center gap-2">
+            <div className="text-sm sm:text-base text-white mb-3 truncate flex items-center gap-2">
               <svg
                 className="w-5 h-5"
                 fill="currentColor"
@@ -197,121 +368,29 @@ const RestaurantMenu = () => {
           </div>
     
           {restaurant.discount_value && (
-            <div className="absolute top-0 right-0 bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-sm font-extrabold px-6 py-2 rounded-bl-2xl shadow-lg transform rotate-12 translate-x-2 -translate-y-2">
+            <div className="absolute top-0 right-0 bg-gradient-to-r from-purple-500 to-yellow-400 text-white text-sm font-extrabold px-6 py-2 rounded-bl-2xl shadow-lg transform rotate-12 translate-x-2 -translate-y-2">
               {restaurant.discount_value}% OFF
             </div>
           )}
+
         </div>
        {/* Available Deals */}
-       {Array.isArray(deals) && deals.length > 0 && (
-        <div className="mb-6">
-          <h2 className="text-lg font-extrabold mb-3 text-gray-800">
-            Available Deals
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {deals.map((deal, index) => (
-              <div
-                key={index}
-                className="bg-purple-50 shadow-sm rounded-lg p-3 border border-gray-200 hover:bg-purple-200 hover:scale-105 transform transition-all duration-300 ease-in-out relative"
-              >
-                {/* Add the border to the right side */}
-                <div className="absolute top-0 right-0 h-full w-4 bg-gradient-to-b from-purple-400 to-purple-800 rounded-tr-lg rounded-br-lg"></div>
-                {/* <div className="absolute top-0 right-2 h-full w-3 bg-gradient-to-b from-purple-300 to-purple-500 rounded-tr-lg rounded-br-lg"></div> */}
-
-                <div className="flex flex-col gap-1">
-                  <div className="bg-gradient-to-r from-purple-500 to-purple-700 text-white px-2 py-1 rounded-full text-xs font-semibold inline-flex items-center gap-1 w-fit">
-                    <FaTag className="w-3 h-3" />
-                    <span>{deal.promo_value}% OFF</span>
-                  </div>
-                  <div className="text-xs">
-                    Code: <span className="font-bold">{deal.promo_code}</span>
-                  </div>
-                   {/* Min Total Message */}
-          <div className="text-gray-700 text-sm">
-            {deal.Min_Total > 0 ? (
-              <span>
-                Min. Order: <span className="font-medium">Rs. {deal.Min_Total}</span>
-              </span>
-            ) : (
-              <span className="text-green-600 font-medium">
-                No minimum order required! 🎉
-              </span>
-            )}
-          </div>
-                </div>
-              </div>
-            ))}
-          </div>
+       { Array.isArray(deals) && deals.length > 0 && (
+      <div className="mb-6">
+        <h2 className="text-2xl font-extrabold mb-5 text-purple-900 flex items-center">
+          <FaTag className="mr-3 text-yellow-500" />
+          Available Deals
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {deals.map((deal, index) => (
+            <DealCard key={index} deal={deal} />
+          ))}
         </div>
+      </div>
+    
       )}
       
-    
-   {/* Popular Items Section */}
-{Array.isArray(popularItems) && popularItems.length > 0 && (
-  <div className="mb-8">
-        <h2 className="text-lg font-extrabold mb-3 text-gray-800">
-            Popular items
-          </h2>
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-      {popularItems.map((item, index) => (
-        <div
-          key={index}
-          className="relative flex justify-between items-start bg-purple-50 p-3 rounded-lg border border-gray-100 transition-all duration-300 ease-in-out 
-            hover:border-purple-300 hover:bg-purple-200 hover:shadow-lg hover:scale-105"
-        >
-          {/* Fire Tag */}
-          <div className="absolute -top-2 -left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-md">
-            🔥 Popular
-          </div>
 
-          <div className="flex-1 min-w-0 pr-2 my-2">
-            <h3 className="font-semibold text-sm mb-1 truncate">
-              {item.Dish_Name}
-            </h3>
-            <div className="flex items-center gap-2">
-              {item.Item_Price > (item.discounted_price || 0) && (
-                <span className="text-gray-400 line-through text-xs">
-                  Rs. {item.Item_Price}
-                </span>
-              )}
-
-              {/* Display discounted price if it exists */}
-              {item.discounted_price && item.discounted_price < item.Item_Price ? (
-                <span className="text-purple-500 font-semibold text-xs">
-                  Rs. {item.discounted_price.toFixed(2)}
-                </span>
-              ) : (
-                <span className="text-purple-500 font-semibold text-xs">
-                  Rs. {item.Item_Price}
-                </span>
-              )}
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2 my-auto h-full">
-            {item.Item_image && (
-              <img
-                src={item.Item_image}
-                alt={item.Dish_Name}
-                className="w-16 h-16 object-cover rounded-lg transition-all duration-300 transform hover:scale-110"
-              />
-            )}
-            <button
-              className={`flex-shrink-0 w-7 h-7 flex items-center justify-center bg-white border border-gray-200 rounded-full hover:border-purple-500 transition-colors group ${
-                !loggedIn ? "cursor-not-allowed bg-red-500" : ""
-              }`}
-              aria-label={`Add ${item.Dish_Name} to cart`}
-              disabled={!loggedIn}
-              onClick={() => handleAddToCart(item)}
-            >
-              <FaPlus className="w-3 h-3 text-purple-500 group-hover:scale-110 transition-transform" />
-            </button>
-          </div>
-        </div>
-      ))}
-    </div>
-  </div>
-)}
 
 
       {reviewsPopup && (
@@ -439,7 +518,7 @@ const RestaurantMenu = () => {
           {categories.map((category, index) => (
             <button
               key={index}
-              className={`flex-shrink-0 px-3 py-1 rounded-full text-xs font-medium transition-colors whitespace-nowrap ${
+              className={`flex-shrink-0 px-3 py-1 rounded-full text-xs font-extrabold transition-colors whitespace-nowrap ${
                 selectedCategory === category
                   ? "bg-purple-500 text-white"
                   : "bg-gray-50 text-gray-800 hover:bg-purple-200"
@@ -454,62 +533,19 @@ const RestaurantMenu = () => {
 
    
 
-      {/* Menu Items */}
       {Object.entries(groupedCategories).map(([category, items]) => (
-        <div key={category} className="mb-6">
-          <h2 className="text-lg font-extrabold mb-3 text-gray-800">{category}</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <div key={category} className="mb-8">
+          <h2 className="text-2xl font-extrabold mb-5 text-purple-900 flex items-center">
+            <span className="mr-3 text-purple-600">•</span>
+            {category}
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {items.map((item, index) => (
-              <div
-                key={index}
-                className="flex justify-between items-start bg-purple-50 p-3 rounded-lg border border-gray-100 transition-all duration-300 ease-in-out 
-          hover:border-purple-300 hover:bg-purple-200 hover:shadow-lg hover:scale-105"
-              >
-                <div className="flex-1 min-w-0 pr-2 my-2">
-                  <h3 className="font-semibold text-sm mb-1 truncate">
-                    {item.Dish_Name}
-                  </h3>
-                  <div className="flex items-center gap-2">
-                    {item.Item_Price > (item.discounted_price || 0) && (
-                      <span className="text-gray-400 line-through text-xs">
-                        Rs. {item.Item_Price}
-                      </span>
-                    )}
-
-                    {/* Display discounted price if it exists */}
-                    {item.discounted_price &&
-                    item.discounted_price < item.Item_Price ? (
-                      <span className="text-purple-500 font-semibold text-xs">
-                        Rs. {item.discounted_price.toFixed(2)}
-                      </span>
-                    ) : (
-                      <span className="text-purple-500 font-semibold text-xs">
-                        Rs. {item.Item_Price}
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2 my-auto h-full">
-                  {item.Item_image && (
-                    <img
-                      src={item.Item_image}
-                      alt={item.Dish_Name}
-                      className="w-16 h-16 object-cover rounded-lg transition-all duration-300 transform hover:scale-110" // Increased image size and hover effect
-                    />
-                  )}
-                  <button
-                    className={`flex-shrink-0 w-7 h-7 flex items-center justify-center bg-white border border-gray-200 rounded-full hover:border-purple-500 transition-colors group ${
-                      !loggedIn ? "cursor-not-allowed bg-red-500" : ""
-                    }`}
-                    aria-label={`Add ${item.Dish_Name} to cart`}
-                    disabled={!loggedIn}
-                    onClick={() => handleAddToCart(item)}
-                  >
-                    <FaPlus className="w-3 h-3 text-purple-500 group-hover:scale-110 transition-transform" />
-                  </button>
-                </div>
-              </div>
+              <MenuItemCard 
+                key={index} 
+                item={item} 
+                handleAddToCart={handleAddToCart} 
+              />
             ))}
           </div>
         </div>

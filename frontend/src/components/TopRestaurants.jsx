@@ -118,7 +118,7 @@ const TopRestaurants = () => {
               className={`p-2 rounded-full border transition-all duration-300
                 ${currentIndex === 0
                   ? 'border-gray-200 text-gray-300 cursor-not-allowed'
-                  : 'border-gray-300 text-gray-600 hover:border-purple-600 hover:text-purple-600'
+                  : 'border-gray-300 text-gray-600 hover:border-purple-600 hover:text-red-600'
                 }`}
               aria-label="Previous slide"
             >
@@ -134,7 +134,7 @@ const TopRestaurants = () => {
                   ? currentIndex >= restaurantData.length - 1 
                   : currentIndex >= restaurantData.length - itemsToShow)
                   ? 'border-gray-200 text-gray-300 cursor-not-allowed'
-                  : 'border-gray-300 text-gray-600 hover:border-purple-600 hover:text-purple-600'
+                  : 'border-gray-300 text-gray-600 hover:border-purple-600 hover:text-red-600'
                 }`}
               aria-label="Next slide"
             >

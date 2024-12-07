@@ -2,6 +2,8 @@ const db = require('../db');
 const axios = require('axios');
 const { sendOrderNotification, sendCancellationEmail, sendStatusEmail } = require('../services/emailService');
 
+
+
 module.exports.notifyDispatch = (req, res) => {
     const { email } = req.body;
     console.log(email, req.body);
@@ -200,31 +202,7 @@ module.exports.PlaceOrder = (req, res) => {
 
     const { Customer_id, Customer_name, Email, Menu_Id, Address, NearbyPoint, items, total_amount, promo_id, riderTip } = req.body;
     let latt = undefined, lngi = undefined;
-    axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
-        params: {
-            address: Address,
-            key: process.env.MAP_KEY,
-        },
-    }).then(res => {
-        const { results, status } = res.data;
-        // console.log('status for ',Address, ' is ',status)
-        if (status == 'OK' && results.length > 0) {
-            // Valid location
-            console.log(results)
-            const formattedAddress = results[0].formatted_address;
-            const { lat, lng } = results[0].geometry.location;
-            latt = lat;
-            lngi = lng;
-            console.log(formattedAddress, ' long & lat ', latt, lngi);
-
-        }
-        else {
-            res.status(400).json({ message: 'Invalid location' })
-            return;
-        };
-        console.log(' long & lat ', latt, lngi);
-    })
-        .then(() => {
+  
             const q1 = 'SELECT Restaurant_id FROM restaurant WHERE menu_id = ?';
             db.beginTransaction(() => {
 
@@ -240,8 +218,8 @@ module.exports.PlaceOrder = (req, res) => {
 
                     const Restaurant_id = restaurantResult[0].Restaurant_id;
 
-                    const createOrderQuery = 'CALL PLACEORDER (?, ?, ?, ?, ?, ?, @Created_Order_id)';
-                    db.query(createOrderQuery, [Customer_id, Restaurant_id, Address, NearbyPoint, latt, lngi], (err, orderResult) => {
+                    const createOrderQuery = 'CALL PLACEORDER (?, ?, ?, ?, @Created_Order_id)';
+                    db.query(createOrderQuery, [Customer_id, Restaurant_id, Address, NearbyPoint], (err, orderResult) => {
                         if (err) {
                             console.error('Error while placing order:', err);
                             return res.status(500).json({ message: 'Error while placing order' });
@@ -299,12 +277,7 @@ module.exports.PlaceOrder = (req, res) => {
                 });
 
             })
-        }).catch(err => {
-            console.log(' long & lat ', latt, lngi);
-            res.status(400).json({ message: 'Invalid location' })
-            return;
-        });
-
+       
 
 
 };

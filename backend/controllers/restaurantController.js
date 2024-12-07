@@ -114,7 +114,9 @@ module.exports.getPopularItems = (req, res) => {
      join orders o on oo.order_id = o.order_id
      where restaurant_id = ?
      group by oo.item_id
-     having count(oo.order_id) > 0; 
+     having count(oo.order_id) > 0
+     order by count(oo.order_id)
+     LIMIT 3;
   `;
   
   db.query(popularItemsQuery, [restaurantId], (err, result) => {
