@@ -726,7 +726,7 @@ const Navbar = () => {
               alt="FoodGO Logo"
               className="h-8 w-auto"
             />
-            <h2 className="text-2xl font-bold text-purple-600">FoodGO</h2>
+            <h2 className="text-2xl font-extrabold text-purple-600">FoodGO</h2>
           </div>
 
           {/* Desktop Menu */}

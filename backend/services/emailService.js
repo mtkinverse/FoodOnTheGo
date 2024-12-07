@@ -18,44 +18,56 @@ function generateOTP() {
 
 function formatOrderDetailsHTML(order) {
   return `
-  <div style="font-family: Arial, sans-serif; color: #4B0082; background-color: #FFFFFF; padding: 20px; border: 1px solid #4B0082; border-radius: 8px;">
-      <h1 style="color: #4B0082; border-bottom: 2px solid #4B0082; padding-bottom: 5px;">Order Confirmation</h1>
-      <p>Hello <strong>${order.customerName}</strong>,</p>
-      <p>Thank you for your order! Here are your order details:</p>
-      <hr/>
+  <div style="font-family: Arial, sans-serif; color: #333; background-color: #f9f9f9; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
+      <h1 style="color: #4B0082; text-align: center; border-bottom: 2px solid #4B0082; padding-bottom: 10px;">Order Confirmation</h1>
+      <p style="font-size: 16px; line-height: 1.5;">Hello <strong>${order.customerName}</strong>,</p>
+      <p style="font-size: 16px; line-height: 1.5;">Thank you for your order! Below are your order details:</p>
 
-      <h3 style="color: #4B0082;">Order ID: ${order.id}</h3>
-      <p>Date: ${order.date}</p>
+      <div style="margin: 20px 0; padding: 10px; background-color: #ffffff; border: 1px solid #ddd; border-radius: 5px;">
+          <h3 style="color: #4B0082; margin-bottom: 5px;">Order ID: <span style="color: #000;">${order.id}</span></h3>
+          <p style="margin: 5px 0; font-size: 14px; color: #555;">Date: ${order.date}</p>
+      </div>
 
-      <h3 style="color: #4B0082;">Items:</h3>
-      <ul style="list-style-type: none; padding: 0;">
-          ${order.items.map(item => `<li style='margin-bottom: 8px;'>${item.quantity}x ${item.dish_name} - <strong>Rs ${item.Item_Price}</strong></li>`).join('')}
+      <h3 style="color: #4B0082; margin-top: 20px;">Items Ordered:</h3>
+      <ul style="list-style: none; padding: 0;">
+          ${order.items.map(item => `
+              <li style='margin-bottom: 10px; font-size: 14px;'>
+                  <span style="font-weight: bold;">${item.quantity}x</span> ${item.dish_name} 
+                  - <span style="color: #2E8B57; font-weight: bold;">Rs ${item.Item_Price}</span>
+              </li>
+          `).join('')}
       </ul>
 
-      <h3 style="color: #4B0082;">Total Amount: <span style="color: #2E8B57;">Rs ${order.totalAmount}</span></h3>
+      <div style="margin: 20px 0; padding: 10px; background-color: #ffffff; border: 1px solid #ddd; border-radius: 5px;">
+          <h3 style="color: #4B0082; margin-bottom: 5px;">Total Amount:</h3>
+          <p style="font-size: 16px; color: #2E8B57; font-weight: bold;">Rs ${order.totalAmount}</p>
+      </div>
 
-      <h3 style="color: #4B0082;">Delivery Address:</h3>
-      <p>${order.deliveryAddress}</p>
-            <hr/>
+      <h3 style="color: #4B0082; margin-top: 20px;">Delivery Address:</h3>
+      <p style="font-size: 14px; line-height: 1.5;">${order.deliveryAddress}</p>
 
-      <p style="margin-top: 20px;">Thank you for ordering from us!</p>
-      <p style="margin-top: 10px; text-align: center; font-weight: bold; border-top: 2px solid #4B0082; padding-top: 10px; color: #4B0082;">FOOD ON THE GO</p>
+      <hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;">
+      <p style="font-size: 16px; text-align: center; margin: 20px 0; color: #555;">Thank you for choosing <strong style="color: #4B0082;">FOOD ON THE GO</strong>!</p>
+      <p style="font-size: 14px; text-align: center; font-weight: bold; color: #4B0082; margin-top: 10px;">Your satisfaction is our priority!</p>
   </div>
   `;
 }
 
-function formatOrderCancellationEmail(order){
+
+function formatOrderCancellationEmail(order) {
   return `
-  <div style="font-family: Arial, sans-serif; color: #4B0082; background-color: #FFFFFF; padding: 20px; border: 1px solid #4B0082; border-radius: 8px;">
-      <h1 style="color: #4B0082; border-bottom: 2px solid #4B0082; padding-bottom: 5px;">Order Cancellation</h1>
-      <p>Hello <strong>${order.customerName}</strong>,</p>
-      <p>Your order was cancelled</p>
+  <div style="font-family: Arial, sans-serif; color: #333; background-color: #f9f9f9; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
+      <h1 style="color: #B22222; text-align: center; border-bottom: 2px solid #B22222; padding-bottom: 10px;">Order Cancellation</h1>
+      <p style="font-size: 16px; line-height: 1.5;">Hello <strong>${order.customerName}</strong>,</p>
+      <p style="font-size: 16px; line-height: 1.5;">We are sorry to know that you cancelled your order. Below are the details:</p>
 
-      <h3 style="color: #4B0082;">Order ID: ${order.id}</h3>
-            <hr/>
+      <div style="margin: 20px 0; padding: 10px; background-color: #ffffff; border: 1px solid #ddd; border-radius: 5px;">
+          <h3 style="color: #B22222; margin-bottom: 5px;">Order ID: <span style="color: #000;">${order.id}</span></h3>
+      </div>
 
-      <p style="margin-top: 20px;">We hope to see you again!</p>
-      <p style="margin-top: 10px; text-align: center; font-weight: bold; border-top: 2px solid #4B0082; padding-top: 10px; color: #4B0082;">FOOD ON THE GO</p>
+      <hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;">
+      <p style="font-size: 16px; text-align: center; margin: 20px 0; color: #555;">We apologize for the any inconvenience we may caused and hope to serve you again in the future.</p>
+      <p style="font-size: 14px; text-align: center; font-weight: bold; color: #B22222; margin-top: 10px;">Thank you for choosing <strong style="color: #4B0082;">FOOD ON THE GO</strong>.</p>
   </div>
   `;
 }
@@ -93,37 +105,66 @@ async function sendCancellationEmail(email,order){
   }
 }
 
-function formatStatusEmail(order){
+function formatStatusEmail(order) {
   return `
-  <div style="font-family: Arial, sans-serif; color: #4B0082; background-color: #FFFFFF; padding: 20px; border: 1px solid #4B0082; border-radius: 8px;">
-      <h1 style="color: #4B0082; border-bottom: 2px solid #4B0082; padding-bottom: 5px;">Order Delivery</h1>
-      <p>Hello <strong>${order.customer_name}</strong>,</p>
-      <p>Your order is out for delivery</p>
+  <div style="font-family: Arial, sans-serif; color: #333; background-color: #f9f9f9; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
+      <h1 style="color: #4B0082; text-align: center; border-bottom: 2px solid #4B0082; padding-bottom: 10px;">Order Delivery</h1>
+      <p style="font-size: 16px; line-height: 1.5;">Hello <strong>${order.customer_name}</strong>,</p>
+      <p style="font-size: 16px; line-height: 1.5;">We are excited to inform you that your order is out for delivery!</p>
 
-      <h3 style="color: #4B0082;">Order ID: ${order.order_id}</h3>
-      <hr/>
-      <h3 style="color: #4B0082;">Rider : ${order.rider_name}</h3>
-      <h3 style="color: #4B0082;">You can contact your rider at ${order.rider_contact}</h3>
+      <div style="margin: 20px 0; padding: 10px; background-color: #ffffff; border: 1px solid #ddd; border-radius: 5px;">
+          <h3 style="color: #4B0082; margin-bottom: 5px;">Order ID: <span style="color: #000;">${order.order_id}</span></h3>
+          <p style="margin: 5px 0; font-size: 14px; color: #555;">Rider: <strong>${order.rider_name}</strong></p>
+          <p style="margin: 5px 0; font-size: 14px; color: #555;">Contact: <strong>${order.rider_contact}</strong></p>
+      </div>
 
-      <p style="margin-top: 20px;">Please keep Rs. ${order.total_amount} in cash,ready!</p>
-      <hr/>
-      <p style="margin-top: 20px;">Thank you for ordering from us!</p>
+      <p style="font-size: 16px; line-height: 1.5; margin-top: 20px;">Please have <strong style="color: #2E8B57;">Rs. ${order.total_amount}</strong> ready for payment.</p>
 
-      <p style="margin-top: 10px; text-align: center; font-weight: bold; border-top: 2px solid #4B0082; padding-top: 10px; color: #4B0082;">FOOD ON THE GO</p>
+      <hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;">
+      <p style="font-size: 16px; text-align: center; margin: 20px 0; color: #555;">Thank you for choosing <strong style="color: #4B0082;">FOOD ON THE GO</strong>! We hope you enjoy your meal.</p>
+      <p style="font-size: 14px; text-align: center; font-weight: bold; color: #4B0082; margin-top: 10px;">Your satisfaction is our priority!</p>
+  </div>
+  `;
+}
+
+function formatRiderEmail(order) {
+  return `
+  <div style="font-family: Arial, sans-serif; color: #333; background-color: #f9f9f9; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
+      <h1 style="color: #4B0082; text-align: center; border-bottom: 2px solid #4B0082; padding-bottom: 10px;">Order Delivery</h1>
+      <p style="font-size: 16px; line-height: 1.5;">Hello <strong>${order.rider_name}</strong>,</p>
+      <p style="font-size: 16px; line-height: 1.5;">You have been assigned a new delivery!</p>
+
+      <div style="margin: 20px 0; padding: 10px; background-color: #ffffff; border: 1px solid #ddd; border-radius: 5px;">
+          <h3 style="color: #4B0082; margin-bottom: 5px;">Order ID: <span style="color: #000;">${order.order_id}</span></h3>
+          <p style="margin: 5px 0; font-size: 14px; color: #555;">Address: <strong>${order.address}</strong></p>
+          <p style="margin: 5px 0; font-size: 14px; color: #555;">Amount to collect: <strong>${order.toal_amount}</strong></p>
+      </div>
+
+      <p style="font-size: 16px; line-height: 1.5; margin-top: 20px;">Please ensure a timely delivery!</p>
+
+      <hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;">
+      <p style="font-size: 16px; text-align: center; margin: 20px 0; color: #555;"> <strong style="color: #4B0082;">FOOD ON THE GO</strong>!.</p>
   </div>
   `;
 }
 
 
-async function sendStatusEmail(email,order){
-  const mailOptions = {
+async function sendStatusEmail(customer_email,rider_email,order){
+  const customerOptions = {
     from: process.env.EMAIL,
-    to: email,
-    subject: `Your order is on the way - ${order.id}`,
+    to: customer_email,
+    subject: `Your order is on the way - ${order.order_id}`,
     html: formatStatusEmail(order), // For HTML emails
 };
+const riderOptions = {
+  from: process.env.EMAIL,
+  to: rider_email,
+  subject: `Your have been assigned a new task- ${order.order_id}`,
+  html: formatRiderEmail(order), // For HTML emails
+};
   try{
-    await transporter.sendMail(mailOptions);
+    await transporter.sendMail(customerOptions);
+    await transporter.sendMail(riderOptions);
     console.log('dispatch email sent');
   }
   catch(err){

@@ -34,6 +34,7 @@ const Restaurants = () => {
 
       if(loggedIn){
           const res = await axios.get(`/api/orderAgain/${userData.User_id}`);
+          console.log('Order again section ' ,res.data);
           if(res.status === 200) setOrderAgain(res.data);
       }
     } catch (error) {
@@ -112,7 +113,11 @@ const Restaurants = () => {
         </div>
   
 
-      {loggedIn && <Cart />}    
+        {loggedIn && (
+        <div className="fixed bottom-4 right-8 z-50">
+          <Cart />
+        </div>
+      )}
       </div>
   );
 };

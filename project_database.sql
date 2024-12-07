@@ -3,15 +3,7 @@ CREATE DATABASE online_food_system;
 USE online_food_system;
 
  ------------------------------------------------ tables / entities --------------------------------------------
-
-CREATE TABLE OTP (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  email VARCHAR(255) NOT NULL,
-  otp VARCHAR(6) NOT NULL,
-  expiration_time DATETIME NOT NULL,
-  UNIQUE KEY unique_email (email)
-);
-
+ 
 CREATE TABLE Customer(
    Customer_id INT AUTO_INCREMENT PRIMARY KEY,
    Customer_Name VARCHAR(100) NOT NULL,
@@ -88,6 +80,9 @@ CREATE TABLE Menu_Items (
 ALTER TABLE Menu_Items AUTO_INCREMENT = 18029;
 ALTER TABLE MEnu_Items ADD COLUMN Category VARCHAR(50);
 
+select * from restaurant_owner;
+select * from restaurant;
+select * from customer;
 
 CREATE TABLE DeliveryAddress(
     Address_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -126,8 +121,7 @@ CREATE TABLE Rider_Tips (
 
 ALTER TABLE Rider_Tips ADD CONSTRAINT rid_fk FOREIGN KEY(rider_id) REFERENCES delivery_rider(rider_id);
 
-select * from delivery_rider;
-SELECT tips from rider_tips where rider_id = 102928 and date(tip_date) = CURRENT_DATE;
+
 
 CREATE TABLE Orders (
     Customer_id INT NOT NULL,
@@ -214,6 +208,14 @@ BEGIN
 END
 /
 
+CREATE TRIGGER deleted_ordered_items
+AFTER DELETE ON orders
+FOR EACH ROW
+BEGIN
+    DELETE FROM ordered_items
+    WHERE order_id = OLD.order_id;
+END
+/
 
 CREATE TRIGGER delete_location
 AFTER DELETE ON restaurant
@@ -486,4 +488,16 @@ SELECT
 
     ;
     
-    select * from orders;
+    select * from ordered_items;
+    
+     select oo.item_id,count(oo.order_id)
+     from ordered_items oo
+     join orders o on oo.order_id = o.order_id
+     where restaurant_id = 6500
+     group by oo.item_id
+     having count(oo.order_id) > 0; 
+     
+     select * from orders;
+     select * from ordered_items;
+     delete from orders;
+     delete from ordered_items where order_id <> 75643 or order_id <>75645;

@@ -30,7 +30,7 @@ const RestaurantMenu = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [reviews, setReviews] = useState([]);
   const [reviewsPopup, setReviewspop] = useState(false);
-
+  const [popularItems,setPopularItems] = useState([]);
   useEffect(() => {
     const fetchRestaurantData = async () => {
       try {
@@ -41,6 +41,9 @@ const RestaurantMenu = () => {
 
         const menuResponse = await axios.get(`/api/menu/${restaurant_id}`);
         setMenuItems(menuResponse.data);
+        
+        const popularResponse = await axios.get(`/api/getPopularItems/${restaurant_id}`);
+        setPopularItems(popularResponse.data);
 
         const reviewsResponse = await axios.get(
           `/api/getReviews/${restaurant_id}`
@@ -125,21 +128,21 @@ const RestaurantMenu = () => {
       </div>
     );
 
-  return (
-    <div className="w-full max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
-      <div>
+    return (
+      <div className="w-full max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
+        {/* Restaurant Overview */}
         <div className="flex flex-col sm:flex-row gap-6 items-start mb-8 bg-gradient-to-r from-purple-50 to-purple-100 p-6 rounded-xl shadow-lg relative overflow-hidden">
           <img
             src={restaurant.Restaurant_Image}
             alt={restaurant.Restaurant_Name}
             className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover shadow-md ring-4 ring-white"
           />
-
+    
           <div className="flex-1 min-w-0">
             <h1 className="text-xl sm:text-2xl font-extrabold mb-2 truncate text-gray-800 hover:text-purple-700 transition-colors duration-300">
               {restaurant.Restaurant_Name}
             </h1>
-
+    
             <div className="text-sm sm:text-base text-purple-600 mb-3 truncate flex items-center gap-2">
               <svg
                 className="w-5 h-5"
@@ -155,7 +158,7 @@ const RestaurantMenu = () => {
               </svg>
               {restaurant.Address}
             </div>
-
+    
             <div className="flex items-center gap-4 text-sm sm:text-base">
               <div className="flex items-center bg-yellow-100 px-3 py-1.5 rounded-full">
                 <svg
@@ -171,7 +174,7 @@ const RestaurantMenu = () => {
                   ({Math.floor(restaurant.review_count)}+)
                 </span>
               </div>
-
+    
               <button
                 className="flex items-center text-purple-700 bg-white px-4 py-1.5 rounded-full shadow-sm hover:bg-purple-50 hover:shadow-md transition-all duration-300"
                 onClick={() => setReviewspop(true)}
@@ -192,28 +195,124 @@ const RestaurantMenu = () => {
               </button>
             </div>
           </div>
-
+    
           {restaurant.discount_value && (
             <div className="absolute top-0 right-0 bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-sm font-extrabold px-6 py-2 rounded-bl-2xl shadow-lg transform rotate-12 translate-x-2 -translate-y-2">
               {restaurant.discount_value}% OFF
             </div>
           )}
         </div>
+       {/* Available Deals */}
+       {Array.isArray(deals) && deals.length > 0 && (
+        <div className="mb-6">
+          <h2 className="text-lg font-extrabold mb-3 text-gray-800">
+            Available Deals
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {deals.map((deal, index) => (
+              <div
+                key={index}
+                className="bg-purple-50 shadow-sm rounded-lg p-3 border border-gray-200 hover:bg-purple-200 hover:scale-105 transform transition-all duration-300 ease-in-out relative"
+              >
+                {/* Add the border to the right side */}
+                <div className="absolute top-0 right-0 h-full w-4 bg-gradient-to-b from-purple-400 to-purple-800 rounded-tr-lg rounded-br-lg"></div>
+                {/* <div className="absolute top-0 right-2 h-full w-3 bg-gradient-to-b from-purple-300 to-purple-500 rounded-tr-lg rounded-br-lg"></div> */}
 
-        {/* Search Bar */}
-        <div className="mb-4">
-          <div className="relative">
-            <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
-            <input
-              type="text"
-              placeholder="Search in menu"
-              className="w-full pl-10 pr-4 py-2 text-sm bg-white rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+                <div className="flex flex-col gap-1">
+                  <div className="bg-gradient-to-r from-purple-500 to-purple-700 text-white px-2 py-1 rounded-full text-xs font-semibold inline-flex items-center gap-1 w-fit">
+                    <FaTag className="w-3 h-3" />
+                    <span>{deal.promo_value}% OFF</span>
+                  </div>
+                  <div className="text-xs">
+                    Code: <span className="font-bold">{deal.promo_code}</span>
+                  </div>
+                   {/* Min Total Message */}
+          <div className="text-gray-700 text-sm">
+            {deal.Min_Total > 0 ? (
+              <span>
+                Min. Order: <span className="font-medium">Rs. {deal.Min_Total}</span>
+              </span>
+            ) : (
+              <span className="text-green-600 font-medium">
+                No minimum order required! 🎉
+              </span>
+            )}
+          </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
-      </div>
+      )}
+      
+    
+   {/* Popular Items Section */}
+{Array.isArray(popularItems) && popularItems.length > 0 && (
+  <div className="mb-8">
+        <h2 className="text-lg font-extrabold mb-3 text-gray-800">
+            Popular items
+          </h2>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {popularItems.map((item, index) => (
+        <div
+          key={index}
+          className="relative flex justify-between items-start bg-purple-50 p-3 rounded-lg border border-gray-100 transition-all duration-300 ease-in-out 
+            hover:border-purple-300 hover:bg-purple-200 hover:shadow-lg hover:scale-105"
+        >
+          {/* Fire Tag */}
+          <div className="absolute -top-2 -left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-md">
+            🔥 Popular
+          </div>
+
+          <div className="flex-1 min-w-0 pr-2 my-2">
+            <h3 className="font-semibold text-sm mb-1 truncate">
+              {item.Dish_Name}
+            </h3>
+            <div className="flex items-center gap-2">
+              {item.Item_Price > (item.discounted_price || 0) && (
+                <span className="text-gray-400 line-through text-xs">
+                  Rs. {item.Item_Price}
+                </span>
+              )}
+
+              {/* Display discounted price if it exists */}
+              {item.discounted_price && item.discounted_price < item.Item_Price ? (
+                <span className="text-purple-500 font-semibold text-xs">
+                  Rs. {item.discounted_price.toFixed(2)}
+                </span>
+              ) : (
+                <span className="text-purple-500 font-semibold text-xs">
+                  Rs. {item.Item_Price}
+                </span>
+              )}
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 my-auto h-full">
+            {item.Item_image && (
+              <img
+                src={item.Item_image}
+                alt={item.Dish_Name}
+                className="w-16 h-16 object-cover rounded-lg transition-all duration-300 transform hover:scale-110"
+              />
+            )}
+            <button
+              className={`flex-shrink-0 w-7 h-7 flex items-center justify-center bg-white border border-gray-200 rounded-full hover:border-purple-500 transition-colors group ${
+                !loggedIn ? "cursor-not-allowed bg-red-500" : ""
+              }`}
+              aria-label={`Add ${item.Dish_Name} to cart`}
+              disabled={!loggedIn}
+              onClick={() => handleAddToCart(item)}
+            >
+              <FaPlus className="w-3 h-3 text-purple-500 group-hover:scale-110 transition-transform" />
+            </button>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+)}
+
 
       {reviewsPopup && (
         <div className="fixed inset-0 z-50 flex justify-center items-center backdrop-blur-sm bg-black/40 p-4">
@@ -320,6 +419,20 @@ const RestaurantMenu = () => {
         </div>
       )}
 
+  {/* Search Bar */}
+  <div className="mb-4">
+          <div className="relative">
+            <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+            <input
+              type="text"
+              placeholder="Search in menu"
+              className="w-full pl-10 pr-4 py-2 text-sm bg-white rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+        </div>
+
       {/* Category Tabs */}
       <div className="w-full mb-6 -mx-4 px-4 overflow-x-auto scrollbar-hide">
         <div className="flex gap-2 pb-2">
@@ -339,45 +452,12 @@ const RestaurantMenu = () => {
         </div>
       </div>
 
-      {/* Available Deals */}
-      {Array.isArray(deals) && deals.length > 0 && (
-        <div className="mb-6">
-          <h2 className="text-lg font-bold mb-3 text-gray-800">
-            Available Deals
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {deals.map((deal, index) => (
-              <div
-                key={index}
-                className="bg-purple-50 shadow-sm rounded-lg p-3 border border-gray-200 hover:bg-purple-200 hover:scale-105 transform transition-all duration-300 ease-in-out relative"
-              >
-                {/* Add the border to the right side */}
-                <div className="absolute top-0 right-0 h-full w-4 bg-gradient-to-b from-purple-400 to-purple-800 rounded-tr-lg rounded-br-lg"></div>
-                {/* <div className="absolute top-0 right-2 h-full w-3 bg-gradient-to-b from-purple-300 to-purple-500 rounded-tr-lg rounded-br-lg"></div> */}
-
-                <div className="flex flex-col gap-1">
-                  <div className="bg-gradient-to-r from-purple-500 to-purple-700 text-white px-2 py-1 rounded-full text-xs font-semibold inline-flex items-center gap-1 w-fit">
-                    <FaTag className="w-3 h-3" />
-                    <span>{deal.promo_value}% OFF</span>
-                  </div>
-                  <div className="text-xs">
-                    Code: <span className="font-bold">{deal.promo_code}</span>
-                  </div>
-                  <div className="text-xs text-gray-700">
-                    Min. Order:{" "}
-                    <span className="font-medium">Rs. {deal.Min_Total}</span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+   
 
       {/* Menu Items */}
       {Object.entries(groupedCategories).map(([category, items]) => (
         <div key={category} className="mb-6">
-          <h2 className="text-lg font-bold mb-3 text-gray-800">{category}</h2>
+          <h2 className="text-lg font-extrabold mb-3 text-gray-800">{category}</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {items.map((item, index) => (
               <div
@@ -437,7 +517,7 @@ const RestaurantMenu = () => {
 
       {/* Cart Component */}
       {loggedIn && (
-        <div className="fixed bottom-4 right-8 z-0">
+        <div className="fixed bottom-4 right-8 z-50">
           <Cart />
         </div>
       )}

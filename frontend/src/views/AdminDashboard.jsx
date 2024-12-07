@@ -536,10 +536,13 @@ const AdminDashboard = () => {
       );
       const order = {
         customer_name : selectedOrder.customer_name,
-        email : selectedOrder.email_address,
+        customer_email : selectedOrder.email_address,
         order_id : selectedOrder.order_id,
+        rider_id : selectedRider.rider_id,
+        rider_email: selectedRider.email_address,
         rider_name : selectedRider.rider_name,
         rider_contact : selectedRider.Phone_No,
+        delivery_addres : selectedOrder.address,
         total_amount : selectedOrder.total_amount
       }
       const res = await axios.post('/api/send-status-email',order);
@@ -621,35 +624,33 @@ const AdminDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-purple-50 py-8">
+    <div className="min-h-screen bg-gradient-to-b from-purple-100 to-purple-50 py-8">
       <div className="container mx-auto px-4">
         <header className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">
+          <h1 className="text-4xl font-extrabold text-gray-900 mb-3">
             Restaurant Admin Dashboard
           </h1>
-          <p className="text-gray-600">Manage orders efficiently</p>
+          <p className="text-gray-700 text-lg">Manage orders efficiently</p>
         </header>
 
         {/* Buttons for Promo Actions */}
-        <div className="mb-8 flex justify-center space-x-4">
+        <div className="mb-8 flex flex-wrap justify-center gap-4">
           <button
             onClick={() => {
               setDealPopup(true);
-              console.log('selected deal' ,selectedDeal);
-              
+              console.log('selected deal', selectedDeal);
             }}
-            className="bg-purple-500 text-white px-6 py-2 rounded-md font-medium hover:bg-purple-700 transition duration-200"
+            className="bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold shadow-md hover:bg-purple-800 hover:shadow-lg transition duration-200 ease-in-out"
           >
             New Deal
           </button>
           <button
             onClick={showDeals}
-            className="bg-purple-500 text-white px-6 py-2 rounded-md font-medium hover:bg-purple-700 transition duration-200"
+            className="bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold shadow-md hover:bg-purple-800 hover:shadow-lg transition duration-200 ease-in-out"
           >
             View Deals
           </button>
         </div>
-
         {dealPopup && <DealsPopup setDealPopup={setDealPopup} selectedDeal = {selectedDeal} setSelectedDeal={setSelectedDeal} />}
 
         {/* Grid Section for Orders */}

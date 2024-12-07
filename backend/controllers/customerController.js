@@ -16,12 +16,12 @@ module.exports.orderAgain = (req, res) => {
       SELECT r.*, loc.*, d.discount_value
       FROM restaurant r
       JOIN locations loc ON r.location_id = loc.location_id
-      LEFT JOIN Discount d ON d.restaurant_id = r.restaurant_id 
+      LEFT JOIN Discount d ON d.restaurant_id = r.restaurant_id  AND d.start_date <= CURRENT_TIMESTAMP AND d.end_date >= CURRENT_TIMESTAMP
       JOIN (
         SELECT DISTINCT restaurant_id
         FROM Orders
         WHERE customer_id = ?
-      ) o ON o.restaurant_id = r.restaurant_id AND d.start_date <= CURRENT_TIMESTAMP AND d.end_date >= CURRENT_TIMESTAMP
+      ) o ON o.restaurant_id = r.restaurant_id;
     `;
 
     db.query(q, [customer_id], (err, data) => {

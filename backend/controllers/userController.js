@@ -105,6 +105,15 @@ function registerRider(req,res) {
     });
 }
 
+module.exports.isEmailUnique = (req,res) => {
+    const { email, role } = req.query;
+    const q = `SELECT * from ${role} where email_address = ? `;
+    db.query(q,[email],(err,result) => {
+        if (result.length) return res.status(409).json("account with this email or phone number already exists");
+        return res.status(200).json({message : 'Valid email'});
+    })
+}
+
 module.exports.registerUser = (req, res) => {
     const role = req.body.role 
 
