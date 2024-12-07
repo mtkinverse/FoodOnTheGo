@@ -17,5 +17,4 @@ router.get('/getCurrentDeals/:id',getDeals);
 router.post('/addDiscount/:id',AddDiscount);
 router.post('/deleteDeal/:id',deleteDeal);
 router.post('/updateDeal',updateDeal);
-
 module.exports = router;

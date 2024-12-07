@@ -1,5 +1,4 @@
 const db = require('../db');
-const {sendStatusEmail} = require('../services/emailService');
 
 module.exports.deleteDeal = (req, res) => {
     const deal_id = req.params.id;

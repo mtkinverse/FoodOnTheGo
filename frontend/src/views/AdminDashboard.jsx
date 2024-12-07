@@ -624,33 +624,34 @@ const AdminDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-purple-100 to-purple-50 py-8">
-      <div className="container mx-auto px-4">
-        <header className="mb-8 text-center">
-          <h1 className="text-4xl font-extrabold text-gray-900 mb-3">
-            Restaurant Admin Dashboard
-          </h1>
-          <p className="text-gray-700 text-lg">Manage orders efficiently</p>
-        </header>
-
-        {/* Buttons for Promo Actions */}
-        <div className="mb-8 flex flex-wrap justify-center gap-4">
+    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="max-w-7xl mx-auto">
+      {/* Hero Section */}
+      <section className="text-center py-16 mb-12 bg-gradient-to-r from-purple-600 to-indigo-800 text-white rounded-2xl shadow-xl">
+        <h1 className="text-5xl font-extrabold mb-6 tracking-tight leading-tight">
+          Welcome to Your Restaurant Admin Dashboard
+        </h1>
+        <p className="text-lg md:text-xl font-medium mb-8 opacity-90">
+          Manage orders, track deals, and optimize your restaurant’s performance with ease.
+        </p>
+        <div className="flex justify-center gap-8">
           <button
             onClick={() => {
               setDealPopup(true);
               console.log('selected deal', selectedDeal);
             }}
-            className="bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold shadow-md hover:bg-purple-800 hover:shadow-lg transition duration-200 ease-in-out"
+            className="inline-flex items-center px-8 py-4 bg-purple-500 font-bold text-white rounded-xl hover:bg-purple-600 transition-colors duration-300 ease-in-out transform hover:scale-105"
           >
-            New Deal
+            <span className="mr-2">💼</span> Add a New Deal
           </button>
           <button
             onClick={showDeals}
-            className="bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold shadow-md hover:bg-purple-800 hover:shadow-lg transition duration-200 ease-in-out"
+            className="inline-flex items-center px-8 py-4 bg-purple-500 font-bold text-white rounded-xl hover:bg-purple-600 transition-colors duration-300 ease-in-out transform hover:scale-105"
           >
-            View Deals
+            <span className="mr-2">📊</span> View Deals
           </button>
         </div>
+      </section>
         {dealPopup && <DealsPopup setDealPopup={setDealPopup} selectedDeal = {selectedDeal} setSelectedDeal={setSelectedDeal} />}
 
         {/* Grid Section for Orders */}

@@ -6,8 +6,8 @@ module.exports = {
   theme: {
     extend: {
       animation: {
-        fadeBounce: 'fadeBounce 3.5s ease-in-out infinite',
-        spinSlow: 'spin-slow 20s linear infinite',
+        fadeBounce: 'fadeBounce 6.5s ease-in-out infinite',
+        spinSlow: 'spin-slow 40s linear infinite',
       },
       keyframes: {
         fadeBounce: {

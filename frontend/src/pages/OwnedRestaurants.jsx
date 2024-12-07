@@ -16,6 +16,7 @@ import AddRestaurantPopup from "../components/AddRestaurant";
 import ManageRestaurant from "../components/ManageRestaurant"; // Import ManageRestaurant
 import { useAlertContext } from "../contexts/alertContext";
 import { StatsPopup } from "../components/StatsPopup";
+import PerformanceGraphs from "../components/ChartComponent";
 const OwnedRestaurants = () => {
   const { setAlert } = useAlertContext();
 
@@ -120,12 +121,32 @@ const OwnedRestaurants = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
+
+      <section className="text-center py-16 mb-12 bg-gradient-to-r from-purple-600 to-indigo-800 text-white rounded-2xl shadow-xl">
+  <h1 className="text-5xl font-extrabold mb-6 tracking-tight leading-tight">
+    Welcome to Your Restaurant Dashboard
+  </h1>
+  <p className="text-lg md:text-xl font-medium mb-8 opacity-90">
+    You have the power to grow your restaurant business, track performance, and make updates with ease.
+  </p>
+  <div className="flex justify-center gap-8">
+    <button
+      onClick={() => setIsPopupOpen(true)}
+      className="inline-flex items-center px-8 py-4 bg-purple-500 font-bold text-white rounded-xl hover:bg-purple-600 transition-colors duration-300 ease-in-out transform hover:scale-105"
+    >
+      <span className="mr-2">📍</span> Add a New Restaurant
+    </button>
+  </div>
+</section>
+
+
+
         <div className="flex flex-wrap justify-between items-center mb-8">
           <div>
-            <h2 className="text-3xl font-bold text-gray-900">
+            <h2 className="text-3xl font-extrabold text-purple-700">
               Your Restaurants
             </h2>
-            <p className="mt-2 text-gray-600">
+            <p className="mt-2 font-semibold text-gray-600">
               You currently own {restaurants.length} restaurant
               {restaurants.length !== 1 ? "s" : ""}
             </p>
@@ -152,7 +173,7 @@ const OwnedRestaurants = () => {
                 className="w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-              <h3 className="absolute bottom-4 left-4 text-xl font-semibold text-white">
+              <h3 className="absolute bottom-4 left-4 text-xl font-extrabold text-white">
                 {restaurant.Restaurant_Name}
               </h3>
               <button

@@ -1,5 +1,24 @@
 const db = require('../db');
 
+module.exports.getWeeklyRevenue = (req,res) => {
+   const r_id = req.params.id;
+   const q = `
+       SELECT r.restaurant_id, r.restaurant_name, WEEK(o.order_time) AS week, SUM(o.total_amount) AS total_revenue FROM
+       orders o JOIN restaurant r ON o.restaurant_id = r.restaurant_id
+       WHERE YEAR(o.order_time) = YEAR(CURRENT_DATE)  
+       AND MONTH(o.order_time) = MONTH(CURRENT_DATE)  AND r.restaurant_id = ?
+       GROUP BY r.restaurant_id, r.restaurant_name, WEEK(o.order_time)
+       ORDER BY week ASC;
+   `
+   db.query(q,[r_id],(err,result) => {
+        if(err){
+          return res.status(500).json({message: 'error fetching weekly revenue'});
+        }
+        console.log(result);
+        return res.status(200).json(result);
+   })
+}
+
 module.exports.getReviews = (req,res) => {
     const restaurant_id = req.params.id;
     const q = `

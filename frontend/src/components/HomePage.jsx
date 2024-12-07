@@ -9,24 +9,20 @@ const HomePage = () => {
 
   return (
     <>
-      {/* Hero Section */}
       <section className="bg-gradient-to-r from-purple-900 to-indigo-800 overflow-hidden">
         <div className="container mx-auto px-4 py-16 sm:px-6 lg:px-8">
           <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
-            {/* Circular Image Container - Left Side */}
             <div className="relative w-64 h-64 lg:w-96 lg:h-96 flex-shrink-0">
               <div className="w-full h-full rounded-full overflow-hidden border-4 border-white/20 shadow-2xl">
                 <img
                   src="/images/1.jpg"
                   alt="Delicious Food"
-                  className="w-full h-full object-cover"
+                  className="animate-spinSlow w-full h-full object-cover"
                 />
               </div>
-              {/* Decorative Ring */}
               <div className="absolute -inset-4 border-2 border-white/10 rounded-full animate-spin-slow" />
             </div>
 
-            {/* Text Content - Right Side */}
             <div className="flex-1 max-w-xl text-center lg:text-left">
               <h1 className="text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-6 leading-tight">
                 Savor Every Bite, <br />
@@ -52,38 +48,23 @@ const HomePage = () => {
           </div>
         </div>
       </section>
-  {/* Add custom animation for the decorative ring */}
-  <style jsx>{`
-        @keyframes spin-slow {
-          from {
-            transform: rotate(0deg);
-          }
-          to {
-            transform: rotate(360deg);
-          }
-        }
-        .animate-spin-slow {
-          animation: spin-slow 20s linear infinite;
-        }
-      `}</style>
-
-      {/* Features Section */}
+ 
       <section className="py-10 bg-white">
         <div className="container mx-auto px-6">
           <h2 className="text-4xl font-extrabold text-center text-purple-800 py-4">Why Choose Us</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 py-10">
             <FeatureCard
-              icon={<FaUtensils className="text-yellow-400 text-4xl" />}
+              icon={<FaUtensils className="animate-fadeBounce text-yellow-400 text-4xl" />}
               title="Curated Restaurants"
               description="Handpicked top-quality dining options for your pleasure"
             />
             <FeatureCard
-              icon={<FaStar className="text-green-400 text-4xl" />}
+              icon={<FaStar className="animate-fadeBounce text-green-400 text-4xl" />}
               title="Exclusive Offers"
               description="Enjoy special deals and discounts on your favorite meals"
             />
             <FeatureCard
-              icon={<FaClock className="text-orange-400 text-4xl" />}
+              icon={<FaClock className="animate-fadeBounce text-orange-400 text-4xl" />}
               title="On-Time Delivery"
               description="Your food arrives hot and fresh, right when you need it"
             />
@@ -91,19 +72,16 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Top Restaurants Section */}
       <section id="topRestaurants" className="py-10 bg-white">
-        <div className="container mx-auto px-2 sm:px-6 lg:px-8">
+        <div className="container mx-auto px-2 sm:px-6 lg:px-8 mb-4">
           <div className="flex items-center justify-center gap-2 mb-4">
             <FaStore className="text-purple-800 text-5xl" />
             <h2 className="text-4xl font-extrabold text-purple-800">Top Restaurants</h2>
           </div>
 
-          {/* Section Description */}
           <p className="text-center text-purple-700 text-xl font-semibold mb-2">
             Discover the best-rated restaurants near you.
           </p>
-          {/* Top Restaurants List */}
           <TopRestaurants />
           
         </div>
@@ -122,12 +100,10 @@ const FeatureCard = ({ icon, title, description }) => (
   <div className="flex flex-col items-center text-center bg-purple-50 p-4 rounded-lg shadow-md transform transition-all duration-300 hover:shadow-lg hover:scale-105 hover:bg-gradient-to-r from-indigo-100 to-purple-300">
     <div className="mb-4 text-purple-700 text-4xl">{icon}</div>
 
-    {/* Title */}
     <h3 className="text-2xl font-extrabold text-purple-800 mb-2 transition-colors duration-300 hover:text-purple-900">
       {title}
     </h3>
 
-    {/* Description */}
     <p className="text-purple-600 transition-colors duration-300 hover:text-purple-700">
       {description}
     </p>
