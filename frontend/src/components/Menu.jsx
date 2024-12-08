@@ -302,7 +302,7 @@ const RestaurantMenu = () => {
     return (
       <div className="w-full max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
         {/* Restaurant Overview */}
-        <div className="flex flex-col sm:flex-row gap-6 items-start mb-8 bg-gradient-to-r from-purple-900 to-indigo-800 p-6 rounded-xl shadow-lg relative overflow-hidden">
+        <div className="flex flex-col sm:flex-row gap-6 items-start mb-8 bg-gradient-to-r from-purple-600 to-indigo-800 p-6 rounded-xl shadow-lg relative overflow-hidden">
           <img
             src={restaurant.Restaurant_Image}
             alt={restaurant.Restaurant_Name}

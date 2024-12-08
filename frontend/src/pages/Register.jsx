@@ -210,23 +210,21 @@ const Register = () => {
     <div className="min-h-screen flex items-center justify-center bg-white">
     <div className="w-full max-w-4xl flex flex-col md:flex-row shadow-lg rounded-2xl overflow-hidden">
       {/* Left Section with Logo */}
-      <div className="w-full md:w-1/2 bg-white p-8 flex flex-col items-center justify-center">
+      <div className="hidden md:flex w-full md:w-1/2 bg-white p-8 items-center justify-center">
         <div className="text-center">
           <img
-            src="images/loginlogo.avif"
+            src="/images/logo22.jpg"
             alt="Login Logo"
             className="hidden md:block max-w-full h-auto"
           />
-          <p className="block mt-4 text-lg text-purple-600 font-extrabold">
-            FOOD ON THE GO
-          </p>
+     
         </div>
       </div>
   
       {/* Right Section with Form */}
       <div className="w-full md:w-1/2 bg-white p-8 flex flex-col items-center justify-center">
         <div className="text-center mb-6">
-          <h2 className="text-3xl font-extrabold text-purple-600">Create your account</h2>
+          <h2 className="text-3xl font-extrabold text-purple-800">Create your account</h2>
           <p className="mt-2 text-sm text-gray-600">Join us to explore amazing food experiences</p>
         </div>
   
@@ -355,7 +353,8 @@ const Register = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="group relative w-full flex justify-center items-center py-2 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-purple-600 hover:bg-purple-700 focus:ring-purple-500 disabled:opacity-50"
+              className="group relative w-full flex justify-center items-center py-2 px-4 border border-transparent text-sm font-medium rounded-lg text-white 
+              bg-gradient-to-r from-purple-700 to-indigo-700 hover:bg-gradient-to-r from-purple-900 to-indigo-900 focus:ring-purple-500 disabled:opacity-50"
             >
               {isLoading ? (
                 <svg

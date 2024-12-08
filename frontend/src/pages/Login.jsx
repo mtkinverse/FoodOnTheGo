@@ -53,34 +53,31 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white">
+    <div className="min-h-screen flex items-center justify-center bg-white w-full">
       <div className="w-full max-w-4xl flex flex-col md:flex-row shadow-lg rounded-2xl overflow-hidden">
-        {/* Left side - Image Section */}
-        <div className="w-full md:w-1/2 bg-white p-8 flex items-center justify-center">
+        {/* Left side - Image Section (hidden on mobile) */}
+        <div className="hidden md:flex w-full md:w-1/2 bg-white p-8 items-center justify-center">
           <div className="text-center">
             <img
-              src="images/loginlogo.avif"
+              src="/images/logo22.jpg"
               alt="Login Logo"
-              className="hidden md:block max-w-full h-auto"
+              className="max-w-full h-auto"
             />
-            <p className="block mt-4 text-lg text-purple-600 font-extrabold">
-              FOOD ON THE GO
-            </p>
           </div>
         </div>
-
+  
         {/* Right side - Form Section */}
         <div className="w-full md:w-1/2 bg-white p-6 flex items-center justify-center">
           <div className="w-full max-w-md">
             <div className="text-center mb-8">
-              <h2 className="text-3xl font-extrabold text-purple-600">
+              <h2 className="text-3xl font-extrabold text-purple-800">
                 Welcome back
               </h2>
-              <p className="mt-2 text-sm text-gray-600">
+              <p className="mt-2 text-sm font-semibold text-gray-600">
                 Sign in to access your account
               </p>
             </div>
-
+  
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
                 <label
@@ -106,7 +103,7 @@ const Login = () => {
                   />
                 </div>
               </div>
-
+  
               {/* Password Field */}
               <div>
                 <label
@@ -139,7 +136,7 @@ const Login = () => {
                   </button>
                 </div>
               </div>
-
+  
               {/* Role Selection */}
               <div>
                 <label
@@ -167,13 +164,14 @@ const Login = () => {
                   />
                 </div>
               </div>
-
+  
               {/* Submit Button */}
               <div>
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full py-2 px-4 text-sm font-medium rounded-lg text-white bg-purple-600 hover:bg-purple-700 focus:ring-2 focus:ring-offset-2 focus:ring-light-purple disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full py-2 px-4 text-sm font-medium rounded-lg text-white 
+                   bg-gradient-to-r from-purple-700 to-indigo-700 hover:bg-gradient-to-r from-purple-900 to-indigo-900  focus:ring-2 focus:ring-offset-2 focus:ring-light-purple disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isLoading ? (
                     <svg
@@ -200,7 +198,7 @@ const Login = () => {
                 </button>
               </div>
             </form>
-
+  
             <div className="text-sm text-center mt-4">
               <span className="text-gray-600">Don't have an account? </span>
               <button

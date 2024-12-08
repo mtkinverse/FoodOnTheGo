@@ -16,7 +16,7 @@ import AddRestaurantPopup from "../components/AddRestaurant";
 import ManageRestaurant from "../components/ManageRestaurant"; // Import ManageRestaurant
 import { useAlertContext } from "../contexts/alertContext";
 import { StatsPopup } from "../components/StatsPopup";
-import PerformanceGraphs from "../components/ChartComponent";
+
 const OwnedRestaurants = () => {
   const { setAlert } = useAlertContext();
 
@@ -122,8 +122,8 @@ const OwnedRestaurants = () => {
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
 
-      <section className="text-center py-16 mb-12 bg-gradient-to-r from-purple-600 to-indigo-800 text-white rounded-2xl shadow-xl">
-  <h1 className="text-5xl font-extrabold mb-6 tracking-tight leading-tight">
+      <section className="text-center py-16 mb-12 bg-gradient-to-r from-purple-600 to-indigo-800 text-white rounded-2xl  shadow-2xl transform hover:scale-[1.02] ">
+      <h1 className="text-5xl font-extrabold mb-6 tracking-tight leading-tight">
     Welcome to Your Restaurant Dashboard
   </h1>
   <p className="text-lg md:text-xl font-medium mb-8 opacity-90">
@@ -153,8 +153,8 @@ const OwnedRestaurants = () => {
           </div>
           <button
             onClick={() => setIsPopupOpen(true)}
-            className="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-200"
-          >
+            className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-lg hover:from-purple-700 hover:to-indigo-900 transition-colors duration-200"
+            >
             <Plus className="w-5 h-5 mr-2" />
             Add Restaurant
           </button>
@@ -188,7 +188,7 @@ const OwnedRestaurants = () => {
             </div>
               <div className="p-6 space-y-4">
                 <div className="space-y-3">
-                  <div className="flex items-center text-gray-600">
+                  <div className="flex items-center text-gray-600 ">
                     <MapPin className="h-5 w-5 text-indigo-500 mr-2" />
                     <span className="text-sm">{restaurant.Address}</span>
                   </div>
@@ -216,7 +216,8 @@ const OwnedRestaurants = () => {
                       setIsManageOpen(true);
                       setCurrentRestaurant(restaurant); // Pass the entire restaurant object
                     }}
-                    className="flex-1 inline-flex my-2 items-center justify-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-200"
+                    className="flex-1 inline-flex my-2 items-center justify-center px-4 py-2
+                    bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-lg hover:from-purple-700 hover:to-indigo-900   text-white rounded-lg hover:bg-purple-700 transition-colors duration-200"
                   >
                     <Settings className="w-4 h-4 mr-2" />
                     Manage

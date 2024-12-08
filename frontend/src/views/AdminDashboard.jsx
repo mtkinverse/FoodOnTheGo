@@ -627,8 +627,8 @@ const AdminDashboard = () => {
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
     <div className="max-w-7xl mx-auto">
       {/* Hero Section */}
-      <section className="text-center py-16 mb-12 bg-gradient-to-r from-purple-600 to-indigo-800 text-white rounded-2xl shadow-xl">
-        <h1 className="text-5xl font-extrabold mb-6 tracking-tight leading-tight">
+      <section className="text-center py-16 mb-12 bg-gradient-to-r from-purple-600 to-indigo-800 text-white rounded-2xl  shadow-2xl transform hover:scale-[1.02] ">
+      <h1 className="text-5xl font-extrabold mb-6 tracking-tight leading-tight">
           Welcome to Your Restaurant Admin Dashboard
         </h1>
         <p className="text-lg md:text-xl font-medium mb-8 opacity-90">

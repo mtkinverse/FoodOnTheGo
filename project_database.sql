@@ -3,7 +3,16 @@ CREATE DATABASE online_food_system;
 USE online_food_system;
 
  ------------------------------------------------ tables / entities --------------------------------------------
- 
+
+CREATE TABLE OTP (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  email VARCHAR(255) NOT NULL,
+  otp VARCHAR(6) NOT NULL,
+  expiration_time DATETIME NOT NULL,
+  UNIQUE KEY unique_email (email)
+);
+
+
 CREATE TABLE Customer(
    Customer_id INT AUTO_INCREMENT PRIMARY KEY,
    Customer_Name VARCHAR(100) NOT NULL,
@@ -83,6 +92,8 @@ ALTER TABLE MEnu_Items ADD COLUMN Category VARCHAR(50);
 select * from restaurant_owner;
 select * from restaurant;
 select * from customer;
+
+show tables;
 
 CREATE TABLE DeliveryAddress(
     Address_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -489,7 +500,13 @@ SELECT
     ;
     
     select * from ordered_items;
-    
+      SELECT r.restaurant_id, r.restaurant_name, WEEK(o.order_time) AS week, SUM(o.total_amount) AS total_revenue FROM
+       orders o JOIN restaurant r ON o.restaurant_id = r.restaurant_id
+       WHERE YEAR(o.order_time) = YEAR(CURRENT_DATE)  
+       AND MONTH(o.order_time) = MONTH(CURRENT_DATE)  AND r.restaurant_id = 6500
+       GROUP BY r.restaurant_id, r.restaurant_name, WEEK(o.order_time)
+       ORDER BY week ASC;
+       
      select oo.item_id,count(oo.order_id)
      from ordered_items oo
      join orders o on oo.order_id = o.order_id

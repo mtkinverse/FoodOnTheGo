@@ -7,7 +7,8 @@ module.exports = {
     extend: {
       animation: {
         fadeBounce: 'fadeBounce 6.5s ease-in-out infinite',
-        spinSlow: 'spin-slow 40s linear infinite',
+        spinSlow: 'spinSlow 40s linear infinite',
+        rotatePulse: 'rotatePulse 6s linear infinite',
       },
       keyframes: {
         fadeBounce: {
@@ -18,8 +19,13 @@ module.exports = {
           from: { transform: 'rotate(0deg)' },
           to: { transform: 'rotate(360deg)' },
         },
+        rotatePulse: {
+          '0%': { transform: 'rotate(0deg) scale(1)' },
+          '50%': { transform: 'rotate(180deg) scale(1.1)' },
+          '100%': { transform: 'rotate(360deg) scale(1)' },
+        },
       },
     },
   },
   plugins: [],
-}
+};

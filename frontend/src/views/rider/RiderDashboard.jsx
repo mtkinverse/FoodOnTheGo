@@ -165,124 +165,134 @@ const RiderDashboard = () => {
   
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-white">
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex flex-col sm:flex-row items-center justify-between mb-8 gap-4">
-          <h1 className="text-3xl font-bold text-purple-800">Rider Dashboard</h1>
+    <div className="min-h-screen bg-gray-50 ">
+      <div className="container mx-auto px-4 py-12">
+        {/* Hero Section */}
+        <section className="text-center py-16 mb-12 bg-gradient-to-r from-purple-600 to-indigo-800 text-white rounded-2xl  shadow-2xl transform hover:scale-[1.02] ">
+          <h1 className="text-5xl sm:text-6xl font-extrabold mb-8 tracking-tight leading-none">
+            Welcome to Your Rider Dashboard
+          </h1>
+          <p className="text-xl md:text-2xl font-medium mb-10 opacity-90 max-w-3xl mx-auto">
+            Manage your availability and track deliveries with ease.
+          </p>
+        </section>
+  
+        {/* Rider Dashboard Content */}
+        <div className="flex flex-col sm:flex-row items-center justify-between mb-12 gap-6">
+          <h1 className="text-4xl font-bold text-purple-800 tracking-tight">{userData.User_name}'s Dashboard</h1>
           <button
-            className={`flex items-center justify-center gap-2 px-6 py-3 rounded-full text-base font-medium transition duration-300 ease-in-out 
-              ${userData.status ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'} 
-              text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500`}
+            className={`flex items-center justify-center gap-3 px-8 py-4 rounded-full text-lg font-semibold transition-all duration-300 ease-in-out transform hover:scale-105 
+              ${userData.status ? 'bg-gradient-to-r from-red-500 to-red-600' : 'bg-gradient-to-r from-green-500 to-green-600'} 
+              text-white focus:outline-none focus:ring-4 focus:ring-offset-2 focus:ring-purple-300 shadow-lg`}
             onClick={updateAvailabilityStatus}
           >
             {userData.status ? (
               <>
-                <AlertCircle className="w-5 h-5" />
+                <AlertCircle className="w-6 h-6" />
                 <span className="hidden sm:inline">Mark Unavailable</span>
               </>
             ) : (
               <>
-                <CheckCircle className="w-5 h-5" />
+                <CheckCircle className="w-6 h-6" />
                 <span className="hidden sm:inline">Mark Available</span>
               </>
             )}
           </button>
         </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white rounded-2xl shadow-lg p-6 flex items-center space-x-4 transition-all duration-300 hover:shadow-xl">
-            <div className="bg-purple-100 rounded-full p-3">
-              <Bike className="text-purple-600 w-6 h-6" />
+  
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+          <div className="bg-white rounded-3xl shadow-xl p-8 flex items-center space-x-6 transition-all duration-300 hover:shadow-2xl hover:bg-purple-50 group">
+            <div className="bg-purple-100 rounded-full p-4 group-hover:bg-purple-200 transition-colors duration-300">
+              <Bike className="text-purple-600 w-8 h-8" />
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-gray-700">Your Bike</h2>
-              <p className="text-xl font-bold text-purple-600">{bikeDetails.BikeNo || "Not Registered"}</p>
+              <h2 className="text-xl font-semibold text-gray-700 mb-2">Your Bike</h2>
+              <p className="text-2xl font-bold text-purple-600">{bikeDetails.BikeNo || "Not Registered"}</p>
             </div>
           </div>
-
-          <div className="bg-white rounded-2xl shadow-lg p-6 flex items-center space-x-4 transition-all duration-300 hover:shadow-xl">
-            <div className="bg-green-100 rounded-full p-3">
-              <Utensils className="text-green-600 w-6 h-6" />
+  
+          <div className="bg-white rounded-3xl shadow-xl p-8 flex items-center space-x-6 transition-all duration-300 hover:shadow-2xl hover:bg-green-50 group">
+            <div className="bg-green-100 rounded-full p-4 group-hover:bg-green-200 transition-colors duration-300">
+              <Utensils className="text-green-600 w-8 h-8" />
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-gray-700">Restaurant</h2>
+              <h2 className="text-xl font-semibold text-gray-700 mb-2">Restaurant</h2>
               {restaurantInfo.length > 0 ? (
                 <div>
-                  <p className="text-xl font-bold text-green-600">{restaurantInfo[0].restaurant_name}</p>
-                  <p className="text-sm text-gray-500">{restaurantInfo[0].address}</p>
+                  <p className="text-2xl font-bold text-green-600">{restaurantInfo[0].restaurant_name}</p>
+                  <p className="text-sm text-gray-500 mt-1">{restaurantInfo[0].address}</p>
                 </div>
               ) : (
-                <p className="text-sm text-gray-500 italic">No restaurant assigned</p>
+                <p className="text-lg text-gray-500 italic">No restaurant assigned</p>
               )}
             </div>
           </div>
-
-          <div className="bg-white rounded-2xl shadow-lg p-6 flex items-center space-x-4 transition-all duration-300 hover:shadow-xl">
-            <div className="bg-yellow-100 rounded-full p-3">
-              <DollarSign className="text-yellow-600 w-6 h-6" />
+  
+          <div className="bg-white rounded-3xl shadow-xl p-8 flex items-center space-x-6 transition-all duration-300 hover:shadow-2xl hover:bg-yellow-50 group">
+            <div className="bg-yellow-100 rounded-full p-4 group-hover:bg-yellow-200 transition-colors duration-300">
+              <DollarSign className="text-yellow-600 w-8 h-8" />
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-gray-700">Today's Tips</h2>
-              <p className="text-xl font-bold text-yellow-600">Rs.{tips}</p>
+              <h2 className="text-xl font-semibold text-gray-700 mb-2">Today's Tips</h2>
+              <p className="text-2xl font-bold text-yellow-600">Rs.{tips}</p>
             </div>
           </div>
         </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div className="bg-white rounded-2xl shadow-lg p-6 transition-all duration-300 hover:shadow-xl">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-purple-800">Orders To Deliver</h2>
-              <Package className="text-purple-600 w-6 h-6" />
+  
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+          <div className="bg-white rounded-3xl shadow-xl p-8 transition-all duration-300 hover:shadow-2xl">
+            <div className="flex items-center justify-between mb-8">
+              <h2 className="text-3xl font-bold text-purple-800">Orders To Deliver</h2>
+              <Package className="text-purple-600 w-8 h-8" />
             </div>
             {Array.isArray(pendingOrders) && pendingOrders.length > 0 ? (
-              <ul className="space-y-4">
+              <ul className="space-y-6">
                 {pendingOrders.map((currentOrder) => (
-                  <li key={currentOrder.Order_id} className="bg-purple-50 rounded-xl p-4 flex justify-between items-center transition-all duration-300 hover:bg-purple-100">
+                  <li key={currentOrder.Order_id} className="bg-purple-50 rounded-2xl p-6 flex justify-between items-center transition-all duration-300 hover:bg-purple-100 hover:shadow-md">
                     <div>
-                      <span className="text-purple-600 font-semibold">Order #{currentOrder.Order_id}</span>
-                      <p className="text-sm text-gray-600 flex items-center mt-1">
-                        <MapPin className="mr-1 text-purple-400 w-4 h-4" />
+                      <span className="text-purple-600 font-semibold text-lg">Order #{currentOrder.Order_id}</span>
+                      <p className="text-sm text-gray-600 flex items-center mt-2">
+                        <MapPin className="mr-2 text-purple-400 w-5 h-5" />
                         {currentOrder.Address}
                       </p>
                     </div>
                     <button 
-                      className="px-4 py-2 bg-purple-600 text-white rounded-full hover:bg-purple-700 transition duration-300 flex items-center space-x-2"
+                      className="px-6 py-3 bg-purple-600 text-white rounded-full hover:bg-purple-700 transition duration-300 flex items-center space-x-2 shadow-md hover:shadow-lg transform hover:scale-105"
                       onClick={() => setOrderAndDisplay(currentOrder.Order_id)}
                     >
                       <span>Details</span>
-                      <Package className="w-4 h-4" />
+                      <Package className="w-5 h-5" />
                     </button>
                   </li>
                 ))}
               </ul>
             ) : (
-              <p className="text-center text-gray-500 italic">No pending orders at the moment.</p>
+              <p className="text-center text-gray-500 italic text-lg">No pending orders at the moment.</p>
             )}
           </div>
-
-          <div className="bg-white rounded-2xl shadow-lg p-6 transition-all duration-300 hover:shadow-xl">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-green-800">Recent Deliveries</h2>
-              <CheckCircle className="text-green-600 w-6 h-6" />
+  
+          <div className="bg-white rounded-3xl shadow-xl p-8 transition-all duration-300 hover:shadow-2xl">
+            <div className="flex items-center justify-between mb-8">
+              <h2 className="text-3xl font-bold text-green-800">Recent Deliveries</h2>
+              <CheckCircle className="text-green-600 w-8 h-8" />
             </div>
             {Array.isArray(riderHistory) && riderHistory.length > 0 ? (
-              <ul className="space-y-4">
+              <ul className="space-y-6">
                 {riderHistory.slice(0, 3).map((historyItem, index) => (
-                  <li key={index} className="bg-green-50 rounded-xl p-4 flex justify-between items-center transition-all duration-300 hover:bg-green-100">
+                  <li key={index} className="bg-green-50 rounded-2xl p-6 flex justify-between items-center transition-all duration-300 hover:bg-green-100 hover:shadow-md">
                     <div>
-                      <span className="text-green-600 font-semibold">Order #{historyItem.Order_id}</span>
-                      <p className="text-sm text-gray-600 mt-1">{historyItem.Order_date}</p>
+                      <span className="text-green-600 font-semibold text-lg">Order #{historyItem.Order_id}</span>
+                      <p className="text-sm text-gray-600 mt-2">{historyItem.Order_date}</p>
                     </div>
                   </li>
                 ))}
               </ul>
             ) : (
-              <p className="text-center text-gray-500 italic">No completed deliveries yet.</p>
+              <p className="text-center text-gray-500 italic text-lg">No completed deliveries yet.</p>
             )}
           </div>
         </div>
       </div>
-
       {bikePopup && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-2xl p-8 max-w-md w-full m-4 transition-all duration-300 transform hover:scale-105">

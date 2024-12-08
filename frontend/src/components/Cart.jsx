@@ -60,7 +60,7 @@ const Cart = () => {
     <>
       <button
         onClick={() => setCartPopup(true)}
-        className="fixed bottom-8 right-8 bg-purple-600 text-white p-4 rounded-full shadow-2xl flex items-center"
+        className="fixed bottom-8 right-8 bg-gradient-to-r from-purple-900 to-indigo-800 text-white p-4 rounded-full shadow-2xl flex items-center"
       >
         <FaShoppingCart className="w-7 h-7" />
         {cartCount > 0 && (
@@ -71,188 +71,150 @@ const Cart = () => {
       </button>
 
       <div
-        className={`fixed inset-y-0 right-0 w-full md:w-96 bg-white shadow-2xl 
-                  transform transition-transform duration-300 z-50
-                  ${cartPopup ? "translate-x-0" : "translate-x-full"}`}
+  className={`fixed inset-y-0 right-0 w-full md:w-96 bg-gradient-to-br 
+              from-white via-purple-100 to-indigo-50 shadow-2xl 
+              transform transition-transform duration-300 z-50
+              ${cartPopup ? "translate-x-0" : "translate-x-full"}`}
+>
+  <div className="h-full flex flex-col">
+    {/* Header */}
+    <div className="p-6 border-b border-purple-200 flex justify-between items-center bg-gradient-to-r from-purple-50 to-white">
+      <h2 className="text-3xl font-extrabold text-purple-900">Your Cart</h2>
+      <button
+        onClick={() => setCartPopup(false)}
+        className="text-red-500 hover:text-red-700 text-2xl transition-transform transform hover:scale-125"
       >
-        <div className="h-full flex flex-col">
-          <div className="p-6 border-b flex justify-between items-center">
-            <h2 className="text-2xl my-auto font-bold text-purple-900">
-              Your Cart
-            </h2>
-            <button
-              onClick={() => setCartPopup(false)}
-              className="text-red-500 hover:text-red-700 text-2xl"
-            >
-              ✕
-            </button>
-          </div>
+        ✕
+      </button>
+    </div>
 
-          {cart.length === 0 ? (
-            <div className="flex-grow flex items-center justify-center text-gray-500">
-              Your cart is empty
+    {/* Cart Items */}
+    {cart.length === 0 ? (
+      <div className="flex-grow flex items-center justify-center text-gray-500 text-lg">
+        Your cart is empty
+      </div>
+    ) : (
+      <div className="flex-grow overflow-y-auto p-6 space-y-6 bg-gradient-to-b from-white to-purple-50">
+        {cart.map((item) => (
+          <div
+            key={item.Item_id}
+            className="flex justify-between items-center bg-gradient-to-br from-indigo-200 via-purple-100 to-purple-300 shadow-md rounded-xl p-4 hover:shadow-lg transition-shadow"
+          >
+            <div>
+              <h3 className="font-extrabold text-purple-800 text-lg">{item.Dish_Name}</h3>
+              <div className="flex items-center gap-2 text-sm">
+                {item.discounted_price &&
+                item.discounted_price < item.Item_Price ? (
+                  <>
+                    <span className="line-through text-red-400">
+                      Rs.{item.Item_Price}
+                    </span>
+                    <span className="font-semibold text-purple-900">
+                      Rs.{item.discounted_price}
+                    </span>
+                  </>
+                ) : (
+                  <span className="font-semibold text-purple-600">
+                    Rs.{item.Item_Price}
+                  </span>
+                )}
+              </div>
+              <p className="text-gray-500 italic">{item.restaurant_name}</p>
             </div>
-          ) : (
-            <div className="flex-grow overflow-y-auto p-6 space-y-4">
-              {cart.map((item) => (
-                <div
-                  key={item.Item_id}
-                  className="flex justify-between items-center border-b pb-4"
-                >
-                  <div>
-                    {/* Dish Name */}
-                    <h3 className="font-bold text-purple-900">
-                      {item.Dish_Name}
-                    </h3>
-
-                    {/* Price */}
-                    <div className="flex items-center gap-2">
-                      {/* Original Price with line-through (if discounted) */}
-                      {item.discounted_price &&
-                      item.discounted_price < item.Item_Price ? (
-                        <>
-                          <span className="text-gray-400 line-through text-sm">
-                            Rs.{item.Item_Price}
-                          </span>
-                          <span className="text-purple-600 font-semibold">
-                            Rs.{item.discounted_price}
-                          </span>
-                        </>
-                      ) : (
-                        // Original Price (if no discount)
-                        <span className="text-purple-600">
-                          Rs.{item.Item_Price}
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Restaurant Name */}
-                    <p className="text-purple-600">{item.restaurant_name}</p>
-                  </div>
-
-                  <div className="flex items-center space-x-3">
-                    {/* Decrement Button */}
-                    <button
-                      onClick={() => handleDecrement(item.Item_id)}
-                      className="text-purple-600 hover:text-purple-800"
-                    >
-                      <FaMinus />
-                    </button>
-
-                    {/* Quantity */}
-                    <span>{item.quantity}</span>
-
-                    {/* Increment Button */}
-                    <button
-                      onClick={() => handleIncrement(item.Item_id)}
-                      className="text-purple-600 hover:text-purple-800"
-                    >
-                      <FaPlus />
-                    </button>
-
-                    {/* Remove Button */}
-                    <button
-                      onClick={() => handleRemove(item.Item_id)}
-                      className="text-red-600 hover:text-red-800"
-                    >
-                      <FaTrash />
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-
-          <div className="p-6">
-            <div className="flex items-center gap-2">
-              <input
-                type="text"
-                id="promoCode"
-                name="promo_code"
-                className="flex-grow border rounded-lg py-2 px-3 text-gray-700"
-                onChange={(e) =>
-                  setPromo((prev) => ({
-                    ...prev,
-                    promo_code: e.target.value,
-                  }))
-                }
-                placeholder="Promo Code"
-              />
+            <div className="flex items-center space-x-3">
               <button
-                onClick={handleApplyPromoCode}
-                className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition duration-300"
+                onClick={() => handleDecrement(item.Item_id)}
+                className="text-purple-600 hover:text-purple-800 transition-transform transform hover:scale-110"
               >
-                Apply
+                <FaMinus />
+              </button>
+              <span className="font-bold text-purple-900">{item.quantity}</span>
+              <button
+                onClick={() => handleIncrement(item.Item_id)}
+                className="text-purple-600 hover:text-purple-800 transition-transform transform hover:scale-110"
+              >
+                <FaPlus />
+              </button>
+              <button
+                onClick={() => handleRemove(item.Item_id)}
+                className="text-red-500 hover:text-red-700 transition-transform transform hover:scale-110"
+              >
+                <FaTrash />
               </button>
             </div>
           </div>
-
-          <div className="p-6 border-t space-y-4">
-            <div className="flex justify-between">
-              <span className="text-lg font-medium text-purple-900">
-                Subtotal:
-              </span>
-              <span className="text-lg font-bold text-purple-900">
-                Rs.{getSubTotal()}
-              </span>
-            </div>
-            <hr />
-            {promo.promo_id && (
-              <div className="flex justify-between">
-                <span className="text-lg font-medium text-purple-900">
-                  Discount:
-                </span>
-                <span className="text-lg font-bold text-purple-900">
-                  {promo.promo_value}%
-                </span>
-              </div>
-            )}
-            {promo.promo_id && <hr />}
-            <div className="flex justify-between">
-              <span className="text-lg font-medium text-purple-900">
-                Delivery:
-              </span>
-              <span className="text-lg font-bold text-purple-900">Rs.150</span>
-            </div>
-            <hr />
-
-            <div className="flex justify-between">
-              <span className="text-xl font-bold text-purple-900">Total:</span>
-              <span className="text-xl font-bold text-purple-900">
-                Rs.{getTotalAmount()}
-              </span>
-            </div>
-
-            {cartCount > 0 && (
-              <div className="flex justify-between">
-                <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setCartPopup(false);
-                    setOrderPopUp(true);
-                  }}
-                  className="w-1/3 mx-0 bg-purple-600 text-white py-2 
-              rounded-lg hover:bg-purple-700 
-              transition duration-300"
-                >
-                  Place Order
-                </button>
-                <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    clearCart();
-                  }}
-                  className="w-1/3 mx-0 bg-red-500 text-white py-2 
-              rounded-lg hover:bg-purple-700 
-              transition duration-300"
-                >
-                  Clear Cart
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
+        ))}
       </div>
+    )}
+
+    {/* Promo Section */}
+    <div className="p-6 border-t border-purple-200 bg-white">
+      <div className="flex items-center space-x-3">
+        <input
+          type="text"
+          placeholder="Promo Code"
+          className="flex-grow border border-purple-300 rounded-lg py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-400"
+          onChange={(e) =>
+            setPromo((prev) => ({
+              ...prev,
+              promo_code: e.target.value,
+            }))
+          }
+        />
+        <button
+          onClick={handleApplyPromoCode}
+          className="bg-gradient-to-r from-purple-600 to-indigo-500 text-white px-4 py-2 rounded-lg hover:from-purple-700 hover:to-indigo-600 transition-transform transform hover:scale-105"
+        >
+          Apply
+        </button>
+      </div>
+      {promo.promo_id && (
+        <p className="mt-3 text-green-600 text-sm font-medium">
+          Promo Applied: {promo.promo_value}% off!🎉
+        </p>
+      )}
+    </div>
+
+    {/* Summary Section */}
+    <div className="p-6 border-t border-purple-200 bg-gradient-to-b from-purple-50 to-white space-y-5">
+      <div className="flex justify-between">
+        <span className="text-lg font-semibold text-purple-900">Subtotal:</span>
+        <span className="text-lg font-bold text-purple-900">
+          Rs.{getSubTotal()}
+        </span>
+      </div>
+      <div className="flex justify-between">
+        <span className="text-lg font-semibold text-purple-900">Delivery:</span>
+        <span className="text-lg font-bold text-purple-900">Rs.150</span>
+      </div>
+      <div className="flex justify-between">
+        <span className="text-xl font-bold text-purple-900">Total:</span>
+        <span className="text-xl font-bold text-purple-900">
+          Rs.{getTotalAmount()}
+        </span>
+      </div>
+
+      {/* Action Buttons */}
+      <div className="flex justify-between space-x-4">
+        <button
+          onClick={() => {
+            setCartPopup(false);
+            setOrderPopUp(true);
+          }}
+          className="w-1/2 bg-gradient-to-r from-purple-600 to-indigo-500 text-white py-3 rounded-lg hover:from-purple-700 hover:to-indigo-600 transition-transform transform hover:scale-105"
+        >
+          Place Order
+        </button>
+        <button
+          onClick={() => clearCart()}
+          className="w-1/2 bg-red-500 text-white py-3 rounded-lg hover:bg-red-600 transition-transform transform hover:scale-105"
+        >
+          Clear Cart
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 
       {orderPopUp && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">

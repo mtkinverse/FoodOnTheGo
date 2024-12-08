@@ -5,9 +5,8 @@ const { sendOrderNotification, sendCancellationEmail, sendStatusEmail } = requir
 
 
 module.exports.notifyDispatch = (req, res) => {
-    const { email } = req.body;
-    console.log(email, req.body);
-    sendStatusEmail(email, req.body);
+    console.log(req.body);
+    sendStatusEmail(req.body.customer_email,req.body.rider_email, req.body);
     return res.status(200).json({ message: 'email sent' });
 }
 

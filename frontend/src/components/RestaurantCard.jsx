@@ -83,7 +83,7 @@ const RestaurantCard = ({ restaurant, flag }) => {
   };
 
   return (
-    <div className="group relative bg-gradient-to-r from-purple-400 to-indigo-500 
+    <div className="group relative bg-gradient-to-r from-purple-100 to-indigo-100 
     rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 max-w-sm">
       <div className="absolute top-4 left-4 z-10 flex flex-col gap-2">
         {/* Only show the discount if the restaurant is open */}
@@ -131,16 +131,16 @@ const RestaurantCard = ({ restaurant, flag }) => {
       </div>
 
       <div className="p-5 space-y-4">
-        <h2 className="text-xl font-extrabold text-white line-clamp-1">
+        <h2 className="text-xl font-extrabold text-purple-700 line-clamp-1">
           {Restaurant_Name}
         </h2>
 
-        <div className="flex items-center text-white">
+        <div className="flex items-center text-purple-700 font-semibold">
           <MapPin className="w-4 h-4 flex-shrink-0" />
           <span className="text-sm ml-2 line-clamp-1">{Address}</span>
         </div>
 
-        <div className="flex items-center text-white">
+        <div className="flex items-center text-purple-700 font-semibold">
           <Clock className=" w-4 h-4 flex-shrink-0" />
           <span className="text-sm ml-2">
             {formattedOpensAt} - {formattedClosesAt}

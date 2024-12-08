@@ -717,17 +717,16 @@ const Navbar = () => {
 
   return (
     <nav className="bg-white shadow-md">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16 relative">
-          {/* Logo */}
-          <div className="flex items-center space-x-2">
-            <img
-              src="/images/logo.png"
-              alt="FoodGO Logo"
-              className="h-8 w-auto"
-            />
-            <h2 className="text-2xl font-extrabold text-purple-600">FoodGO</h2>
-          </div>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="flex justify-between items-center h-20 relative">
+        {/* Logo */}
+        <div className="flex items-center">
+          <img
+            src="/images/lg2222.jpg" // Replace with the correct path to your logo
+            alt="FoodGO Logo"
+            className="h-20 w-auto" // Increased size for better visibility
+          />
+        </div>
 
           {/* Desktop Menu */}
           <div className="hidden sm:flex items-center justify-between w-full">
