@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uml:Model xmi:version="20131001" xmlns:xmi="http://www.omg.org/spec/XMI/20131001" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML" xmi:id="_dxYwILViEe-ALulj9Q5oQQ" name="deploymentDiagram">
+  <packageImport xmi:type="uml:PackageImport" xmi:id="_d10kMLViEe-ALulj9Q5oQQ">
+    <importedPackage xmi:type="uml:Model" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#_0"/>
+  </packageImport>
+  <packagedElement xmi:type="uml:Package" xmi:id="_bO1-ELVmEe-ALulj9Q5oQQ" name="deploymentDiagram">
+    <packagedElement xmi:type="uml:Device" xmi:id="_u3zhsLVmEe-ALulj9Q5oQQ" name="DatabaseServer">
+      <nestedClassifier xmi:type="uml:Artifact" xmi:id="_lbJvILVoEe-ALulj9Q5oQQ" name="Database" fileName=""/>
+      <nestedClassifier xmi:type="uml:Artifact" xmi:id="_wrqkoLVpEe-ALulj9Q5oQQ" name="DBMS"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Device" xmi:id="_psF_4LVoEe-ALulj9Q5oQQ" name="Client">
+      <nestedClassifier xmi:type="uml:Device" xmi:id="_gxe_4LVpEe-ALulj9Q5oQQ" name="Browser">
+        <nestedClassifier xmi:type="uml:Artifact" xmi:id="_iV1HgLVpEe-ALulj9Q5oQQ" name="Frontend" fileName=""/>
+      </nestedClassifier>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Device" xmi:id="_x6NQ0LVoEe-ALulj9Q5oQQ" name="BackendServer">
+      <nestedClassifier xmi:type="uml:Artifact" xmi:id="_ddBJALVqEe-ALulj9Q5oQQ" name="expressJs"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:CommunicationPath" xmi:id="_36SHcLVpEe-ALulj9Q5oQQ" name="HTTP" memberEnd="_36jNMLVpEe-ALulj9Q5oQQ _36mQgLVpEe-ALulj9Q5oQQ">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_36imILVpEe-ALulj9Q5oQQ" source="org.eclipse.papyrus">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_36imIbVpEe-ALulj9Q5oQQ" key="nature" value="UML_Nature"/>
+      </eAnnotations>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_36jNMLVpEe-ALulj9Q5oQQ" name="backendserver" type="_FSQOILVqEe-ALulj9Q5oQQ" association="_36SHcLVpEe-ALulj9Q5oQQ"/>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_36mQgLVpEe-ALulj9Q5oQQ" name="client" type="_psF_4LVoEe-ALulj9Q5oQQ" association="_36SHcLVpEe-ALulj9Q5oQQ"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:CommunicationPath" xmi:id="_7uFJMLVpEe-ALulj9Q5oQQ" name="HTTP" memberEnd="_7u1-MrVpEe-ALulj9Q5oQQ _7u5BgLVpEe-ALulj9Q5oQQ">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_7u1-MLVpEe-ALulj9Q5oQQ" source="org.eclipse.papyrus">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_7u1-MbVpEe-ALulj9Q5oQQ" key="nature" value="UML_Nature"/>
+      </eAnnotations>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_7u1-MrVpEe-ALulj9Q5oQQ" name="databaseserver" type="_u3zhsLVmEe-ALulj9Q5oQQ" association="_7uFJMLVpEe-ALulj9Q5oQQ"/>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_7u5BgLVpEe-ALulj9Q5oQQ" name="backendserver" type="_x6NQ0LVoEe-ALulj9Q5oQQ" association="_7uFJMLVpEe-ALulj9Q5oQQ"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Device" xmi:id="_FSQOILVqEe-ALulj9Q5oQQ" name="WebServer">
+      <nestedClassifier xmi:type="uml:Artifact" xmi:id="_K5x3ULVqEe-ALulj9Q5oQQ" name="website" fileName=""/>
+      <nestedClassifier xmi:type="uml:Artifact" xmi:id="_SqXewLVqEe-ALulj9Q5oQQ" name="axios" fileName=""/>
+      <nestedClassifier xmi:type="uml:Artifact" xmi:id="_YZZeILVqEe-ALulj9Q5oQQ" name="javascript"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:CommunicationPath" xmi:id="_hXbJELVqEe-ALulj9Q5oQQ" name="HTTP" memberEnd="_hXcXMrVqEe-ALulj9Q5oQQ _hXeMYLVqEe-ALulj9Q5oQQ">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_hXcXMLVqEe-ALulj9Q5oQQ" source="org.eclipse.papyrus">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_hXcXMbVqEe-ALulj9Q5oQQ" key="nature" value="UML_Nature"/>
+      </eAnnotations>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_hXcXMrVqEe-ALulj9Q5oQQ" name="backendserver" type="_x6NQ0LVoEe-ALulj9Q5oQQ" association="_hXbJELVqEe-ALulj9Q5oQQ"/>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_hXeMYLVqEe-ALulj9Q5oQQ" name="webserver" type="_FSQOILVqEe-ALulj9Q5oQQ" association="_hXbJELVqEe-ALulj9Q5oQQ"/>
+    </packagedElement>
+  </packagedElement>
+</uml:Model>

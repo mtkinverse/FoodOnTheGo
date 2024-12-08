@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uml:Model xmi:version="20131001" xmlns:xmi="http://www.omg.org/spec/XMI/20131001" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML" xmi:id="_UO5igLU8Ee-ALulj9Q5oQQ" name="stateDiagram">
+  <packageImport xmi:type="uml:PackageImport" xmi:id="_URAbULU8Ee-ALulj9Q5oQQ">
+    <importedPackage xmi:type="uml:Model" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#_0"/>
+  </packageImport>
+  <packagedElement xmi:type="uml:StateMachine" xmi:id="_XPrL4LU8Ee-ALulj9Q5oQQ" name="Food Ordering">
+    <region xmi:type="uml:Region" xmi:id="_YqBqALU8Ee-ALulj9Q5oQQ" name="Region1">
+      <ownedComment xmi:type="uml:Comment" xmi:id="_PWGfMLVKEe-ALulj9Q5oQQ" annotatedElement="_mDgrQLVKEe-ALulj9Q5oQQ">
+        <body>Customer is logged in and visit or return to menu page of any restaurant</body>
+      </ownedComment>
+      <ownedComment xmi:type="uml:Comment" xmi:id="_Z-ehMLVMEe-ALulj9Q5oQQ" annotatedElement="_VHK0ALVMEe-ALulj9Q5oQQ">
+        <body>checking if the restaurant is valid along with any applicable promo or discount&#xD;
+</body>
+      </ownedComment>
+      <transition xmi:type="uml:Transition" xmi:id="_TLTZsLVLEe-ALulj9Q5oQQ" source="_mDgrQLVKEe-ALulj9Q5oQQ" target="_NJfoQLVLEe-ALulj9Q5oQQ"/>
+      <transition xmi:type="uml:Transition" xmi:id="_2Lx54LVLEe-ALulj9Q5oQQ" name="[place order clicked]" source="_NJfoQLVLEe-ALulj9Q5oQQ" target="_auT4ILVLEe-ALulj9Q5oQQ"/>
+      <transition xmi:type="uml:Transition" xmi:id="_FFe5ELVMEe-ALulj9Q5oQQ" name="request send to server" source="_auT4ILVLEe-ALulj9Q5oQQ" target="_RbkE8LVMEe-ALulj9Q5oQQ"/>
+      <subvertex xmi:type="uml:Pseudostate" xmi:id="_mDgrQLVKEe-ALulj9Q5oQQ" kind="shallowHistory"/>
+      <subvertex xmi:type="uml:State" xmi:id="_NJfoQLVLEe-ALulj9Q5oQQ" name="ItemsSelection"/>
+      <subvertex xmi:type="uml:State" xmi:id="_auT4ILVLEe-ALulj9Q5oQQ" name="orderPlacing"/>
+      <subvertex xmi:type="uml:State" xmi:id="_AoFgsLVMEe-ALulj9Q5oQQ" name="Verification">
+        <region xmi:type="uml:Region" xmi:id="_RbhosLVMEe-ALulj9Q5oQQ" name="Region1">
+          <transition xmi:type="uml:Transition" xmi:id="_kd5GYLVMEe-ALulj9Q5oQQ" source="_RbkE8LVMEe-ALulj9Q5oQQ" target="_3VhTsLVMEe-ALulj9Q5oQQ"/>
+          <transition xmi:type="uml:Transition" xmi:id="_9LMGkLVMEe-ALulj9Q5oQQ" source="_3VhTsLVMEe-ALulj9Q5oQQ" target="_73qpMLVMEe-ALulj9Q5oQQ"/>
+          <transition xmi:type="uml:Transition" xmi:id="_C7454LVNEe-ALulj9Q5oQQ" name="authenticatedUser" source="_3VhTsLVMEe-ALulj9Q5oQQ" target="_VHK0ALVMEe-ALulj9Q5oQQ"/>
+          <transition xmi:type="uml:Transition" xmi:id="_QX-EgLVNEe-ALulj9Q5oQQ" source="_VHK0ALVMEe-ALulj9Q5oQQ" target="_PLitoLVNEe-ALulj9Q5oQQ"/>
+          <transition xmi:type="uml:Transition" xmi:id="_T4oH0LVNEe-ALulj9Q5oQQ" source="_PLitoLVNEe-ALulj9Q5oQQ" target="_73qpMLVMEe-ALulj9Q5oQQ"/>
+          <transition xmi:type="uml:Transition" xmi:id="_XTSQ0LVNEe-ALulj9Q5oQQ" name="orderPlaced" source="_PLitoLVNEe-ALulj9Q5oQQ" target="_gzD98LVNEe-ALulj9Q5oQQ"/>
+          <subvertex xmi:type="uml:State" xmi:id="_RbkE8LVMEe-ALulj9Q5oQQ" name="userAuthenticaition"/>
+          <subvertex xmi:type="uml:State" xmi:id="_VHK0ALVMEe-ALulj9Q5oQQ" name="orderValidation"/>
+          <subvertex xmi:type="uml:Pseudostate" xmi:id="_3VhTsLVMEe-ALulj9Q5oQQ" name="" kind="choice"/>
+          <subvertex xmi:type="uml:Pseudostate" xmi:id="_73qpMLVMEe-ALulj9Q5oQQ" kind="terminate"/>
+          <subvertex xmi:type="uml:Pseudostate" xmi:id="_PLitoLVNEe-ALulj9Q5oQQ" name="" kind="choice"/>
+        </region>
+      </subvertex>
+      <subvertex xmi:type="uml:State" xmi:id="_wC8d8LVMEe-ALulj9Q5oQQ" name="orderConfirmation">
+        <region xmi:type="uml:Region" xmi:id="_gzCIwLVNEe-ALulj9Q5oQQ" name="Region1">
+          <transition xmi:type="uml:Transition" xmi:id="_pjAwoLVNEe-ALulj9Q5oQQ" name="notifyBack" source="_gzD98LVNEe-ALulj9Q5oQQ" target="_m0dfsLVNEe-ALulj9Q5oQQ"/>
+          <transition xmi:type="uml:Transition" xmi:id="_vlCkgLVNEe-ALulj9Q5oQQ" source="_m0dfsLVNEe-ALulj9Q5oQQ" target="_u0RO4LVNEe-ALulj9Q5oQQ"/>
+          <subvertex xmi:type="uml:State" xmi:id="_gzD98LVNEe-ALulj9Q5oQQ" name="sendMail"/>
+          <subvertex xmi:type="uml:State" xmi:id="_m0dfsLVNEe-ALulj9Q5oQQ" name="sendResponse"/>
+        </region>
+      </subvertex>
+      <subvertex xmi:type="uml:FinalState" xmi:id="_u0RO4LVNEe-ALulj9Q5oQQ"/>
+    </region>
+  </packagedElement>
+  <packagedElement xmi:type="uml:StateMachine" xmi:id="_FZQewLVOEe-ALulj9Q5oQQ" name="profileManagement">
+    <region xmi:type="uml:Region" xmi:id="_LgaqQLVOEe-ALulj9Q5oQQ" name="Region1">
+      <ownedComment xmi:type="uml:Comment" xmi:id="_GXpSQLVREe-ALulj9Q5oQQ" annotatedElement="_9gUFMLVQEe-ALulj9Q5oQQ">
+        <body>Includes saving the session of the user</body>
+      </ownedComment>
+      <transition xmi:type="uml:Transition" xmi:id="_s1fjILVPEe-ALulj9Q5oQQ" source="_GawikLVPEe-ALulj9Q5oQQ" target="_qKmDILVPEe-ALulj9Q5oQQ"/>
+      <transition xmi:type="uml:Transition" xmi:id="_t4eqILVPEe-ALulj9Q5oQQ" name="logins" source="_qKmDILVPEe-ALulj9Q5oQQ" target="_ygewALVPEe-ALulj9Q5oQQ"/>
+      <transition xmi:type="uml:Transition" xmi:id="_1dAykLVPEe-ALulj9Q5oQQ" name="signups" source="_qKmDILVPEe-ALulj9Q5oQQ" target="_yzo8kLVPEe-ALulj9Q5oQQ"/>
+      <transition xmi:type="uml:Transition" xmi:id="_2ZFZQLVPEe-ALulj9Q5oQQ" name="updates profile" source="_qKmDILVPEe-ALulj9Q5oQQ" target="_zIXPYLVPEe-ALulj9Q5oQQ"/>
+      <transition xmi:type="uml:Transition" xmi:id="_CbHLQLVREe-ALulj9Q5oQQ" name="authenticUser" source="_vfoYsLVQEe-ALulj9Q5oQQ" target="_7FOtYLVREe-ALulj9Q5oQQ"/>
+      <transition xmi:type="uml:Transition" xmi:id="_-w7jELVREe-ALulj9Q5oQQ" source="_7FOtYLVREe-ALulj9Q5oQQ" target="_9gUFMLVQEe-ALulj9Q5oQQ"/>
+      <transition xmi:type="uml:Transition" xmi:id="_IkXMALVSEe-ALulj9Q5oQQ" name="userConfirmed" source="_9gUFMLVQEe-ALulj9Q5oQQ" target="_Eobh8LVSEe-ALulj9Q5oQQ"/>
+      <transition xmi:type="uml:Transition" xmi:id="_Ko4BcLVSEe-ALulj9Q5oQQ" source="_Eobh8LVSEe-ALulj9Q5oQQ" target="_wtAVULVREe-ALulj9Q5oQQ"/>
+      <subvertex xmi:type="uml:Pseudostate" xmi:id="_GawikLVPEe-ALulj9Q5oQQ" name=""/>
+      <subvertex xmi:type="uml:State" xmi:id="_PPVWkLVPEe-ALulj9Q5oQQ">
+        <region xmi:type="uml:Region" xmi:id="_WrpXILVPEe-ALulj9Q5oQQ" name="Region1">
+          <transition xmi:type="uml:Transition" xmi:id="_tFSdMLVQEe-ALulj9Q5oQQ" name="ask server" source="_ygewALVPEe-ALulj9Q5oQQ" target="_rLqCELVQEe-ALulj9Q5oQQ"/>
+          <transition xmi:type="uml:Transition" xmi:id="_yVLpgLVQEe-ALulj9Q5oQQ" source="_rLqCELVQEe-ALulj9Q5oQQ" target="_vfoYsLVQEe-ALulj9Q5oQQ"/>
+          <transition xmi:type="uml:Transition" xmi:id="_2pySQLVQEe-ALulj9Q5oQQ" source="_vfoYsLVQEe-ALulj9Q5oQQ" target="_zSDhcLVQEe-ALulj9Q5oQQ"/>
+          <subvertex xmi:type="uml:State" xmi:id="_ygewALVPEe-ALulj9Q5oQQ" name="SendRequest"/>
+          <subvertex xmi:type="uml:State" xmi:id="_rLqCELVQEe-ALulj9Q5oQQ" name="AuthenticateUser"/>
+          <subvertex xmi:type="uml:Pseudostate" xmi:id="_vfoYsLVQEe-ALulj9Q5oQQ" name="" kind="choice"/>
+          <subvertex xmi:type="uml:Pseudostate" xmi:id="_zSDhcLVQEe-ALulj9Q5oQQ" kind="terminate"/>
+        </region>
+        <region xmi:type="uml:Region" xmi:id="_Y3gxwLVPEe-ALulj9Q5oQQ" name="Region2">
+          <transition xmi:type="uml:Transition" xmi:id="_RVRdcLVREe-ALulj9Q5oQQ" name="registerUser" source="_yzo8kLVPEe-ALulj9Q5oQQ" target="_PpkJkLVREe-ALulj9Q5oQQ"/>
+          <transition xmi:type="uml:Transition" xmi:id="_aC7xILVREe-ALulj9Q5oQQ" name="registrationSuccessful" source="_PpkJkLVREe-ALulj9Q5oQQ" target="_7FOtYLVREe-ALulj9Q5oQQ"/>
+          <subvertex xmi:type="uml:State" xmi:id="_yzo8kLVPEe-ALulj9Q5oQQ" name="SendRequest"/>
+          <subvertex xmi:type="uml:State" xmi:id="_PpkJkLVREe-ALulj9Q5oQQ" name="registerUser"/>
+        </region>
+        <region xmi:type="uml:Region" xmi:id="_cpPW8LVPEe-ALulj9Q5oQQ" name="Region3">
+          <transition xmi:type="uml:Transition" xmi:id="_nyvwELVREe-ALulj9Q5oQQ" name="validateUser" source="_zIXPYLVPEe-ALulj9Q5oQQ" target="_dhGhILVREe-ALulj9Q5oQQ"/>
+          <transition xmi:type="uml:Transition" xmi:id="_uKk00LVREe-ALulj9Q5oQQ" source="_dhGhILVREe-ALulj9Q5oQQ" target="_sgsF4LVREe-ALulj9Q5oQQ"/>
+          <transition xmi:type="uml:Transition" xmi:id="_zF0m0LVREe-ALulj9Q5oQQ" name="userUpdated" source="_sgsF4LVREe-ALulj9Q5oQQ" target="_Eobh8LVSEe-ALulj9Q5oQQ"/>
+          <subvertex xmi:type="uml:State" xmi:id="_zIXPYLVPEe-ALulj9Q5oQQ" name="ShowProfile"/>
+          <subvertex xmi:type="uml:State" xmi:id="_dhGhILVREe-ALulj9Q5oQQ" name="AuthenticateUser"/>
+          <subvertex xmi:type="uml:State" xmi:id="_sgsF4LVREe-ALulj9Q5oQQ" name="updateData"/>
+        </region>
+      </subvertex>
+      <subvertex xmi:type="uml:Pseudostate" xmi:id="_qKmDILVPEe-ALulj9Q5oQQ" name="" kind="choice"/>
+      <subvertex xmi:type="uml:State" xmi:id="_9gUFMLVQEe-ALulj9Q5oQQ" name="ConfirmUser"/>
+      <subvertex xmi:type="uml:FinalState" xmi:id="_wtAVULVREe-ALulj9Q5oQQ" name=""/>
+      <subvertex xmi:type="uml:Pseudostate" xmi:id="_7FOtYLVREe-ALulj9Q5oQQ" name="" kind="junction"/>
+      <subvertex xmi:type="uml:Pseudostate" xmi:id="_Eobh8LVSEe-ALulj9Q5oQQ" name="" kind="junction"/>
+    </region>
+  </packagedElement>
+  <packagedElement xmi:type="uml:StateMachine" xmi:id="_O_omULVSEe-ALulj9Q5oQQ" name="RestaurantManagement">
+    <region xmi:type="uml:Region" xmi:id="_RUMC4LVSEe-ALulj9Q5oQQ" name="Region1">
+      <ownedComment xmi:type="uml:Comment" xmi:id="_jJLugLVSEe-ALulj9Q5oQQ" annotatedElement="_f6b6kLVSEe-ALulj9Q5oQQ">
+        <body>owner is logged in and on dashboard&#xD;
+</body>
+      </ownedComment>
+      <transition xmi:type="uml:Transition" xmi:id="_w7KbMLVTEe-ALulj9Q5oQQ" source="_f6b6kLVSEe-ALulj9Q5oQQ" target="_uspVMLVTEe-ALulj9Q5oQQ"/>
+      <transition xmi:type="uml:Transition" xmi:id="_yG4AYLVTEe-ALulj9Q5oQQ" name="clicks update menu" source="_uspVMLVTEe-ALulj9Q5oQQ" target="_9S_wALVSEe-ALulj9Q5oQQ"/>
+      <transition xmi:type="uml:Transition" xmi:id="_2PuFELVTEe-ALulj9Q5oQQ" name="clicks add new item" source="_uspVMLVTEe-ALulj9Q5oQQ" target="_sLV2ELVTEe-ALulj9Q5oQQ"/>
+      <transition xmi:type="uml:Transition" xmi:id="_5kMtkLVTEe-ALulj9Q5oQQ" name="clicks add admin" source="_uspVMLVTEe-ALulj9Q5oQQ" target="_-4REsLVSEe-ALulj9Q5oQQ"/>
+      <transition xmi:type="uml:Transition" xmi:id="_-JyYoLVTEe-ALulj9Q5oQQ" name="want to manage restaurant" source="_uspVMLVTEe-ALulj9Q5oQQ" target="_H6OGALVWEe-ALulj9Q5oQQ"/>
+      <transition xmi:type="uml:Transition" xmi:id="_A9DKcLVUEe-ALulj9Q5oQQ" name="clicks view stats" source="_uspVMLVTEe-ALulj9Q5oQQ" target="_JqiUcLVTEe-ALulj9Q5oQQ"/>
+      <transition xmi:type="uml:Transition" xmi:id="_99Yd4LVfEe-ALulj9Q5oQQ" source="_4tLvkLVfEe-ALulj9Q5oQQ" target="_8uOjILVfEe-ALulj9Q5oQQ"/>
+      <subvertex xmi:type="uml:Pseudostate" xmi:id="_f6b6kLVSEe-ALulj9Q5oQQ" name=""/>
+      <subvertex xmi:type="uml:State" xmi:id="_r5l0MLVSEe-ALulj9Q5oQQ" name="sasacsasacascsac">
+        <region xmi:type="uml:Region" xmi:id="_1gJewLVSEe-ALulj9Q5oQQ" name="Region1">
+          <transition xmi:type="uml:Transition" xmi:id="_teCiILVVEe-ALulj9Q5oQQ" name="sendRequest" source="_-4REsLVSEe-ALulj9Q5oQQ" target="_Zn-9sLVVEe-ALulj9Q5oQQ"/>
+          <transition xmi:type="uml:Transition" xmi:id="_ya2aYLVVEe-ALulj9Q5oQQ" source="_Zn-9sLVVEe-ALulj9Q5oQQ" target="_cFeT0LVVEe-ALulj9Q5oQQ"/>
+          <transition xmi:type="uml:Transition" xmi:id="_0_eTQLVVEe-ALulj9Q5oQQ" source="_cFeT0LVVEe-ALulj9Q5oQQ" target="_c7PeMLVVEe-ALulj9Q5oQQ"/>
+          <transition xmi:type="uml:Transition" xmi:id="_3WOvQLVVEe-ALulj9Q5oQQ" name="authenticUser" source="_cFeT0LVVEe-ALulj9Q5oQQ" target="_jXOqMLVVEe-ALulj9Q5oQQ"/>
+          <transition xmi:type="uml:Transition" xmi:id="_BrbBcLVWEe-ALulj9Q5oQQ" source="_jXOqMLVVEe-ALulj9Q5oQQ" target="__rAo4LVVEe-ALulj9Q5oQQ"/>
+          <transition xmi:type="uml:Transition" xmi:id="_CWRJsLVgEe-ALulj9Q5oQQ" source="__rAo4LVVEe-ALulj9Q5oQQ" target="_4tLvkLVfEe-ALulj9Q5oQQ"/>
+          <subvertex xmi:type="uml:State" xmi:id="_-4REsLVSEe-ALulj9Q5oQQ" name="GetCredentials"/>
+          <subvertex xmi:type="uml:State" xmi:id="_Zn-9sLVVEe-ALulj9Q5oQQ" name="authenticateUser"/>
+          <subvertex xmi:type="uml:Pseudostate" xmi:id="_cFeT0LVVEe-ALulj9Q5oQQ" kind="choice"/>
+          <subvertex xmi:type="uml:Pseudostate" xmi:id="_c7PeMLVVEe-ALulj9Q5oQQ" kind="terminate"/>
+          <subvertex xmi:type="uml:State" xmi:id="_jXOqMLVVEe-ALulj9Q5oQQ" name="createAdmin"/>
+          <subvertex xmi:type="uml:State" xmi:id="__rAo4LVVEe-ALulj9Q5oQQ" name="assignAdmin"/>
+        </region>
+        <region xmi:type="uml:Region" xmi:id="_18L6gLVSEe-ALulj9Q5oQQ" name="Region2">
+          <transition xmi:type="uml:Transition" xmi:id="_ubYesLVWEe-ALulj9Q5oQQ" name="clickChangeTimings" source="_H6OGALVWEe-ALulj9Q5oQQ" target="_BsTSkLVTEe-ALulj9Q5oQQ"/>
+          <transition xmi:type="uml:Transition" xmi:id="_vUTqwLVWEe-ALulj9Q5oQQ" name="clicksAddAnotherLocation" source="_H6OGALVWEe-ALulj9Q5oQQ" target="_gEf4sLVWEe-ALulj9Q5oQQ"/>
+          <transition xmi:type="uml:Transition" xmi:id="_wIA_oLVWEe-ALulj9Q5oQQ" name="clicksDeleteRestaurant" source="_H6OGALVWEe-ALulj9Q5oQQ" target="_qqrNMLVWEe-ALulj9Q5oQQ"/>
+          <transition xmi:type="uml:Transition" xmi:id="_6gB8ULVWEe-ALulj9Q5oQQ" source="_BsTSkLVTEe-ALulj9Q5oQQ" target="_5SNeULVWEe-ALulj9Q5oQQ"/>
+          <transition xmi:type="uml:Transition" xmi:id="_7OsZILVWEe-ALulj9Q5oQQ" source="_gEf4sLVWEe-ALulj9Q5oQQ" target="_5SNeULVWEe-ALulj9Q5oQQ"/>
+          <transition xmi:type="uml:Transition" xmi:id="_8nGWgLVWEe-ALulj9Q5oQQ" source="_qqrNMLVWEe-ALulj9Q5oQQ" target="_5SNeULVWEe-ALulj9Q5oQQ"/>
+          <transition xmi:type="uml:Transition" xmi:id="_MsFdELVXEe-ALulj9Q5oQQ" source="_5SNeULVWEe-ALulj9Q5oQQ" target="_F6plgLVXEe-ALulj9Q5oQQ"/>
+          <transition xmi:type="uml:Transition" xmi:id="_NgeHYLVXEe-ALulj9Q5oQQ" source="_F6plgLVXEe-ALulj9Q5oQQ" target="_U6u5gLVXEe-ALulj9Q5oQQ"/>
+          <transition xmi:type="uml:Transition" xmi:id="_cPHGELVXEe-ALulj9Q5oQQ" source="_U6u5gLVXEe-ALulj9Q5oQQ" target="_aFuXsLVXEe-ALulj9Q5oQQ"/>
+          <transition xmi:type="uml:Transition" xmi:id="_eKDv0LVXEe-ALulj9Q5oQQ" name="validUser" source="_U6u5gLVXEe-ALulj9Q5oQQ" target="_KZaP0LVXEe-ALulj9Q5oQQ"/>
+          <transition xmi:type="uml:Transition" xmi:id="_h9zHMLVXEe-ALulj9Q5oQQ" name="ForUpdates" source="_KZaP0LVXEe-ALulj9Q5oQQ" target="_T6I_MLVXEe-ALulj9Q5oQQ"/>
+          <transition xmi:type="uml:Transition" xmi:id="_tk9-oLVXEe-ALulj9Q5oQQ" name="delteRestaurantWasClicked" source="_KZaP0LVXEe-ALulj9Q5oQQ" target="_qbwK8LVXEe-ALulj9Q5oQQ"/>
+          <transition xmi:type="uml:Transition" xmi:id="_DwiIQLVgEe-ALulj9Q5oQQ" source="_T6I_MLVXEe-ALulj9Q5oQQ" target="_4tLvkLVfEe-ALulj9Q5oQQ"/>
+          <transition xmi:type="uml:Transition" xmi:id="_FLki4LVgEe-ALulj9Q5oQQ" source="_qbwK8LVXEe-ALulj9Q5oQQ" target="_4tLvkLVfEe-ALulj9Q5oQQ"/>
+          <subvertex xmi:type="uml:State" xmi:id="_BsTSkLVTEe-ALulj9Q5oQQ" name="GetNewTimings"/>
+          <subvertex xmi:type="uml:Pseudostate" xmi:id="_H6OGALVWEe-ALulj9Q5oQQ" kind="choice"/>
+          <subvertex xmi:type="uml:State" xmi:id="_gEf4sLVWEe-ALulj9Q5oQQ" name="GetNewLocation"/>
+          <subvertex xmi:type="uml:State" xmi:id="_qqrNMLVWEe-ALulj9Q5oQQ" name="sendReqToDelete"/>
+          <subvertex xmi:type="uml:Pseudostate" xmi:id="_5SNeULVWEe-ALulj9Q5oQQ" name="" kind="junction"/>
+          <subvertex xmi:type="uml:State" xmi:id="_F6plgLVXEe-ALulj9Q5oQQ" name="authenticateUser"/>
+          <subvertex xmi:type="uml:Pseudostate" xmi:id="_KZaP0LVXEe-ALulj9Q5oQQ" kind="junction"/>
+          <subvertex xmi:type="uml:State" xmi:id="_T6I_MLVXEe-ALulj9Q5oQQ" name="updateInfo"/>
+          <subvertex xmi:type="uml:Pseudostate" xmi:id="_U6u5gLVXEe-ALulj9Q5oQQ" kind="choice"/>
+          <subvertex xmi:type="uml:Pseudostate" xmi:id="_aFuXsLVXEe-ALulj9Q5oQQ" kind="terminate"/>
+          <subvertex xmi:type="uml:State" xmi:id="_qbwK8LVXEe-ALulj9Q5oQQ" name="DeleteRestaurant"/>
+        </region>
+        <region xmi:type="uml:Region" xmi:id="_53t78LVSEe-ALulj9Q5oQQ" name="Region3">
+          <transition xmi:type="uml:Transition" xmi:id="_QQ-ngLVUEe-ALulj9Q5oQQ" name="itemSelected" source="_9S_wALVSEe-ALulj9Q5oQQ" target="_NEfdYLVUEe-ALulj9Q5oQQ"/>
+          <transition xmi:type="uml:Transition" xmi:id="_cquycLVUEe-ALulj9Q5oQQ" source="_NEfdYLVUEe-ALulj9Q5oQQ" target="_blV3sLVUEe-ALulj9Q5oQQ"/>
+          <transition xmi:type="uml:Transition" xmi:id="_gMuSgLVUEe-ALulj9Q5oQQ" source="_blV3sLVUEe-ALulj9Q5oQQ" target="_eTCNALVUEe-ALulj9Q5oQQ"/>
+          <transition xmi:type="uml:Transition" xmi:id="_nzLtkLVUEe-ALulj9Q5oQQ" name="validUser" source="_blV3sLVUEe-ALulj9Q5oQQ" target="_lb_MsLVUEe-ALulj9Q5oQQ"/>
+          <transition xmi:type="uml:Transition" xmi:id="_AgnPoLVgEe-ALulj9Q5oQQ" source="_lb_MsLVUEe-ALulj9Q5oQQ" target="_4tLvkLVfEe-ALulj9Q5oQQ"/>
+          <subvertex xmi:type="uml:State" xmi:id="_9S_wALVSEe-ALulj9Q5oQQ" name="ShowMenu"/>
+          <subvertex xmi:type="uml:State" xmi:id="_NEfdYLVUEe-ALulj9Q5oQQ" name="authenticateUser"/>
+          <subvertex xmi:type="uml:Pseudostate" xmi:id="_blV3sLVUEe-ALulj9Q5oQQ" name="" kind="choice"/>
+          <subvertex xmi:type="uml:Pseudostate" xmi:id="_eTCNALVUEe-ALulj9Q5oQQ" name="" kind="terminate"/>
+          <subvertex xmi:type="uml:State" xmi:id="_lb_MsLVUEe-ALulj9Q5oQQ" name="updateMenu"/>
+        </region>
+        <region xmi:type="uml:Region" xmi:id="_7zbasLVSEe-ALulj9Q5oQQ" name="Region4">
+          <transition xmi:type="uml:Transition" xmi:id="_chLM0LVfEe-ALulj9Q5oQQ" name="RequestSent" source="_JqiUcLVTEe-ALulj9Q5oQQ" target="_rGXUkLVfEe-ALulj9Q5oQQ"/>
+          <transition xmi:type="uml:Transition" xmi:id="_zcggILVfEe-ALulj9Q5oQQ" source="_mzWnQLVfEe-ALulj9Q5oQQ" target="_yUiLcLVfEe-ALulj9Q5oQQ"/>
+          <transition xmi:type="uml:Transition" xmi:id="_0IuF4LVfEe-ALulj9Q5oQQ" name="validUser" source="_mzWnQLVfEe-ALulj9Q5oQQ" target="_ZQF2kLVfEe-ALulj9Q5oQQ"/>
+          <transition xmi:type="uml:Transition" xmi:id="_Gzyd4LVgEe-ALulj9Q5oQQ" source="_ZQF2kLVfEe-ALulj9Q5oQQ" target="_4tLvkLVfEe-ALulj9Q5oQQ"/>
+          <subvertex xmi:type="uml:State" xmi:id="_JqiUcLVTEe-ALulj9Q5oQQ" name="requrestStatus"/>
+          <subvertex xmi:type="uml:State" xmi:id="_ZQF2kLVfEe-ALulj9Q5oQQ" name="calculateStats"/>
+          <subvertex xmi:type="uml:Pseudostate" xmi:id="_mzWnQLVfEe-ALulj9Q5oQQ" kind="choice"/>
+          <subvertex xmi:type="uml:State" xmi:id="_rGXUkLVfEe-ALulj9Q5oQQ" name="authenticateUser"/>
+          <subvertex xmi:type="uml:Pseudostate" xmi:id="_yUiLcLVfEe-ALulj9Q5oQQ" name="Terminate6" kind="terminate"/>
+        </region>
+        <region xmi:type="uml:Region" xmi:id="_h-bWILVTEe-ALulj9Q5oQQ" name="Region5">
+          <transition xmi:type="uml:Transition" xmi:id="_5i_XMLVUEe-ALulj9Q5oQQ" name="confirmsAddition" source="_sLV2ELVTEe-ALulj9Q5oQQ" target="_umXRkLVUEe-ALulj9Q5oQQ"/>
+          <transition xmi:type="uml:Transition" xmi:id="_92J1gLVUEe-ALulj9Q5oQQ" name="validUser" source="_AzeiQLVVEe-ALulj9Q5oQQ" target="_7Qgo8LVUEe-ALulj9Q5oQQ"/>
+          <transition xmi:type="uml:Transition" xmi:id="_HP_SsLVVEe-ALulj9Q5oQQ" source="_umXRkLVUEe-ALulj9Q5oQQ" target="_AzeiQLVVEe-ALulj9Q5oQQ"/>
+          <transition xmi:type="uml:Transition" xmi:id="_RIxVsLVVEe-ALulj9Q5oQQ" source="_AzeiQLVVEe-ALulj9Q5oQQ" target="_KVJFwLVVEe-ALulj9Q5oQQ"/>
+          <transition xmi:type="uml:Transition" xmi:id="_BPyp0LVgEe-ALulj9Q5oQQ" source="_7Qgo8LVUEe-ALulj9Q5oQQ" target="_4tLvkLVfEe-ALulj9Q5oQQ"/>
+          <subvertex xmi:type="uml:State" xmi:id="_sLV2ELVTEe-ALulj9Q5oQQ" name="GiveData"/>
+          <subvertex xmi:type="uml:State" xmi:id="_umXRkLVUEe-ALulj9Q5oQQ" name="authenticateUser"/>
+          <subvertex xmi:type="uml:State" xmi:id="_7Qgo8LVUEe-ALulj9Q5oQQ" name="addItemToMenu"/>
+          <subvertex xmi:type="uml:Pseudostate" xmi:id="_AzeiQLVVEe-ALulj9Q5oQQ" kind="choice"/>
+          <subvertex xmi:type="uml:Pseudostate" xmi:id="_KVJFwLVVEe-ALulj9Q5oQQ" kind="terminate"/>
+        </region>
+      </subvertex>
+      <subvertex xmi:type="uml:Pseudostate" xmi:id="_uspVMLVTEe-ALulj9Q5oQQ" kind="choice"/>
+      <subvertex xmi:type="uml:State" xmi:id="_4tLvkLVfEe-ALulj9Q5oQQ" name="ConfirmBack"/>
+      <subvertex xmi:type="uml:FinalState" xmi:id="_8uOjILVfEe-ALulj9Q5oQQ" name=""/>
+    </region>
+  </packagedElement>
+  <profileApplication xmi:type="uml:ProfileApplication" xmi:id="_xx_EkLVKEe-ALulj9Q5oQQ">
+    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xybJcLVKEe-ALulj9Q5oQQ" source="http://www.eclipse.org/uml2/2.0.0/UML">
+      <references xmi:type="ecore:EPackage" href="pathmap://PAPYRUS_ACTIONLANGUAGE_PROFILE/ActionLanguage-Profile.profile.uml#_Kv8EIKFXEeS_KNX0nfvIVQ"/>
+    </eAnnotations>
+    <appliedProfile xmi:type="uml:Profile" href="pathmap://PAPYRUS_ACTIONLANGUAGE_PROFILE/ActionLanguage-Profile.profile.uml#ActionLanguage"/>
+  </profileApplication>
+</uml:Model>
