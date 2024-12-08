@@ -16,7 +16,6 @@ const UserContextProvider = ({ children }) => {
   });
 
   const {setAlert} = useAlertContext();
-  const [pastAddresses,setAddresses] = useState([]);
 
   //for rider
   const [bikeDetails,setBikeDetails] = useState({
@@ -35,7 +34,6 @@ const UserContextProvider = ({ children }) => {
   const fetchOrders = async () => {
     try {
       const response = await axios.get(`/api/getAllOrders/${userData.User_id}`);
-      const response2 =await axios.get(`/api/getPastAddresses/${userData.User_id}`);
       const current = [];
       const past = [];
   
@@ -58,7 +56,20 @@ const UserContextProvider = ({ children }) => {
       setOrders(response.data);
       setCurrentOrders(current);
       setPastOrders(past);
-  
+      let updatedData;
+
+      if (past.length === 0 && current.length === 0) {
+        updatedData = {
+          ...userData,
+          isFirstOrder:true
+        };
+      } else {
+        updatedData = {
+          ...userData,
+          isFirstOrder:false
+        };
+      }
+      setUserData(updatedData);
     } catch (err) {
       console.log('Error fetching customer orders');
     }

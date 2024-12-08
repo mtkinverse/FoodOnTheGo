@@ -8,9 +8,11 @@ import {
   FaBiking,
 } from "react-icons/fa";
 import { Banknote } from "lucide-react";
+import { useUserContext } from "../contexts/userContext";
 
 const Cart = () => {
   
+  const {userData} = useUserContext();
   const {
     cart,
     cartCount,
@@ -71,18 +73,18 @@ const Cart = () => {
       </button>
 
       <div
-  className={`fixed inset-y-0 right-0 w-full md:w-96 bg-gradient-to-br 
+  className={`fixed inset-y-0 right-0 w-full sm:w-96 bg-gradient-to-br 
               from-white via-purple-100 to-indigo-50 shadow-2xl 
               transform transition-transform duration-300 z-50
               ${cartPopup ? "translate-x-0" : "translate-x-full"}`}
 >
   <div className="h-full flex flex-col">
     {/* Header */}
-    <div className="p-6 border-b border-purple-200 flex justify-between items-center bg-gradient-to-r from-purple-50 to-white">
-      <h2 className="text-3xl font-extrabold text-purple-900">Your Cart</h2>
+    <div className="p-4 sm:p-6 border-b border-purple-200 flex justify-between items-center bg-gradient-to-r from-purple-50 to-white">
+      <h2 className="text-2xl sm:text-3xl font-extrabold text-purple-900">Your Cart</h2>
       <button
         onClick={() => setCartPopup(false)}
-        className="text-red-500 hover:text-red-700 text-2xl transition-transform transform hover:scale-125"
+        className="text-red-500 hover:text-red-700 text-xl sm:text-2xl transition-transform transform hover:scale-125"
       >
         ✕
       </button>
@@ -94,15 +96,15 @@ const Cart = () => {
         Your cart is empty
       </div>
     ) : (
-      <div className="flex-grow overflow-y-auto p-6 space-y-6 bg-gradient-to-b from-white to-purple-50">
+      <div className="flex-grow overflow-y-auto p-4 sm:p-6 space-y-4 sm:space-y-6 bg-gradient-to-b from-white to-purple-50">
         {cart.map((item) => (
           <div
             key={item.Item_id}
-            className="flex justify-between items-center bg-gradient-to-br from-indigo-200 via-purple-100 to-purple-300 shadow-md rounded-xl p-4 hover:shadow-lg transition-shadow"
+            className="flex justify-between items-center bg-gradient-to-br from-indigo-200 via-purple-100 to-purple-300 shadow-md rounded-xl p-3 sm:p-4 hover:shadow-lg transition-shadow"
           >
             <div>
-              <h3 className="font-extrabold text-purple-800 text-lg">{item.Dish_Name}</h3>
-              <div className="flex items-center gap-2 text-sm">
+              <h3 className="font-extrabold text-purple-800 text-base sm:text-lg">{item.Dish_Name}</h3>
+              <div className="flex items-center gap-2 text-xs sm:text-sm">
                 {item.discounted_price &&
                 item.discounted_price < item.Item_Price ? (
                   <>
@@ -119,9 +121,9 @@ const Cart = () => {
                   </span>
                 )}
               </div>
-              <p className="text-gray-500 italic">{item.restaurant_name}</p>
+              <p className="text-gray-500 italic text-xs sm:text-sm">{item.restaurant_name}</p>
             </div>
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-2 sm:space-x-3">
               <button
                 onClick={() => handleDecrement(item.Item_id)}
                 className="text-purple-600 hover:text-purple-800 transition-transform transform hover:scale-110"
@@ -148,66 +150,78 @@ const Cart = () => {
     )}
 
     {/* Promo Section */}
-    <div className="p-6 border-t border-purple-200 bg-white">
-      <div className="flex items-center space-x-3">
-        <input
-          type="text"
-          placeholder="Promo Code"
-          className="flex-grow border border-purple-300 rounded-lg py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-400"
-          onChange={(e) =>
-            setPromo((prev) => ({
-              ...prev,
-              promo_code: e.target.value,
-            }))
-          }
-        />
-        <button
-          onClick={handleApplyPromoCode}
-          className="bg-gradient-to-r from-purple-600 to-indigo-500 text-white px-4 py-2 rounded-lg hover:from-purple-700 hover:to-indigo-600 transition-transform transform hover:scale-105"
-        >
-          Apply
-        </button>
+<div className="p-4 sm:p-6 border-t border-purple-200 bg-white">
+  <div className="flex items-center space-x-2 sm:space-x-3">
+    <input
+      type="text"
+      placeholder="Promo Code"
+      className="flex-grow border border-purple-300 rounded-lg py-2 px-3 text-sm sm:text-base text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-400"
+      onChange={(e) =>
+        setPromo((prev) => ({
+          ...prev,
+          promo_code: e.target.value,
+        }))
+      }
+    />
+    <button
+      onClick={handleApplyPromoCode}
+      className="bg-gradient-to-r from-purple-600 to-indigo-500 text-white px-3 sm:px-4 py-2 rounded-lg hover:from-purple-700 hover:to-indigo-600 transition-transform transform hover:scale-105 text-sm sm:text-base"
+    >
+      Apply
+    </button>
+  </div>
+  {promo.promo_id && (
+    <p className="mt-2 sm:mt-3 text-green-600 text-xs sm:text-sm font-medium">
+      Promo Applied: {promo.promo_value}% off!🎉
+    </p>
+  )}
+{
+    userData.isFirstOrder && (
+      <div className="mt-4 mx-4 p-3 bg-green-50 border border-green-300 rounded-md shadow-sm flex items-center gap-2">
+        <div className="text-green-700 text-xl">🎉</div>
+        <div>
+          <p className="text-sm sm:text-base text-green-800 font-semibold">
+            You get <span className="font-bold">50% off</span> on your first order!
+          </p>
+        </div>
       </div>
-      {promo.promo_id && (
-        <p className="mt-3 text-green-600 text-sm font-medium">
-          Promo Applied: {promo.promo_value}% off!🎉
-        </p>
-      )}
-    </div>
+    )
+  }
+</div>
 
     {/* Summary Section */}
-    <div className="p-6 border-t border-purple-200 bg-gradient-to-b from-purple-50 to-white space-y-5">
+    <div className="p-4 sm:p-6 border-t border-purple-200 bg-gradient-to-b from-purple-50 to-white space-y-3 sm:space-y-5">
       <div className="flex justify-between">
-        <span className="text-lg font-semibold text-purple-900">Subtotal:</span>
-        <span className="text-lg font-bold text-purple-900">
+        <span className="text-base sm:text-lg font-semibold text-purple-900">Subtotal:</span>
+        <span className="text-base sm:text-lg font-bold text-purple-900">
           Rs.{getSubTotal()}
         </span>
       </div>
       <div className="flex justify-between">
-        <span className="text-lg font-semibold text-purple-900">Delivery:</span>
-        <span className="text-lg font-bold text-purple-900">Rs.150</span>
+        <span className="text-base sm:text-lg font-semibold text-purple-900">Delivery:</span>
+        <span className="text-base sm:text-lg font-bold text-purple-900">Rs.150</span>
       </div>
       <div className="flex justify-between">
-        <span className="text-xl font-bold text-purple-900">Total:</span>
-        <span className="text-xl font-bold text-purple-900">
+        <span className="text-lg sm:text-xl font-bold text-purple-900">Total:</span>
+        <span className="text-lg sm:text-xl font-bold text-purple-900">
           Rs.{getTotalAmount()}
         </span>
       </div>
 
       {/* Action Buttons */}
-      <div className="flex justify-between space-x-4">
+      <div className="flex justify-between space-x-3 sm:space-x-4">
         <button
           onClick={() => {
             setCartPopup(false);
             setOrderPopUp(true);
           }}
-          className="w-1/2 bg-gradient-to-r from-purple-600 to-indigo-500 text-white py-3 rounded-lg hover:from-purple-700 hover:to-indigo-600 transition-transform transform hover:scale-105"
+          className="w-1/2 bg-gradient-to-r from-purple-600 to-indigo-500 text-white py-2 sm:py-3 rounded-lg hover:from-purple-700 hover:to-indigo-600 transition-transform transform hover:scale-105 text-sm sm:text-base"
         >
           Place Order
         </button>
         <button
           onClick={() => clearCart()}
-          className="w-1/2 bg-red-500 text-white py-3 rounded-lg hover:bg-red-600 transition-transform transform hover:scale-105"
+          className="w-1/2 bg-red-500 text-white py-2 sm:py-3 rounded-lg hover:bg-red-600 transition-transform transform hover:scale-105 text-sm sm:text-base"
         >
           Clear Cart
         </button>
@@ -215,7 +229,6 @@ const Cart = () => {
     </div>
   </div>
 </div>
-
       {orderPopUp && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6">

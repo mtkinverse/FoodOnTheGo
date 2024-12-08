@@ -1045,7 +1045,7 @@ const AdminDashboard = () => {
             <option value="">Select a Rider</option>
             {riders.map((rider) => (
               <option key={rider.rider_id} value={rider.rider_id}>
-                {rider.rider_name} - Bike no {rider.bikeNo}
+                {rider.rider_name} - Currently delivering {rider.out_for_delivery_count} order(s)
               </option>
             ))}
           </select>

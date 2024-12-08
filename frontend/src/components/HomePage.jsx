@@ -1,14 +1,36 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaUtensils, FaFire, FaStar, FaClock, FaStore } from 'react-icons/fa';
 import TopRestaurants from './TopRestaurants';
 import Cart from './Cart';
 import { useUserContext } from '../contexts/userContext';
+import Confetti from 'react-confetti';
 
 const HomePage = () => {
-  const { loggedIn } = useUserContext();
+  const { loggedIn, userData } = useUserContext();
+  const [isFirstOrder, setIsFirstOrder] = useState(false);
+
+  useEffect(() => {
+    if (loggedIn && userData?.role === 'Customer' && userData.isFirstOrder === true) {
+        setIsFirstOrder(userData.isFirstOrder);
+        const timeout = setTimeout(() => {
+          setIsFirstOrder(false); 
+        }, 10000);
+        return () => clearTimeout(timeout);
+    }
+  }, [loggedIn, userData]);
 
   return (
     <>
+      {isFirstOrder && loggedIn && (
+        <div className="fixed top-16 left-1/2 transform -translate-x-1/2 z-50 bg-yellow-400 text-white px-8 py-4 rounded-full shadow-lg flex items-center justify-center gap-4 animate-bounce">
+          <div className="text-2xl">🎉 Congrats! 50% OFF on your first order! 🎉</div>
+          <div className="text-4xl text-purple-700">🥳</div>
+        </div>
+      )}
+      
+      {/* Confetti animation */}
+      {isFirstOrder && loggedIn && <Confetti />}
+
       <section className="bg-gradient-to-r from-purple-900 to-indigo-800 overflow-hidden">
         <div className="container mx-auto px-4 py-16 sm:px-6 lg:px-8">
           <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
@@ -42,7 +64,7 @@ const HomePage = () => {
                 href="#topRestaurants" 
                 className="inline-block bg-yellow-400 hover:bg-yellow-500 text-purple-900 font-bold px-8 py-4 rounded-full transition-all duration-300 hover:shadow-lg transform hover:-translate-y-1"
               >
-                Explore Menu
+                Explore Restaurants
               </a>
             </div>
           </div>
@@ -110,4 +132,3 @@ const FeatureCard = ({ icon, title, description }) => (
 );
 
 export default HomePage;
-

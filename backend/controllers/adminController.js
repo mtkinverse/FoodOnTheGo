@@ -160,9 +160,12 @@ module.exports.AddPromo = (req, res) => {
 module.exports.getRiders = (req, res) => {
     const location_id = req.params.id;
     const q = `
-       SELECT d.rider_id,d.rider_name,d.available ,d.bikeNo,d.Phone_No,d.email_address from delivery_rider d
-       join restaurant r on d.restaurant_id = d.restaurant_id
-       where r.location_id = ? and d.Available = true;
+       SELECT d.rider_id,d.rider_name,d.available,d.bikeNo,d.Phone_No,d.email_address, COUNT(o.order_id) AS out_for_delivery_count
+     FROM delivery_rider d
+     LEFT JOIN orders o ON o.delivered_by_id = d.rider_id AND o.order_status = 'Out for delivery'
+     JOIN restaurant r ON d.restaurant_id = r.restaurant_id
+     WHERE r.location_id = ? AND d.available = true 
+     GROUP BY d.rider_id, d.rider_name, d.available, d.bikeNo, d.Phone_No, d.email_address
     `;
 
     db.query(q, [location_id], (error, result) => {

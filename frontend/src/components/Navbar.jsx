@@ -61,7 +61,7 @@ const ShowPastOrders = ({
         <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 backdrop-blur-sm p-4">
           <div className="bg-purple-50 w-full max-w-2xl rounded-lg shadow-2xl overflow-hidden">
             {/* Header */}
-            <div className="p-4 bg-purple-700 border-b border-purple-200">
+            <div className="p-4 bg-gradient-to-r from-purple-900 to-indigo-800 border-b border-purple-200">
               <div className="flex justify-between items-center">
                 <div>
                   <h2 className="text-xl font-bold text-white">
@@ -276,7 +276,7 @@ function ShowCurrentOrders({
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 backdrop-blur-md p-6">
           <div className="bg-white w-full max-w-3xl rounded-2xl shadow-xl border-2 border-purple-200 overflow-hidden">
             {/* Header */}
-            <div className="p-6 bg-purple-700 border-b border-gray-100">
+            <div className="p-6 bg-gradient-to-r from-purple-900 to-indigo-800 border-b border-gray-100">
               <div className="flex justify-between items-center">
                 <div>
                   <h2 className="text-2xl font-bold text-white">
@@ -765,7 +765,7 @@ const Navbar = () => {
         onClick={toggleProfileMenu}
         className="flex items-center space-x-2 text-sm font-medium text-purple-600 hover:text-purple-700 focus:outline-none"
       >
-        <FaUserCircle className="hidden sm:block h-8 w-8 text-purple-600" />
+        <FaUserCircle className="hidden sm:block h-8 w-8 text-purple-900" />
         
         {/* Username with conditional green dot */}
         <div className="flex items-center space-x-1">
@@ -778,7 +778,7 @@ const Navbar = () => {
         </div>
 
         <FaChevronDown
-          className={`hidden sm:block h-5 w-5 text-purple-600 transform transition-transform duration-300 ease-in-out ${
+          className={`hidden sm:block h-5 w-5 text-purple-900 transform transition-transform duration-300 ease-in-out ${
             isProfileMenuOpen ? "rotate-180" : ""
           }`}
         />
@@ -787,7 +787,7 @@ const Navbar = () => {
       {isProfileMenuOpen && (
         <div
           ref={profileMenuRef}
-          className="absolute right-0 mt-2 w-max max-w-xs bg-purple-600 border border-purple-600 rounded-md shadow-lg z-20"
+          className="absolute right-0 mt-2 w-max max-w-xs bg-gradient-to-r from-purple-700 to-indigo-800 border border-purple-600 rounded-md shadow-lg z-20"
         >
           <button
             className="block w-full px-4 py-2 text-sm text-white hover:bg-purple-800"
@@ -1090,7 +1090,7 @@ const Navbar = () => {
 )}
 
           {viewProfile && (
-            <div className="fixed inset-0 backdrop-blur-sm  flex items-center justify-center p-4 z-50">
+            <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
               <div className="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden relative transform transition-all duration-300 hover:scale-[1.01]">
                 <button
                   className="absolute top-4 left-4 text-purple-600 hover:text-purple-800 transition-colors duration-200 z-10"
@@ -1165,7 +1165,7 @@ const Navbar = () => {
                   {/* Change Password */}
                   <div className="mb-4">
                     <button
-                      onClick={() => setPasswordPop(true)}
+                      onClick={() => {setPasswordPop(true); setViewProfile(false)}}
                       className="w-full py-3 text-white bg-purple-600 rounded-lg hover:bg-purple-700 
             transition duration-300 ease-in-out transform hover:scale-[1.02]"
                     >
@@ -1173,7 +1173,25 @@ const Navbar = () => {
                     </button>
                   </div>
 
-                  {passwordPopup && (
+                  {/* Save Button */}
+                  {editMode && (
+                    <div className="mb-4">
+                      <button
+                        onClick={handleSave}
+                        className="w-full py-3 text-white bg-purple-600 rounded-lg 
+              hover:bg-purple-700 transition duration-300 ease-in-out 
+              transform hover:scale-[1.02]"
+                      >
+                        Save Changes
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+{passwordPopup && (
                     <div className="fixed inset-0  backdrop-blur-sm  flex justify-center items-center z-50">
                       <div className="bg-white w-full max-w-md p-6 rounded-2xl shadow-2xl relative">
                         <button
@@ -1230,24 +1248,6 @@ const Navbar = () => {
                       </div>
                     </div>
                   )}
-
-                  {/* Save Button */}
-                  {editMode && (
-                    <div className="mb-4">
-                      <button
-                        onClick={handleSave}
-                        className="w-full py-3 text-white bg-purple-600 rounded-lg 
-              hover:bg-purple-700 transition duration-300 ease-in-out 
-              transform hover:scale-[1.02]"
-                      >
-                        Save Changes
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
 
           {deletePop && (
             <div className="fixed inset-0 backdrop-blur-sm  bg-opacity-50 flex justify-center items-center z-50">

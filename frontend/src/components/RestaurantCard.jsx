@@ -83,7 +83,7 @@ const RestaurantCard = ({ restaurant, flag }) => {
   };
 
   return (
-    <div className="group relative bg-gradient-to-r from-purple-100 to-indigo-100 
+    <div className="group relative bg-purple-50
     rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 max-w-sm">
       <div className="absolute top-4 left-4 z-10 flex flex-col gap-2">
         {/* Only show the discount if the restaurant is open */}

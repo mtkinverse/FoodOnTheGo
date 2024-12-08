@@ -41,6 +41,9 @@ const CartContextProvider = ({ children }) => {
     if (promo.promo_id) {
       discountedTotal = discountedTotal * (1 - promo.promo_value / 100);
     }
+    if(userData.isFirstOrder){
+      discountedTotal = discountedTotal * 0.5;
+    }
     return discountedTotal > 0 ? discountedTotal : 0; 
   };
 
@@ -53,12 +56,9 @@ const CartContextProvider = ({ children }) => {
     return isNaN(totalAmount) ? 0 : totalAmount;
   };
 
-  let promoData;
 
   const applyPromoCode = async () => {
     try {
-      
-  
       const response = await axios.get(`/api/verifyPromo/${cart[0]?.Menu_id}`, {
         params: { promo_code: promo.promo_code, user_id: userData.User_id },
       });
