@@ -81,7 +81,7 @@ const UserContextProvider = ({ children }) => {
       fetchOrders();
       const interval = setInterval(() => {
         fetchOrders();
-      }, 30000); // Refresh orders every 30 seconds
+      }, 10000); // Refresh orders every 30 seconds
       return () => clearInterval(interval); 
     }
   }, [userData.User_id]);

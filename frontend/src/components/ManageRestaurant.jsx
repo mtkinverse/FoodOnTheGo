@@ -766,7 +766,6 @@ const ManageRestaurant = ({
             file:text-purple-700 hover:file:bg-purple-100 
             focus:outline-none focus:ring-2 focus:ring-purple-500"
             onChange={handleupdatedItemChange}
-            required
           />
         </div>
 

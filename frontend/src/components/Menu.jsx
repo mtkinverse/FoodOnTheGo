@@ -201,9 +201,7 @@ const RestaurantMenu = () => {
 
         const menuResponse = await axios.get(`/api/menu/${restaurant_id}`);
         setMenuItems(menuResponse.data);
-        
-        const popularResponse = await axios.get(`/api/getPopularItems/${restaurant_id}`);
-        setPopularItems(popularResponse.data);
+      
 
         const reviewsResponse = await axios.get(
           `/api/getReviews/${restaurant_id}`
@@ -214,12 +212,12 @@ const RestaurantMenu = () => {
           `/api/getPromos/${restaurant_id}`
         );
         setDeals(dealsResponse.data);
-
         const uniqueCategories = [
           "All",
           ...new Set(menuResponse.data.map((item) => item.Cuisine)),
         ];
-
+        const popularResponse = await axios.get(`/api/getPopularItems/${restaurant_id}`);
+        setPopularItems(popularResponse.data);
         const updatedMenuItems = menuResponse.data.map(menuItem => {
           const isPopular = popularResponse.data.some(popularItem => popularItem.Item_id === menuItem.Item_id);
         

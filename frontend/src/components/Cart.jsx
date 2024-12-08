@@ -229,139 +229,125 @@ const Cart = () => {
     </div>
   </div>
 </div>
-      {orderPopUp && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
-            <h2 className="text-2xl font-bold text-purple-600 mb-4">
-              Confirm Order
-            </h2>
-            <form onSubmit={handleOrderPlacment}>
-              <div className="mb-4">
-                <label
-                  htmlFor="address"
-                  className="block text-gray-700 font-bold mb-2"
-                >
-                  Address
-                </label>
-                <input
-                  type="text"
-                  id="address"
-                  name="Address"
-                  className="w-full border rounded-lg py-2 px-3 text-gray-700"
-                  value={location.Address}
-                  onChange={changeLocation}
-                  required
-                />
-              </div>
+{orderPopUp && (
+  <div className="fixed inset-0 bg-black/60 bg-opacity-60 flex items-center justify-center z-50 p-4">
+    <div className="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden">
+      <div className="bg-gradient-to-r from-purple-600 to-indigo-700 p-6">
+        <h2 className="text-2xl font-bold text-white mb-2">
+          Confirm Order
+        </h2>
+      </div>
+      <form onSubmit={handleOrderPlacment} className="p-6">
+        <div className="mb-2">
+          <label
+            htmlFor="address"
+            className="block text-gray-700 font-semibold mb-2"
+          >
+            Address
+          </label>
+          <input
+            type="text"
+            id="address"
+            name="Address"
+            className="w-full border border-gray-300 rounded-lg py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            value={location.Address}
+            onChange={changeLocation}
+            required
+          />
+        </div>
 
-              <div className="mb-4">
-                <label
-                  htmlFor="nearby"
-                  className="block text-gray-700 font-bold mb-2"
-                >
-                  Nearby Point
-                </label>
-                <input
-                  type="text"
-                  id="nearby"
-                  name="NearbyPoint"
-                  className="w-full border rounded-lg py-2 px-3 text-gray-700"
-                  value={location.NearbyPoint}
-                  onChange={changeLocation}
-                  required
-                />
-              </div>
-              {/* Tip Options */}
-              <div className="mb-6">
-                <label className="block text-gray-700 font-bold mb-2">
-                  Add a Tip for Your Rider
-                </label>
-                <div className="grid grid-cols-3 gap-2 sm:gap-4">
-                  {/* Tip Option 50 */}
-                  <button
-                    type="button"
-                    onClick={() => setTipAmount(50)}
-                    className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 bg-purple-100 hover:bg-purple-200 rounded-lg py-2 px-2 sm:px-4 text-purple-600 text-sm sm:text-base"
-                  >
-                    <FaBiking className="text-purple-600 text-sm sm:text-base" />
-                    Rs.50
-                  </button>
-                  {/* Tip Option 100 */}
-                  <button
-                    type="button"
-                    onClick={() => setTipAmount(100)}
-                    className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 bg-purple-100 hover:bg-purple-200 rounded-lg py-2 px-2 sm:px-4 text-purple-600 text-sm sm:text-base"
-                  >
-                    <FaBiking className="text-purple-600 text-sm sm:text-base" />
-                    Rs.100
-                  </button>
-                  {/* Tip Option 150 */}
-                  <button
-                    type="button"
-                    onClick={() => setTipAmount(150)}
-                    className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 bg-purple-100 hover:bg-purple-200 rounded-lg py-2 px-2 sm:px-4 text-purple-600 text-sm sm:text-base"
-                  >
-                    <FaBiking className="text-purple-600 text-sm sm:text-base" />
-                    Rs.150
-                  </button>
-                </div>
-                {/* Custom Tip Input */}
-                <input
-                  type="number"
-                  placeholder="Custom Tip Amount"
-                  className="mt-3 w-full border rounded-lg py-2 px-3 text-gray-700"
-                  onChange={(e) => setTipAmount(e.target.value)}
-                  value={tipAmount || ""}
-                />
-                <p className="text-xs sm:text-sm text-gray-500 mt-2">
-                  Your rider will receive this tip by us, in hand.
-                </p>
-              </div>
-              <div className="mb-6">
-                <label className="block text-gray-700 font-bold mb-2">
-                  Payment Method
-                </label>
-                <div className="flex items-center p-3 border rounded-lg bg-gray-50">
-                  <input
-                    type="radio"
-                    id="cod"
-                    name="paymentMethod"
-                    className="w-4 h-4 text-purple-600"
-                    checked={true}
-                    readOnly
-                  />
-                  <label
-                    htmlFor="cod"
-                    className="ml-2 flex items-center text-gray-700"
-                  >
-                    <Banknote className="w-5 h-5 mr-2 text-purple-600" />
-                    Cash on Delivery
-                  </label>
-                </div>
-              </div>
+        <div className="mb-2">
+          <label
+            htmlFor="nearby"
+            className="block text-gray-700 font-semibold mb-2"
+          >
+            Nearby Point
+          </label>
+          <input
+            type="text"
+            id="nearby"
+            name="NearbyPoint"
+            className="w-full border border-gray-300 rounded-lg py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            value={location.NearbyPoint}
+            onChange={changeLocation}
+            required
+          />
+        </div>
 
-              <div className="flex flex-col sm:flex-row justify-end gap-3">
-                <button
-                  type="button"
-                  className="bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400 w-full sm:w-auto"
-                  onClick={() => {
-                    setOrderPopUp(false);
-                    setCartPopup(true);
-                  }}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 w-full sm:w-auto"
-                >
-                  Confirm
-                </button>
-              </div>
-            </form>
+        <div className="mb-2">
+          <label className="block text-gray-700 font-semibold mb-2">
+            Add a Tip for Your Rider
+          </label>
+          <div className="grid grid-cols-3 gap-3">
+            {[50, 100, 150].map((amount) => (
+              <button
+                key={amount}
+                type="button"
+                onClick={() => setTipAmount(amount)}
+                className="flex items-center justify-center gap-2 bg-gradient-to-r from-purple-400 to-indigo-300 hover:from-indigo-100 hover:to-purple-100 rounded-lg py-2 px-3 text-indigo-700 text-sm transition duration-300 ease-in-out"
+              >
+                <FaBiking className="text-indigo-600" />
+                Rs.{amount}
+              </button>
+            ))}
+          </div>
+          <input
+            type="number"
+            placeholder="Custom Tip Amount"
+            className="mt-3 w-full border border-gray-300 rounded-lg py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            onChange={(e) => setTipAmount(e.target.value)}
+            value={tipAmount || ""}
+          />
+          <p className="text-xs text-gray-500 mt-2">
+            Your rider will receive this tip by us, in hand.
+          </p>
+        </div>
+
+        <div className="mb-2">
+          <label className="block text-gray-700 font-semibold mb-2">
+            Payment Method
+          </label>
+          <div className="flex items-center p-3 border rounded-lg bg-gradient-to-r from-indigo-50 to-purple-50">
+            <input
+              type="radio"
+              id="cod"
+              name="paymentMethod"
+              className="w-4 h-4 text-purple-600 focus:ring-purple-500 border-gray-300"
+              checked={true}
+              readOnly
+            />
+            <label
+              htmlFor="cod"
+              className="ml-2 flex items-center text-gray-700"
+            >
+              <Banknote className="w-5 h-5 mr-2 text-indigo-600" />
+              Cash on Delivery
+            </label>
           </div>
         </div>
-      )}
+
+        <div className="flex flex-col sm:flex-row justify-end gap-3 mt-8">
+          <button
+            type="button"
+            className="bg-gray-200 text-gray-700 py-2 px-6 rounded-lg hover:bg-gray-300 transition duration-300 ease-in-out w-full sm:w-auto"
+            onClick={() => {
+              setOrderPopUp(false);
+              setCartPopup(true);
+            }}
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-2 px-6 rounded-lg hover:from-indigo-700 hover:to-purple-700 transition duration-300 ease-in-out w-full sm:w-auto"
+          >
+            Confirm
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+)}
     </>
   );
 };

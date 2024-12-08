@@ -78,14 +78,11 @@ module.exports.getRestaurants = (req, res) => {
           return res.status(500).json({ error: 'Failed to fetch review count', details: err.message });
         }
 
-        // Attach the review count to the restaurant object
         restaurant.review_count = reviewData[0]?.review_count || 0;
 
-        // Push the restaurant with its discount value and review count
         restaurantsWithReviewCount.push(restaurant);
         processedCount++;
 
-        // When all restaurants are processed, return the response
         if (processedCount === data.length) {
           return res.status(200).json(restaurantsWithReviewCount);
         }
@@ -153,7 +150,7 @@ module.exports.getPopularItems = (req, res) => {
       const itemIds = result.map(row => row.item_id);
       console.log(itemIds);
       if (itemIds.length === 0) {
-          return res.status(404).json({ message: 'No popular items found for this restaurant' });
+          return res.status(200).json({ message: 'No popular items found for this restaurant' });
       }
       console.log('popular items' ,itemIds);
       const menuItemsQuery = 'SELECT * FROM menu_items WHERE item_id IN (?)';
