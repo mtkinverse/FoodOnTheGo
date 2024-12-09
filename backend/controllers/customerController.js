@@ -323,7 +323,7 @@ module.exports.getAllOrders = (req, res) => {
         oo.item_id,
         oo.quantity,
         oo.price,  -- Price from ordered_items
-        oo.price * oo.quantity AS sub_total,
+        oo.price * oo.quantity AS sub_total
       FROM orders o 
       JOIN deliveryaddress d ON o.address_id = d.address_id
       JOIN restaurant r ON o.restaurant_id = r.restaurant_id
@@ -357,7 +357,6 @@ module.exports.getAllOrders = (req, res) => {
                     };
                 }
 
-                // Add the item to the order using item_price from ordered_items
                 acc[curr.order_id].items.push({
                     item_id: curr.item_id,
                     dish_name: curr.dish_name,  // Dish name from menu_items

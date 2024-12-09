@@ -62,7 +62,7 @@ const HomePage = () => {
               </p>
               <a 
                 href="#topRestaurants" 
-                className="inline-block bg-yellow-400 hover:bg-yellow-500 text-purple-900 font-bold px-8 py-4 rounded-full transition-all duration-300 hover:shadow-lg transform hover:-translate-y-1"
+                className="inline-block no-underline bg-yellow-400 hover:bg-yellow-500 text-purple-900 font-bold px-8 py-4 rounded-full transition-all duration-300 hover:shadow-lg transform hover:-translate-y-1"
               >
                 Explore Restaurants
               </a>

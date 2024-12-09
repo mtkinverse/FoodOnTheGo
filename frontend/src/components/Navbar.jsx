@@ -178,7 +178,7 @@ const ShowPastOrders = ({
                                 Reviewed
                               </button>
                             )}
-                            <button
+                            {/* <button
                                 onClick={() => {
                                   setComplaint(prev => ({...prev, Order_id:order.order_id}))
                                   setLodger(true);
@@ -186,7 +186,7 @@ const ShowPastOrders = ({
                                 className="flex items-center justify-center text-white bg-red-600 hover:bg-red-800 rounded-full py-2 px-6 text-sm font-semibold transition-colors"
                               >
                                 Lodge Complaint
-                              </button>
+                              </button> */}
                           </div>
                         </div>
                       </div>

@@ -31,7 +31,33 @@ const UserContextProvider = ({ children }) => {
   
 
   const [restaurantOrders,setRestaurantOrders] = useState([]);
+  const handleStatusUpdate = (updatedOrder) => {
+    setCurrentOrders((prevCurrentOrders) => {
+      const updatedCurrentOrders = prevCurrentOrders.map((order) => {
+        if (order.order_id === Number(updatedOrder.order_id)) {
+          return { ...order, status: updatedOrder.status };
+        }
+        return order;
+      });
+  
+      const newPastOrders = updatedCurrentOrders.filter((order) => order.status === "Delivered");
+  
+      const filteredCurrentOrders = updatedCurrentOrders.filter((order) => order.status !== "Delivered");
+  
+      filteredCurrentOrders.sort((a, b) => new Date(b.order_date) - new Date(a.order_date));
+      newPastOrders.sort((a, b) => new Date(b.order_date) - new Date(a.order_date));
+  
+      setCurrentOrders(filteredCurrentOrders);
+      setPastOrders((prevPastOrders) => [...prevPastOrders, ...newPastOrders]); 
+  
+      console.log("Updated current orders:", filteredCurrentOrders);
+      console.log("Updated past orders:", newPastOrders);
+  
+      return updatedCurrentOrders;
+    });
+  };
 
+  
   const fetchInitialOrders = async () => {
     try {
       const response = await axios.get(`/api/getAllOrders/${userData.User_id}`);
@@ -52,7 +78,7 @@ const UserContextProvider = ({ children }) => {
         }
       });
 
-      current.sort((a, b) => new Date(b.order_date) - new Date(a.order_date)); // Sort most recent first
+      current.sort((a, b) => new Date(b.order_date) - new Date(a.order_date)); 
       past.sort((a, b) => new Date(b.order_date) - new Date(a.order_date));
       
       if(current.length === 0 && past.length ===0){
@@ -68,38 +94,10 @@ const UserContextProvider = ({ children }) => {
       }
       setCurrentOrders(current);
       setPastOrders(past);
+      console.log('current orders ',current);
     } catch (err) {
-      console.log("Error fetching customer orders", err.message);
+      console.log('Error fetching customer orders ',err.message);
     }
-  };
-
-  const handleStatusUpdate = (updatedOrder) => {
-    setCurrentOrders((prevCurrentOrders) => {
-      const updatedCurrentOrders = prevCurrentOrders.map((order) => {
-        console.log(order.order_id,updatedOrder.order_id);
-        if (order.order_id === Number(updatedOrder.order_id)) {
-          console.log('updating status');
-          return { ...order, status: updatedOrder.status };
-        }
-        console.log('not updateint status');
-        return order;
-      });
-  
-      const newPastOrders = updatedCurrentOrders.filter((order) => order.status === "Delivered");
-  
-      const filteredCurrentOrders = updatedCurrentOrders.filter((order) => order.order_id !== updatedOrder.order_id);
-  
-      filteredCurrentOrders.sort((a, b) => new Date(b.order_date) - new Date(a.order_date));
-      newPastOrders.sort((a, b) => new Date(b.order_date) - new Date(a.order_date));
-  
-      setCurrentOrders(filteredCurrentOrders);  
-      setPastOrders(newPastOrders);  
-  
-      console.log("Updated current orders:", filteredCurrentOrders);
-      console.log("Updated past orders:", newPastOrders);
-  
-      return updatedCurrentOrders;  
-    });
   };
   
 
@@ -108,7 +106,7 @@ const UserContextProvider = ({ children }) => {
       fetchInitialOrders();
 
       socket.on("orderStatusUpdated", (updatedOrder) => {
-        console.log("Real-time order update received:", updatedOrder);
+      //  console.log("Real-time order update received:", updatedOrder);
         handleStatusUpdate(updatedOrder);
       });
 
@@ -140,7 +138,7 @@ const UserContextProvider = ({ children }) => {
         
         let tempUserData;
         let bikeData;
-        // Check the role and adjust the destructuring accordingly
+        
         if (res.data.role === "Customer") {
           tempUserData = {
             User_id: res.data.Customer_id,
@@ -225,7 +223,7 @@ const UserContextProvider = ({ children }) => {
       });
   };
 
-  //this is for admin
+  
   const getRestaurantOrders = () => {
     axios
     .get(`/api/getOrders/${userData.Location_id}`)

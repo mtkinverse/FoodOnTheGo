@@ -207,6 +207,7 @@ const CartContextProvider = ({ children }) => {
           type: "success",
         });
         setCart([]);
+        setPromo({});
         fetchInitialOrders(); 
       }
     } catch (err) {
@@ -271,6 +272,7 @@ const CartContextProvider = ({ children }) => {
 
   const clearCart = () => {
     setCart([]);
+    setPromo({})
     setAlert({message: 'Your cart was cleared',type: 'success'});
   }
 

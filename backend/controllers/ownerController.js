@@ -460,7 +460,8 @@ module.exports.updateItem = (req, res) => {
     
 
     const { Item_id, Dish_Name, Item_Price, Cuisine } = req.body;
-    const new_path = `http://localhost:8800/images/${req.params.id}/${req.file.filename}`;
+    let new_path = '';
+    if(req.file) new_path = `http://localhost:8800/images/${req.params.id}/${req.file.filename}`;
 
     let query = 'SELECT Item_image FROM Menu_Items WHERE item_id = ?';
 
@@ -476,11 +477,14 @@ module.exports.updateItem = (req, res) => {
 
             
             fs.unlink(old_image_path, (err) => {
-                if (err) {
+                if (err && req.file) {
                     console.error('Error deleting the old image:', err);
                     return res.status(500).send({ message: 'Error deleting the old image' });
                 }
+                
+                if(!req.file) new_path = old_image_path;
                 let updateQuery = 'UPDATE Menu_Items SET Dish_Name = ?, Item_Price = ?, Cuisine = ?, Item_image = ? WHERE item_id = ?';
+
                 db.query(updateQuery, [Dish_Name, Item_Price, Cuisine, new_path, Item_id], (err, result) => {
                     if (err) {
                         return res.status(500).send({ message: 'Error updating item in database', error: err });
