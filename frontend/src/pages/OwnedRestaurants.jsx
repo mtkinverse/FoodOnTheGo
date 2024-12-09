@@ -53,11 +53,9 @@ const OwnedRestaurants = () => {
        const name = restaurantToDelete.Restaurant_Name;
        const id = restaurantToDelete.Restaurant_id;
        try {
-        console.log('Sending delete request for:', name, id, restaurantToDelete);
         const response = await axios.post(`/api/deleteRestaurant/${restaurantToDelete.Restaurant_id}`, {
             Restaurant_Image: restaurantToDelete.Restaurant_Image,
         });
-        console.log('Backend response:', response);
     
         if (response.status === 200) {
             setAlert({ message: `Your restaurant ${name} has been deleted`, type: 'success' });

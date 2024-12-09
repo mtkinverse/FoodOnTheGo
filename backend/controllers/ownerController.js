@@ -101,7 +101,6 @@ module.exports.getStats = (req, res) => {
 
                         }
                         stats.review_count = result1[0].review_count;
-                    console.log(stats);
                     return res.status(200).json({
                         success: true,
                         stats,

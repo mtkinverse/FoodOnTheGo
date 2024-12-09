@@ -18,7 +18,6 @@ const userAuthentication = require('./middlewares/userAuthentication');
 const app = express();
 const server = http.createServer(app);
 
-// Initialize Socket.IO
 const io = socket.init(server);
 
 app.use(cors({
@@ -30,7 +29,6 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(userAuthentication);
 
-// Use routes
 app.use('/', userRoutes);
 app.use('/', webRoutes);
 app.use('/', ownerRoutes);

@@ -176,7 +176,6 @@ module.exports.getRiders = (req, res) => {
             res.status(500).json({ message: error.message });
         }
         else {
-            console.log(result);
             res.status(200).json(result);
         }
     })
@@ -185,19 +184,19 @@ module.exports.getRiders = (req, res) => {
 module.exports.getOrders = (req, res) => {
     const location_id = req.params.id;
     const q = `
-       SELECT c.customer_name,c.email_address,o.order_id, o.total_amount, o.order_status, TIME(o.order_time) AS order_time, o.promo_id, 
-              p.promo_value, mm.dish_name, i.quantity, i.price * i.quantity AS sub_total, 
-              d.address, o.delivered_by_id,o.instructions
-       FROM orders o 
-       JOIN customer c on c.customer_id = o.customer_id
-       JOIN deliveryaddress d ON o.address_id = d.address_id
-       JOIN restaurant r ON r.restaurant_id = o.restaurant_id
-       JOIN ordered_items i ON i.order_id = o.order_id
-       JOIN menu_items mm ON i.item_id = mm.item_id
-       LEFT JOIN promos p ON o.promo_id = p.promo_id  -- Using LEFT JOIN to include orders with no promo
-       WHERE r.location_id = ? 
-       AND o.order_status IN ('Placed', 'Preparing', 'Out for delivery');
-    `;
+    SELECT c.customer_name,c.email_address,o.order_id, o.total_amount, o.order_status, TIME(o.order_time) AS order_time, o.promo_id, 
+           p.promo_value, mm.dish_name, i.quantity, i.price * i.quantity AS sub_total, 
+           d.address, o.delivered_by_id,o.instructions
+    FROM orders o 
+    JOIN customer c on c.customer_id = o.customer_id
+    JOIN deliveryaddress d ON o.address_id = d.address_id
+    JOIN restaurant r ON r.restaurant_id = o.restaurant_id
+    JOIN ordered_items i ON i.order_id = o.order_id
+    JOIN menu_items mm ON i.item_id = mm.item_id
+    LEFT JOIN promos p ON o.promo_id = p.promo_id  -- Using LEFT JOIN to include orders with no promo
+    WHERE r.location_id = ? 
+    AND o.order_status IN ('Placed', 'Preparing', 'Out for delivery');
+ `;
 
     db.query(q, [location_id], (err, result) => {
         if (err) {
@@ -235,7 +234,7 @@ module.exports.getOrders = (req, res) => {
 
             return acc;
         }, []);
-
+console.log('sending admin ',groupedOrders);
         
         res.json({ orders: groupedOrders });
     });
@@ -272,6 +271,7 @@ module.exports.dispatchOrder = (req, res) => {
             return res.status(500).json({ error: error.message });
         }
         const io = socket.getIO(); 
+        const status = 'Out for delivery';
         io.emit('riderAssigned', { order_id, status });
 
         const getTipQuery = 'SELECT rider_tip FROM Orders WHERE order_id = ?';

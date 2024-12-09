@@ -165,9 +165,9 @@ const Register = () => {
         setAlert({ message: `This email is already in use by a ${role}. Please try another email or log in.`, type: 'failure' });
         return;  
       }
-      await axios.post('/api/send-otp', { email: values.email });
-      setShowOTPPopup(true);
-  
+      // await axios.post('/api/send-otp', { email: values.email });
+      // setShowOTPPopup(true);
+      handleOTPVerification(1222);
     } catch (err) {
       if (err.response && err.response.status === 409) {
         setAlert({ message: `This email is already registered by a ${role}. Please try another email or log in.`, type: 'failure' });
@@ -185,7 +185,7 @@ const Register = () => {
     setIsVerifying(true); // Set verifying state to true
 
     try {
-      await axios.post('/api/verify-otp', { email: values.email, otp: enteredOTP });
+   //   await axios.post('/api/verify-otp', { email: values.email, otp: enteredOTP });
 
       const sendVal = {
         name: `${values.firstname} ${values.lastname}`,
@@ -194,7 +194,7 @@ const Register = () => {
         phoneNo: values.phoneNo,
         role,
       };
-      console.log('sending request tp register ',sendVal);
+      
       await axios.post('/api/register', sendVal);
       setAlert({ message: 'Account created, login now!', type: 'success' });
       navigate('/login');

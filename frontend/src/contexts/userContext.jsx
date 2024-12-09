@@ -9,6 +9,7 @@ const socket = io('http://localhost:8800', { withCredentials: true });
 
 const UserContextProvider = ({ children }) => {
   // const host = 'http://localhost:8800';
+  let socket = null;
   const [loggedIn, setLoggedIn] = useState(false);
   const [userData, setUserData] = useState({
     User_id: 0,
@@ -17,7 +18,7 @@ const UserContextProvider = ({ children }) => {
     phone_no: "",
     role: "",
   });
-
+  
   const {setAlert} = useAlertContext();
 
   //for rider
@@ -31,6 +32,7 @@ const UserContextProvider = ({ children }) => {
   
 
   const [restaurantOrders,setRestaurantOrders] = useState([]);
+  
   const handleStatusUpdate = (updatedOrder) => {
     setCurrentOrders((prevCurrentOrders) => {
       const updatedCurrentOrders = prevCurrentOrders.map((order) => {
@@ -50,8 +52,6 @@ const UserContextProvider = ({ children }) => {
       setCurrentOrders(filteredCurrentOrders);
       setPastOrders((prevPastOrders) => [...prevPastOrders, ...newPastOrders]); 
   
-      console.log("Updated current orders:", filteredCurrentOrders);
-      console.log("Updated past orders:", newPastOrders);
   
       return updatedCurrentOrders;
     });
@@ -94,7 +94,6 @@ const UserContextProvider = ({ children }) => {
       }
       setCurrentOrders(current);
       setPastOrders(past);
-      console.log('current orders ',current);
     } catch (err) {
       console.log('Error fetching customer orders ',err.message);
     }
@@ -104,13 +103,20 @@ const UserContextProvider = ({ children }) => {
   useEffect(() => {
     if (userData.User_id !== 0 && userData.role === "Customer") {
       fetchInitialOrders();
-
-      socket.on("orderStatusUpdated", (updatedOrder) => {
+      if(!socket) {
+        socket =  io('http://localhost:8800', { withCredentials: true });
+        socket.on("orderStatusUpdated", (updatedOrder) => {
       //  console.log("Real-time order update received:", updatedOrder);
         handleStatusUpdate(updatedOrder);
       });
-
-      return () => socket.off("orderStatusUpdated");
+    }
+    return () => {
+      if(socket) {
+        socket.disconnect();
+        socket = null;
+      }
+    }
+    //  return () => socket.off("orderStatusUpdated");
     }
   }, [userData.User_id]);
   

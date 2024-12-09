@@ -9,18 +9,16 @@ import { usePopUpContext } from "../contexts/popUpContext";
 const ComplaintLodger = () => {
 
     const {complaint,setComplaint, lodger, setLodger} = usePopUpContext();
-    const {pastOrders, fetchOrders, userData } = useUserContext();
+    const {pastOrders, fetchInitialOrders, userData } = useUserContext();
     const { setAlert } = useAlertContext();
 
     useEffect(() => {
-        if (pastOrders.length === 0) fetchOrders();
-        console.log('received ',complaint, order_id, restaurant_id)
+        if (pastOrders.length === 0) fetchInitialOrders();
     }, [complaint])
 
     const handleSubmit = e => {
         e.preventDefault();
         const req = { Customer_id: userData.User_id, Order_id: complaint.Order_id, Complaint_Desc: complaint.desc }
-        console.log('seding req', req);
 
         axios.post('/api/lodgeComplaint', JSON.stringify(req), {
             withCredentials: true, headers: { "Content-Type": "application/json" }

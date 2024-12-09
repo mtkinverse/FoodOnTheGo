@@ -219,7 +219,7 @@ const RestaurantMenu = () => {
         const popularResponse = await axios.get(`/api/getPopularItems/${restaurant_id}`);
         setPopularItems(popularResponse.data);
         const updatedMenuItems = menuResponse.data.map(menuItem => {
-          const isPopular = popularResponse.data.some(popularItem => popularItem.Item_id === menuItem.Item_id);
+          const isPopular = popularResponse.length && popularResponse.data.some(popularItem => popularItem.Item_id === menuItem.Item_id);
         
           return {
             ...menuItem,

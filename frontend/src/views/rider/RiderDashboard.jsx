@@ -79,7 +79,7 @@ const RiderDashboard = () => {
     try {
       const response = await axios.get(`/api/getOrdersToDeliver/${userData.User_id}`);
       setPending(response.data.orders);
-      console.log(response.data.orders)
+      
     } catch (err) {
       console.error("Error fetching pending orders", err);
     }
@@ -99,7 +99,7 @@ const RiderDashboard = () => {
       await axios.post(`/api/setVehicle/${userData.User_id}`, {
         bikeNo: bikeDetails.BikeNo,
       });
-      console.log("Vehicle registered");
+      
       setBikePopup(false);
     } catch (err) {
       console.error("Error registering bike", err);
@@ -144,7 +144,7 @@ const RiderDashboard = () => {
           ...prevData,
           status: updated_status,
         }));
-        console.log('marked status',userData);
+        
         const message = updated_status
           ? "You are now available for deliveries!"
           : "You are now unavailable for future deliveries until you mark yourself as available again!";

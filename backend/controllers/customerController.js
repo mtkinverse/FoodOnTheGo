@@ -5,7 +5,6 @@ const { sendOrderNotification, sendCancellationEmail, sendStatusEmail } = requir
 
 
 module.exports.notifyDispatch = (req, res) => {
-    console.log(req.body);
     sendStatusEmail(req.body.customer_email,req.body.rider_email, req.body);
     return res.status(200).json({ message: 'email sent' });
 }
@@ -78,7 +77,6 @@ module.exports.verifyPromo = (req, res) => {
         }
 
         if (!result || result.length === 0) {
-            console.log('Error: restaurant not found');
             return res.status(404).json({ message: 'Restaurant not found for this menu' });
         }
 
@@ -98,7 +96,6 @@ module.exports.verifyPromo = (req, res) => {
                 return res.status(500).json({ message: err1.message });
             }
             if (!result1 || result1.length === 0) {
-                console.log('Promo not found or expired');
                 return res.status(404).json({ message: 'Promo code not found or expired' });
             }
 
@@ -120,7 +117,6 @@ module.exports.verifyPromo = (req, res) => {
                 const num_orders = result2[0]?.num_orders || 0;
 
                 if (num_orders >= usage_limit) {
-                    console.log('Usage limit reached');
                     return res.status(403).json({ message: 'You have used the promo maximum number of times' });
                 }
 
@@ -200,8 +196,8 @@ module.exports.getLastOrder = (req, res) => {
 
 module.exports.PlaceOrder = (req, res) => {
     const { Customer_id, Customer_name,phone_no, Email, Menu_Id, Address, NearbyPoint,Instructions, items, total_amount, promo_id, riderTip } = req.body;
-    console.log(req.body);
-            const q1 = 'SELECT Restaurant_id FROM restaurant WHERE menu_id = ?';
+    console.log('here to place order,',req.body);       
+    const q1 = 'SELECT Restaurant_id FROM restaurant WHERE menu_id = ?';
             db.beginTransaction(() => {
 
                 db.query(q1, [Menu_Id], (err, restaurantResult) => {
@@ -224,18 +220,15 @@ module.exports.PlaceOrder = (req, res) => {
                             console.error('Error while adding address order:', err);
                             return res.status(500).json({ message: 'Error while placing order' });
                         }
-                        console.log('return from place order');
                         const status = 'Placed';
-                        const order_q = 'INSERT INTO Orders (customer_id,order_time,order_status,Instructions,restaurant_id,address_id) VALUES(?,?,?,?,?,?)';
-                        db.query(order_q,[Customer_id,new Date(),status,Instructions,Restaurant_id,addressResult.insertId], (err, orderStatus) => {
+                        const order_q = 'INSERT INTO Orders (customer_id,order_time,order_status,Instructions,restaurant_id,address_id,promo_id) VALUES(?,?,?,?,?,?,?)';
+                        db.query(order_q,[Customer_id,new Date(),status,Instructions,Restaurant_id,addressResult.insertId,promo_id], (err, orderStatus) => {
                             if (err) {
                                 console.error('Error inserting order ID:', err);
                                 return res.status(500).json({ message: 'Error fetching order ID' });
                             }
-                            console.log(orderStatus);
                             const Order_id = orderStatus.insertId;
                             if (!Order_id) {
-                                console.log('sending error 1');
                                 return res.status(400).json({ message: 'Failed to create order. Restaurant may be closed.' });
                             }
 
@@ -269,7 +262,7 @@ module.exports.PlaceOrder = (req, res) => {
 
                                             }
                                          //   sendOrderNotification(Email, order)
-                                            console.log('no error order placed');
+                                         db.commit();
                                             return res.status(200).json({ success: true, message: 'Order placed successfully' });
                                         });
                                     }
@@ -301,7 +294,7 @@ module.exports.cancelOrder = (req, res) => {
             customerName: Name,
             id: order_id
         }
-        sendCancellationEmail(Email, order)
+       // sendCancellationEmail(Email, order)
         res.status(200).json({ message: "Order cancelled" });
     });
 }

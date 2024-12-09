@@ -171,7 +171,7 @@ const riderOptions = {
     console.log('Error sending email');
   }
 }
-// Send verification email
+
 async function sendVerificationEmail (email, otp) {
   const mailOptions = {
     from: process.env.EMAIL,

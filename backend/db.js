@@ -23,9 +23,9 @@ function handleDisconnect() {
         console.error('Database error', err);
         if (err.code === 'PROTOCOL_CONNECTION_LOST') {
             console.log('Reconnecting to the database...');
-            handleDisconnect(); // Reconnect if the connection is lost
+            handleDisconnect();
         } else {
-            throw err; // Throw other errors to handle them elsewhere
+            throw err;
         }
     });
 }

@@ -84,10 +84,10 @@ const DealsPopup = ({ setDealPopup,selectedDeal,setSelectedDeal }) => {
 
   const handlePromoUpdate = () => {
     let temp;
-    console.log('New promo is ',newpromo);
+    
     if(dealType === 'promo') temp = { ...newpromo, Type : 'promo'};
     else temp = {...newDiscount, Type : 'discount'}
-    console.log('sending update request for deal ',temp);
+    
     axios.post('/api/updateDeal',JSON.stringify(temp),{
       withCredentials : true,
       headers: {
@@ -111,7 +111,7 @@ const DealsPopup = ({ setDealPopup,selectedDeal,setSelectedDeal }) => {
   const handleDiscountSubmit = async () => {
 
     try {
-      console.log("Sending request for", newDiscount);
+      
 
       const response = await axios.post(
         `/api/addDiscount/${userData.Location_id}`,
@@ -466,7 +466,7 @@ const AdminDashboard = () => {
         `/api/getAvaliableRiders/${userData.Location_id}`
       );
       if (JSON.stringify(res.data) !== JSON.stringify(riders)) {
-        console.log("Updating riders data");
+        
         setRiders(res.data);
       }
     } catch (err) {
@@ -487,11 +487,11 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     if (viewdeliveryDetails) {
-      console.log("selected order out deliver ", selectedOrder);
+      
       axios
         .get(`/api/getDeliveryDetails/${selectedOrder.order_id}`)
         .then((res) => {
-          console.log("Delivery details fetched ", res.data);
+          
           setDeliveryDetails(res.data);
         })
         .catch((err) => {
@@ -545,8 +545,8 @@ const AdminDashboard = () => {
         delivery_addres : selectedOrder.address,
         total_amount : selectedOrder.total_amount
       }
-      const res = await axios.post('/api/send-status-email',order);
-      if (response.status === 200 && res.status === 200) {
+    //  const res = await axios.post('/api/send-status-email',order);
+      if (response.status === 200 ) {
         const updatedOrder = {
           ...selectedOrder,
           rider_id: selectedRider.rider_id,
@@ -616,7 +616,6 @@ const AdminDashboard = () => {
     if(Type === 'promo') temp = {...availablePromos.find(ele => ele.promo_id === promoId), Type}; 
     else temp = {...availableDiscount.find(ele => ele.discount_id === promoId),Type}; 
     
-    console.log('temp is :' , temp);
     setSelectedDeal(temp); 
     setShowDeals(false);
     setDealPopup(true);
@@ -638,7 +637,6 @@ const AdminDashboard = () => {
           <button
             onClick={() => {
               setDealPopup(true);
-              console.log('selected deal', selectedDeal);
             }}
             className="inline-flex items-center px-8 py-4 bg-purple-500 font-bold text-white rounded-xl hover:bg-purple-600 transition-colors duration-300 ease-in-out transform hover:scale-105"
           >

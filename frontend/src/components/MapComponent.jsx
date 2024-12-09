@@ -23,7 +23,7 @@ const MapComponent = () => {
                 (position) => {
                     const lat = position.coords.latitude;
                     const lng = position.coords.longitude;
-                    console.log(`Latitude: ${lat}, Longitude: ${lng}`);
+                    
                     setCenter({ lat, lng });
                 },
                 (error) => {
@@ -48,7 +48,7 @@ const MapComponent = () => {
         const lat = event.latLng.lat();
         const lng = event.latLng.lng();
         setCenter({ lat, lng });
-        console.log('Selected Location:', { lat, lng });
+        
     };
 
     const [autocomplete, setAutocomplete] = useState(null);
@@ -62,7 +62,7 @@ const MapComponent = () => {
           lng: place.geometry.location.lng(),
           address: place.formatted_address,
         });
-        console.log('Selected Place:', place);
+        
       }
     };  
 

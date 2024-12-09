@@ -25,7 +25,6 @@ import { useNavigate } from "react-router-dom";
 import { usePopUpContext } from "../contexts/popUpContext";
 
 const ShowPastOrders = ({
-  pastOrders,
   pastPopup,
   pastOrdersPopup,
   promptForReview,
@@ -33,7 +32,7 @@ const ShowPastOrders = ({
 }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const {lodger,setLodger,setComplaint} = usePopUpContext();
-
+  const {pastOrders} = useUserContext();
   if (pastPopup) {
     document.body.style.overflow = "hidden";
   } else {
@@ -60,7 +59,6 @@ const ShowPastOrders = ({
       {pastPopup && (
         <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 backdrop-blur-sm p-4">
           <div className="bg-purple-50 w-full max-w-2xl rounded-lg shadow-2xl overflow-hidden">
-            {/* Header */}
             <div className="p-4 bg-gradient-to-r from-purple-900 to-indigo-800 border-b border-purple-200">
               <div className="flex justify-between items-center">
                 <div>
@@ -178,7 +176,7 @@ const ShowPastOrders = ({
                                 Reviewed
                               </button>
                             )}
-                            <button
+                            {/* <button
                                 onClick={() => {
                                   setComplaint(prev => ({...prev, Order_id:order.order_id}))
                                   setLodger(true);
@@ -186,7 +184,7 @@ const ShowPastOrders = ({
                                 className="flex items-center justify-center text-white bg-red-600 hover:bg-red-800 rounded-full py-2 px-6 text-sm font-semibold transition-colors"
                               >
                                 Lodge Complaint
-                              </button>
+                              </button> */}
                           </div>
                         </div>
                       </div>
@@ -239,19 +237,19 @@ const ShowPastOrders = ({
 };
 
 
-function ShowCurrentOrders({
-  currentOrders,
+const ShowCurrentOrders =({
   cancelOrder,
   currentPopup,
   CurrentOrdersPopup,
-}) {
+}) => {
   const [currentSlide, setCurrentSlide] = useState(0);
-
+  const {currentOrders} = useUserContext();
   if (currentPopup) {
     document.body.style.overflow = "hidden";
   } else {
     document.body.style.overflow = "unset";
   }
+  
 
   const nextSlide = () => {
     setCurrentSlide((prev) =>
@@ -494,6 +492,7 @@ const Navbar = () => {
   const profileMenuRef = useRef(null); // Ref to handle outside click
   const {adminComplaintPopup,setAdminComplaintPopup} = usePopUpContext();
   
+  useEffect
   const {
     loggedIn,
     signout,
@@ -735,9 +734,7 @@ const Navbar = () => {
           />
         </div>
 
-          {/* Desktop Menu */}
           <div className="hidden sm:flex items-center justify-between w-full">
-            {/* Navigation Links - Centered */}
             <div className="flex-grow flex justify-center space-x-8">
               {navItems.map((item, index) => (
                 <NavLink
@@ -745,8 +742,8 @@ const Navbar = () => {
                   to={item.path}
                   className={({ isActive }) =>
                     `${
-                      isActive ? "font-bold text-purple-700" : ""
-                    } text-sm no-underline font-medium hover:border-b hover:transition-all hover:px-2 hover:duration-300 border-purple-700  text-purple-600 hover:text-purple-700 transition-all duration-300`
+                      isActive ? "font-semibold text-purple-700" : ""
+                    } text-lg no-underline hover:border-b hover:transition-all hover:px-2 hover:duration-300 border-purple-700  text-purple-600 hover:text-purple-700 transition-all duration-300`
                   }
                 >
                   {item.label}
@@ -1029,7 +1026,6 @@ const Navbar = () => {
 
           {pastPopup && (
             <ShowPastOrders
-              pastOrders={pastOrders}
               pastPopup={pastPopup}
               pastOrdersPopup={pastOrdersPopup}
               promptForReview={promptForReview}
@@ -1045,7 +1041,6 @@ const Navbar = () => {
           )}
           {currentPopup && (
             <ShowCurrentOrders
-              currentOrders={currentOrders}
               cancelOrder={cancelOrder}
               currentPopup={currentPopup}
               CurrentOrdersPopup={CurrentOrdersPopup}

@@ -167,7 +167,6 @@ const CartContextProvider = ({ children }) => {
   const placeOrder = async (addressRecv, pointNear, requirements,riderTip) => {
     let items = [];
 
-    // Prepare the items array from the cart
     cart.forEach((ele) => {
       items = items.concat({
         Item_id: ele.Item_id,
@@ -211,7 +210,10 @@ const CartContextProvider = ({ children }) => {
         fetchInitialOrders(); 
       }
     } catch (err) {
-      
+      setAlert({
+        message: 'error while placing order',
+        type: "failure",
+      });
     }
   };
   

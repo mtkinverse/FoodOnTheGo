@@ -21,7 +21,6 @@ ORDER BY week ASC;
         if(err){
           return res.status(500).json({message: 'error fetching weekly revenue'});
         }
-        console.log(result);
         return res.status(200).json(result);
    })
 }
@@ -129,7 +128,6 @@ module.exports.getSpecificRestaurant = (req, res) => {
 
 module.exports.getPopularItems = (req, res) => {
   const restaurantId = req.params.id;
-  console.log('here to get popular items');
   // First query: Get popular items
   const popularItemsQuery = `
      select oo.item_id
@@ -148,14 +146,14 @@ module.exports.getPopularItems = (req, res) => {
       }
 
       const itemIds = result.map(row => row.item_id);
-      console.log(itemIds);
+      
       if (itemIds.length === 0) {
           return res.status(200).json({ message: 'No popular items found for this restaurant' });
       }
-      console.log('popular items' ,itemIds);
       const menuItemsQuery = 'SELECT * FROM menu_items WHERE item_id IN (?)';
       db.query(menuItemsQuery, [itemIds], (err1, menuItems) => {
           if (err1) {
+            console.log('returning 500');
               return res.status(500).json({ message: 'Error occurred while fetching menu items' });
           }
 
@@ -184,7 +182,6 @@ module.exports.getPopularItems = (req, res) => {
                       discounted_price: parseFloat(discounted_price),
                   };
               });
-              console.log('returning result ',itemsWithDiscount);
               return res.status(200).json(itemsWithDiscount);
           });
       });

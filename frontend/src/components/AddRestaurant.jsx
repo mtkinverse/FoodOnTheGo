@@ -35,7 +35,6 @@ const AddRestaurantPopup = ({ isOpen, onClose,fetchRestaurants}) => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Prepare form data for backend submission
     const formData = new FormData();
     formData.append("Restaurant_name", formValues.Restaurant_name);
     formData.append("OpensAt", formValues.OpensAt);
@@ -55,7 +54,6 @@ const AddRestaurantPopup = ({ isOpen, onClose,fetchRestaurants}) => {
           ClosesAt: "",
           Restaurant_image: null,
         });
-        // Close the popup
         setAlert({message: 'Congratulations, on starting a new restaurant!',type : 'success'});
         onClose();
         fetchRestaurants();
