@@ -923,6 +923,11 @@ const AdminDashboard = () => {
                   <span className="font-semibold text-green-600">{selectedOrder.promo_value}% OFF</span>
                 </div>
               )}
+               <div className="flex justify-between items-center text-xl">
+                <span className="font-bold text-red-800 flex items-center">
+                    Instructions : {selectedOrder.instructions}
+                </span>
+              </div>
               <div className="flex justify-between items-center text-xl">
                 <span className="font-bold text-gray-800 flex items-center">
                   <CreditCard className="mr-2 text-purple-600" size={24} />

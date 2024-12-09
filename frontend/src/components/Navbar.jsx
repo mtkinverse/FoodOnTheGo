@@ -114,6 +114,7 @@ const ShowPastOrders = ({
                         {/* Order Details */}
                         <div className="space-y-3">
                           <div>
+                          {/* <p className="text-sm font-red ">Instructions: {order.instructions}</p> */}
                             <p className="text-sm font-medium ">
                               Delivery Address
                               <span className="text-sm text-gray-700">
@@ -392,6 +393,8 @@ function ShowCurrentOrders({
                         {/* Order Details */}
                         <div className="space-y-4">
                           <div>
+                          {/* <p className="text-sm font-red ">Instructions: {order.instructions}</p> */}
+
                             <p className="text-sm font-medium ">
                               Delivery Address: <span className="text-sm mt-1" > 
                               {order.address}
@@ -531,6 +534,10 @@ const Navbar = () => {
       [name]: value,
     }));
   };
+
+   useEffect(() =>{
+
+   },[currentOrders,pastOrders]);
 
   const [currentPopup, CurrentOrdersPopup] = useState(false);
 

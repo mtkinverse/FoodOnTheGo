@@ -1,4 +1,5 @@
 const db = require('../db');
+const socket = require('../socket');
 
 
 module.exports.getMyTips = (req, res) => {
@@ -94,13 +95,10 @@ module.exports.markOrderDelivered = (req,res) => {
     const q = 'UPDATE Orders SET Order_Status = \'Delivered\' WHERE Order_id = ?';
     db.query(q,[Order_id], (err,result) => {
         if(err || result.length <= 0) res.status(500).json({message : 'Cannot mark as delivered'});
-        else {
-            const q2 = 'Update Delivery_Rider set Available = true where rider_id = ?';
-            db.query(q2,[Rider_id], (err,result) => {
-
-                if(err) res.status(500).json({message : 'Failed to update the status of rider'})
-                else res.status(200).json({success : true});
-            })
-        }
-    })
+        const io = socket.getIO(); 
+        const status = "Delivered";
+        const order_id = Order_id;
+        io.emit('orderStatusUpdated', { order_id, status });
+        return res.status(200).json({success : true});
+    });
 }

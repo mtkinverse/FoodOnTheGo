@@ -31,6 +31,7 @@ const Cart = () => {
   const [location, setLocation] = useState({
     Address: "",
     NearbyPoint: "",
+    Requirements: "",
   });
   const [orderPopUp, setOrderPopUp] = useState(false);
   const [cartPopup, setCartPopup] = useState(false);
@@ -42,12 +43,18 @@ const Cart = () => {
 
   const handleOrderPlacment = (e) => {
     e.preventDefault();
-    placeOrder(location.Address, location.NearbyPoint, tipAmount);
+    placeOrder(location.Address, location.NearbyPoint, location.Requirements,tipAmount);
     setOrderPopUp(false);
     setTipAmount(0);
     setLocation({
       Address: "",
       NearbyPoint: "",
+      Requirements:"",
+    }); setPromo ({
+      promo_code: '',
+      promo_id: null,
+      promo_value: 0,
+      min_total: 0,
     });
   };
 
@@ -238,6 +245,24 @@ const Cart = () => {
         </h2>
       </div>
       <form onSubmit={handleOrderPlacment} className="p-6">
+      <div className="mb-2">
+          <label
+            htmlFor="requirements"
+            className="block text-gray-700 font-semibold mb-2"
+          >
+            Any instructions
+          </label>
+          <input
+            type="text"
+            id="requirements"
+            name="Requirements"
+            className="w-full border border-gray-300 rounded-lg py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            value={location.Requirements}
+            onChange={changeLocation}
+            options
+            placeholder="any specific instructions(e.g no mayo)"
+          />
+        </div>
         <div className="mb-2">
           <label
             htmlFor="address"

@@ -2,7 +2,10 @@ import axios from "axios";
 import React, { useState } from "react";
 import { createContext, useContext,useEffect } from "react";
 import { useAlertContext } from "./alertContext";
+import io from "socket.io-client";
+
 const UserContext = createContext();
+const socket = io('http://localhost:8800', { withCredentials: true });
 
 const UserContextProvider = ({ children }) => {
   // const host = 'http://localhost:8800';
@@ -22,8 +25,6 @@ const UserContextProvider = ({ children }) => {
      BikeNo : ""
   })
   
-
-  // const [errors, setErrors] = useState({ email: "", password: "" });
   const [orders,setOrders] = useState([]);
   const [currentOrders, setCurrentOrders] = useState([]); // ye customer ke hain
   const [pastOrders, setPastOrders] = useState([]);// ye bhi
@@ -31,71 +32,93 @@ const UserContextProvider = ({ children }) => {
 
   const [restaurantOrders,setRestaurantOrders] = useState([]);
 
-  const fetchOrders = async () => {
+  const fetchInitialOrders = async () => {
     try {
       const response = await axios.get(`/api/getAllOrders/${userData.User_id}`);
+      setOrders(response.data);
+
       const current = [];
       const past = [];
-  
-      response.data.forEach(order => {
-        // Check order status
+
+      response.data.forEach((order) => {
         if (
-          order.status === 'Placed' ||
-          order.status === 'Preparing' ||
-          order.status === 'Out for delivery'
+          order.status === "Placed" ||
+          order.status === "Preparing" ||
+          order.status === "Out for delivery"
         ) {
           current.push(order);
-        } else if (order.status === 'Delivered') {
+        } else if (order.status === "Delivered") {
           past.push(order);
         }
       });
-  
-      current.sort((a, b) => new Date(b.order_date) - new Date(a.order_date)); // Sort in descending order (most recent first)
-      past.sort((a, b) => new Date(b.order_date) - new Date(a.order_date)); // Sort in descending order (most recent first)
-  
-      setOrders(response.data);
+
+      current.sort((a, b) => new Date(b.order_date) - new Date(a.order_date)); // Sort most recent first
+      past.sort((a, b) => new Date(b.order_date) - new Date(a.order_date));
+      
+      if(current.length === 0 && past.length ===0){
+        setUserData((prev) => ({
+          ...prev,
+          isFirstOrder:true
+        }));
+      }else{
+        setUserData((prev) => ({
+          ...prev,
+          isFirstOrder:false
+        }));
+      }
       setCurrentOrders(current);
       setPastOrders(past);
-      let updatedData;
-
-      if (past.length === 0 && current.length === 0) {
-        updatedData = {
-          ...userData,
-          isFirstOrder:true
-        };
-      } else {
-        updatedData = {
-          ...userData,
-          isFirstOrder:false
-        };
-      }
-      setUserData(updatedData);
     } catch (err) {
-      console.log('Error fetching customer orders');
+      console.log("Error fetching customer orders", err.message);
     }
   };
+
+  const handleStatusUpdate = (updatedOrder) => {
+    setCurrentOrders((prevCurrentOrders) => {
+      const updatedCurrentOrders = prevCurrentOrders.map((order) => {
+        console.log(order.order_id,updatedOrder.order_id);
+        if (order.order_id === Number(updatedOrder.order_id)) {
+          console.log('updating status');
+          return { ...order, status: updatedOrder.status };
+        }
+        console.log('not updateint status');
+        return order;
+      });
   
+      const newPastOrders = updatedCurrentOrders.filter((order) => order.status === "Delivered");
   
+      const filteredCurrentOrders = updatedCurrentOrders.filter((order) => order.order_id !== updatedOrder.order_id);
+  
+      filteredCurrentOrders.sort((a, b) => new Date(b.order_date) - new Date(a.order_date));
+      newPastOrders.sort((a, b) => new Date(b.order_date) - new Date(a.order_date));
+  
+      setCurrentOrders(filteredCurrentOrders);  
+      setPastOrders(newPastOrders);  
+  
+      console.log("Updated current orders:", filteredCurrentOrders);
+      console.log("Updated past orders:", newPastOrders);
+  
+      return updatedCurrentOrders;  
+    });
+  };
+  
+
   useEffect(() => {
     if (userData.User_id !== 0 && userData.role === "Customer") {
-      fetchOrders();
-      const interval = setInterval(() => {
-        fetchOrders();
-      }, 10000); // Refresh orders every 30 seconds
-      return () => clearInterval(interval); 
+      fetchInitialOrders();
+
+      socket.on("orderStatusUpdated", (updatedOrder) => {
+        console.log("Real-time order update received:", updatedOrder);
+        handleStatusUpdate(updatedOrder);
+      });
+
+      return () => socket.off("orderStatusUpdated");
     }
   }, [userData.User_id]);
   
-  useEffect(() => {
-    
-    
+  useEffect(() =>{
+
   },[currentOrders,pastOrders]);
-  
-  useEffect(() => {
-    if (userData.User_id !== 0 && userData.role === "Customer") {
-      fetchOrders();
-    }
-  },[restaurantOrders]);
   
   const login = async (recvData) => {
     try {
@@ -230,7 +253,7 @@ const UserContextProvider = ({ children }) => {
         currentOrders,
         setCurrentOrders,
         pastOrders,
-        fetchOrders,
+        fetchInitialOrders,
         getRestaurantOrders,
         restaurantOrders,
         setRestaurantOrders,

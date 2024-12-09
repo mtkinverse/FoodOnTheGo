@@ -1,4 +1,5 @@
 const db = require('../db');
+const socket = require('../socket');
 
 module.exports.deleteDeal = (req, res) => {
     const deal_id = req.params.id;
@@ -77,6 +78,7 @@ module.exports.getDeals = (req, res) => {
         });
     });
 };
+
 module.exports.AddDiscount = (req, res) => {
     
     const location_id = req.params.id;
@@ -179,14 +181,13 @@ module.exports.getRiders = (req, res) => {
         }
     })
 }
+
 module.exports.getOrders = (req, res) => {
     const location_id = req.params.id;
-    
-
     const q = `
        SELECT c.customer_name,c.email_address,o.order_id, o.total_amount, o.order_status, TIME(o.order_time) AS order_time, o.promo_id, 
               p.promo_value, mm.dish_name, i.quantity, i.price * i.quantity AS sub_total, 
-              d.address, o.delivered_by_id
+              d.address, o.delivered_by_id,o.instructions
        FROM orders o 
        JOIN customer c on c.customer_id = o.customer_id
        JOIN deliveryaddress d ON o.address_id = d.address_id
@@ -205,7 +206,7 @@ module.exports.getOrders = (req, res) => {
         }
 
         const groupedOrders = result.reduce((acc, row) => {
-            const { order_id, order_status, customer_name,email_address,order_time, dish_name, quantity, sub_total, address, delivered_by_id, promo_value, total_amount } = row;
+            const { order_id, order_status, customer_name,email_address,order_time, dish_name, quantity, sub_total, address, delivered_by_id, promo_value, total_amount,instructions } = row;
 
             let order = acc.find(o => o.order_id === order_id);
 
@@ -220,7 +221,8 @@ module.exports.getOrders = (req, res) => {
                     items: [],
                     total_amount,
                     rider_id: delivered_by_id,
-                    promo_value: promo_value || 'No Promo'  // If promo_value is null, use 'No Promo'
+                    promo_value: promo_value || 'No Promo',  
+                    instructions
                 };
                 acc.push(order);
             }
@@ -243,31 +245,35 @@ module.exports.getOrders = (req, res) => {
 module.exports.updateOrderStatus = (req, res) => {
     const order_id = req.params.id;
     const status = req.body.status;
-    
-    const q = 'UPDATE orders SET order_status = ? where order_id = ?';
+
+    const q = 'UPDATE orders SET order_status = ? WHERE order_id = ?';
 
     db.query(q, [status, order_id], (err, result) => {
         if (err) {
-            console.log("ERroor here");
+            console.log("Error updating order status:", err.message);
             return res.status(500).json({ error: err.message });
         }
-        return res.status(200).json({ message: "Order status updated" });
-    })
-}
+
+        const io = socket.getIO(); 
+        io.emit('orderStatusUpdated', { order_id, status });
+
+        return res.status(200).json({ message: "Order status updated successfully." });
+    });
+};
 
 module.exports.dispatchOrder = (req, res) => {
     const order_id = req.params.id;
     const { rider_id } = req.body;
 
-    // Step 1: Update the order with the rider's id
     const updateOrderQuery = "UPDATE Orders SET delivered_by_id = ? WHERE order_id = ?";
     db.query(updateOrderQuery, [rider_id, order_id], (error, result2) => {
         if (error) {
             console.log("Error updating order status:", error);
             return res.status(500).json({ error: error.message });
         }
+        const io = socket.getIO(); 
+        io.emit('riderAssigned', { order_id, status });
 
-        // Step 2: Fetch the rider's tip for the specific order
         const getTipQuery = 'SELECT rider_tip FROM Orders WHERE order_id = ?';
         db.query(getTipQuery, [order_id], (err1, res1) => {
             if (err1) {
@@ -275,7 +281,7 @@ module.exports.dispatchOrder = (req, res) => {
                 return res.status(500).json({ error: err1.message });
             }
 
-            const rider_tip = res1[0] ? res1[0].rider_tip : 0;  // Default to 0 if no tip is provided
+            const rider_tip = res1[0] ? res1[0].rider_tip : 0;  
 
             if (rider_tip > 0) {
                 const checkExistingTipQuery = 'SELECT * FROM Rider_Tips WHERE rider_id = ? AND tip_date = CURRENT_DATE';

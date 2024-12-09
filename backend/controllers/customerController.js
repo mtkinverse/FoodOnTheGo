@@ -197,11 +197,10 @@ module.exports.getLastOrder = (req, res) => {
         return res.status(200).json(result);
     })
 }
-module.exports.PlaceOrder = (req, res) => {
 
-    const { Customer_id, Customer_name, Email, Menu_Id, Address, NearbyPoint, items, total_amount, promo_id, riderTip } = req.body;
-    let latt = undefined, lngi = undefined;
-  
+module.exports.PlaceOrder = (req, res) => {
+    const { Customer_id, Customer_name,phone_no, Email, Menu_Id, Address, NearbyPoint,Instructions, items, total_amount, promo_id, riderTip } = req.body;
+    console.log(req.body);
             const q1 = 'SELECT Restaurant_id FROM restaurant WHERE menu_id = ?';
             db.beginTransaction(() => {
 
@@ -216,25 +215,29 @@ module.exports.PlaceOrder = (req, res) => {
                     }
 
                     const Restaurant_id = restaurantResult[0].Restaurant_id;
-
-                    const createOrderQuery = 'CALL PLACEORDER (?, ?, ?, ?, @Created_Order_id)';
-                    db.query(createOrderQuery, [Customer_id, Restaurant_id, Address, NearbyPoint], (err, orderResult) => {
+                    
+                                         
+                  //  const createOrderQuery = 'CALL PLACEORDER (?, ?, ?, ?, @Created_Order_id)';
+                    const addressQuery = 'INSERT into deliveryaddress (address,phoneno,NearbyPoint) VALUES(?,?,?)';
+                    db.query(addressQuery, [Address,phone_no,NearbyPoint], (err, addressResult) => {
                         if (err) {
-                            console.error('Error while placing order:', err);
+                            console.error('Error while adding address order:', err);
                             return res.status(500).json({ message: 'Error while placing order' });
                         }
-
-                        db.query('SELECT @Created_Order_id AS orderId', (err, orderStatus) => {
+                        console.log('return from place order');
+                        const status = 'Placed';
+                        const order_q = 'INSERT INTO Orders (customer_id,order_time,order_status,Instructions,restaurant_id,address_id) VALUES(?,?,?,?,?,?)';
+                        db.query(order_q,[Customer_id,new Date(),status,Instructions,Restaurant_id,addressResult.insertId], (err, orderStatus) => {
                             if (err) {
-                                console.error('Error fetching order ID:', err);
+                                console.error('Error inserting order ID:', err);
                                 return res.status(500).json({ message: 'Error fetching order ID' });
                             }
-
-                            const Order_id = orderStatus[0].orderId;
+                            console.log(orderStatus);
+                            const Order_id = orderStatus.insertId;
                             if (!Order_id) {
+                                console.log('sending error 1');
                                 return res.status(400).json({ message: 'Failed to create order. Restaurant may be closed.' });
                             }
-
 
                             const itemInsertQuery = 'INSERT INTO ordered_items (order_id, item_id, quantity, price) VALUES (?, ?, ?, ?)';
                             items.forEach((item, index) => {
@@ -265,7 +268,8 @@ module.exports.PlaceOrder = (req, res) => {
                                                 riderTip: riderTip
 
                                             }
-                                            sendOrderNotification(Email, order)
+                                         //   sendOrderNotification(Email, order)
+                                            console.log('no error order placed');
                                             return res.status(200).json({ success: true, message: 'Order placed successfully' });
                                         });
                                     }
@@ -319,7 +323,7 @@ module.exports.getAllOrders = (req, res) => {
         oo.item_id,
         oo.quantity,
         oo.price,  -- Price from ordered_items
-        oo.price * oo.quantity AS sub_total -- Calculate sub_total using item_price from ordered_items
+        oo.price * oo.quantity AS sub_total,
       FROM orders o 
       JOIN deliveryaddress d ON o.address_id = d.address_id
       JOIN restaurant r ON o.restaurant_id = r.restaurant_id

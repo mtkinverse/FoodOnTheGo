@@ -8,7 +8,7 @@ const CartContext = createContext();
 const CartContextProvider = ({ children }) => {
   const DELIVERY_CHARGES = 150;
 
-  const { loggedIn, userData, fetchOrders } = useUserContext();
+  const { loggedIn, userData, fetchInitialOrders } = useUserContext();
   const [cart, setCart] = useState([]);
   const [cartCount, setCartCount] = useState(0);
   const { setAlert } = useAlertContext();
@@ -17,7 +17,7 @@ const CartContextProvider = ({ children }) => {
     promo_id: null,
     promo_value: 0,
     min_total : 0
-  }); //user enters;
+  }); 
   
 
   useEffect(() => {
@@ -164,7 +164,7 @@ const CartContextProvider = ({ children }) => {
     setCartCount(cart.reduce((count, item) => count + item.quantity, 0));
   }, [cart, userData?.User_id]);
 
-  const placeOrder = async (addressRecv, pointNear, riderTip) => {
+  const placeOrder = async (addressRecv, pointNear, requirements,riderTip) => {
     let items = [];
 
     // Prepare the items array from the cart
@@ -181,14 +181,15 @@ const CartContextProvider = ({ children }) => {
   
     const total = getTotalAmount() + riderTip;
   
-    // Prepare the request object to send to the backend
     const req = {
       Customer_id: userData.User_id,
       Customer_name : userData.User_name,
+      phone_no :userData.phone_no,
       Email : userData.Email_address,
       Menu_Id: cart[0].Menu_id,
       Address: addressRecv,
       NearbyPoint: pointNear,
+      Instructions:requirements,
       items: items,
       total_amount: total,
       promo_id: promo?.promo_id ? promo?.promo_id : null,
@@ -196,30 +197,20 @@ const CartContextProvider = ({ children }) => {
     };
   
     try {
-      // Make the API call to place the order
       const res = await axios.post("/api/placeOrder", req, {
         headers: { "Content-Type": "application/json" }, withCredentials : true
       });
   
-      // Check if the response is successful
       if (res.status === 200) {
         setAlert({
           message: res.data.message,
           type: "success",
         });
-        setCart([]); // Clear the cart after placing the order
-        fetchOrders(); // Fetch the updated orders list
+        setCart([]);
+        fetchInitialOrders(); 
       }
     } catch (err) {
-      // Handle the error if something goes wrong
-      const errorMessage =
-        err.response && err.response.data && err.response.data.message
-          ? err.response.data.message
-          : "An error occurred while placing your order.";
-      setAlert({
-        message: errorMessage,
-        type: "failure",
-      });
+      
     }
   };
   
