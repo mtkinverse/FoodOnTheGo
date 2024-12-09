@@ -69,6 +69,7 @@ const ManageRestaurant = ({
       const temp = menuItems;
 
       setMenuItems(temp.filter((ele) => ele.Item_id != item_id));
+      setAlert({message : 'Item deleted successfully', type : 'success'});
     } catch (err) {
       
     }
@@ -150,8 +151,10 @@ const ManageRestaurant = ({
       
       setPopup(false);
       setUpdated({});
+      setAlert({message : 'Menu Item Updated Successfully', type : 'success'})
     } catch (err) {
       console.error("Error updating item:", err);
+      setAlert({message : 'Unable to update the item', type : 'failure'})
     }
   };
 

@@ -69,37 +69,8 @@ const UserContextProvider = ({ children }) => {
       setCurrentOrders(current);
       setPastOrders(past);
     } catch (err) {
-      console.log("Error fetching customer orders", err.message);
+      console.log('Error fetching customer orders ',err.message);
     }
-  };
-
-  const handleStatusUpdate = (updatedOrder) => {
-    setCurrentOrders((prevCurrentOrders) => {
-      const updatedCurrentOrders = prevCurrentOrders.map((order) => {
-        console.log(order.order_id,updatedOrder.order_id);
-        if (order.order_id === Number(updatedOrder.order_id)) {
-          console.log('updating status');
-          return { ...order, status: updatedOrder.status };
-        }
-        console.log('not updateint status');
-        return order;
-      });
-  
-      const newPastOrders = updatedCurrentOrders.filter((order) => order.status === "Delivered");
-  
-      const filteredCurrentOrders = updatedCurrentOrders.filter((order) => order.order_id !== updatedOrder.order_id);
-  
-      filteredCurrentOrders.sort((a, b) => new Date(b.order_date) - new Date(a.order_date));
-      newPastOrders.sort((a, b) => new Date(b.order_date) - new Date(a.order_date));
-  
-      setCurrentOrders(filteredCurrentOrders);  
-      setPastOrders(newPastOrders);  
-  
-      console.log("Updated current orders:", filteredCurrentOrders);
-      console.log("Updated past orders:", newPastOrders);
-  
-      return updatedCurrentOrders;  
-    });
   };
   
 
