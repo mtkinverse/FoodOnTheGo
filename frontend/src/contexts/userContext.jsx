@@ -71,7 +71,7 @@ const UserContextProvider = ({ children }) => {
       }
       setUserData(updatedData);
     } catch (err) {
-      console.log('Error fetching customer orders');
+      console.log('Error fetching customer orders ',err.message);
     }
   };
   

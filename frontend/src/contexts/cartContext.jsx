@@ -208,6 +208,7 @@ const CartContextProvider = ({ children }) => {
           type: "success",
         });
         setCart([]); // Clear the cart after placing the order
+        setPromo({});
         fetchOrders(); // Fetch the updated orders list
       }
     } catch (err) {
@@ -280,6 +281,7 @@ const CartContextProvider = ({ children }) => {
 
   const clearCart = () => {
     setCart([]);
+    setPromo({})
     setAlert({message: 'Your cart was cleared',type: 'success'});
   }
 

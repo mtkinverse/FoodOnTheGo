@@ -227,10 +227,10 @@ const RestaurantMenu = () => {
           };
         });
         setMenuItems(updatedMenuItems);
-        console.log('trying to preint categories');
         setCategories(uniqueCategories);
       } catch (error) {
         console.error("Error fetching data:", error);
+        setAlert({message : "Error fetching data", type : 'failure'})
       }
     };
 
